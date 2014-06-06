@@ -1,0 +1,632 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		186AC45219401127006EEB8F /* Framework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 186AC45319401127006EEB8F /* Build configuration list for PBXAggregateTarget "Framework" */;
+			buildPhases = (
+				186AC45819401153006EEB8F /* Multiplatform Build */,
+			);
+			dependencies = (
+				183CB4FB194159B40079076A /* PBXTargetDependency */,
+			);
+			name = Framework;
+			productName = Framework;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		183CB4F619414CB40079076A /* OpenSpatialDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 183CB4F419414CB40079076A /* OpenSpatialDecoder.h */; };
+		183CB4F719414CB40079076A /* OpenSpatialDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB4F519414CB40079076A /* OpenSpatialDecoder.m */; };
+		186AC40419400009006EEB8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC40319400009006EEB8F /* Foundation.framework */; };
+		186AC41219400009006EEB8F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC41119400009006EEB8F /* XCTest.framework */; };
+		186AC4131940000A006EEB8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC40319400009006EEB8F /* Foundation.framework */; };
+		186AC4151940000A006EEB8F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC4141940000A006EEB8F /* UIKit.framework */; };
+		186AC4181940000A006EEB8F /* libOpenSpatialV6414.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC40019400009006EEB8F /* libOpenSpatialV6414.a */; };
+		186AC41E1940000A006EEB8F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 186AC41C1940000A006EEB8F /* InfoPlist.strings */; };
+		186AC4371940004F006EEB8F /* ButtonEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC42A1940004F006EEB8F /* ButtonEvent.m */; };
+		186AC4381940004F006EEB8F /* PointerEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC42C1940004F006EEB8F /* PointerEvent.m */; };
+		186AC4391940004F006EEB8F /* RotationEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC42E1940004F006EEB8F /* RotationEvent.m */; };
+		186AC43A1940004F006EEB8F /* GestureEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC4301940004F006EEB8F /* GestureEvent.m */; };
+		186AC43B1940004F006EEB8F /* OpenSpatialBluetooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC4321940004F006EEB8F /* OpenSpatialBluetooth.m */; };
+		186AC43F1940007A006EEB8F /* OpenSpatial2DEventsTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC43E1940007A006EEB8F /* OpenSpatial2DEventsTestCase.m */; };
+		186AC4421940014D006EEB8F /* OpenSpatialTestDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC4411940014D006EEB8F /* OpenSpatialTestDelegate.m */; };
+		186AC44419400A86006EEB8F /* ButtonEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 186AC4291940004F006EEB8F /* ButtonEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186AC44519400A86006EEB8F /* PointerEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 186AC42B1940004F006EEB8F /* PointerEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186AC44619400A86006EEB8F /* RotationEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 186AC42D1940004F006EEB8F /* RotationEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186AC44719400A86006EEB8F /* GestureEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 186AC42F1940004F006EEB8F /* GestureEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186AC44819400A86006EEB8F /* OpenSpatialBluetooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 186AC4311940004F006EEB8F /* OpenSpatialBluetooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		186AC44C19400AFD006EEB8F /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC44B19400AFD006EEB8F /* CoreBluetooth.framework */; };
+		186AC44E19400B04006EEB8F /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC44D19400B04006EEB8F /* CoreMotion.framework */; };
+		186AC45019400B7E006EEB8F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC44F19400B7E006EEB8F /* UIKit.framework */; };
+		186AC478194109A6006EEB8F /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 186AC477194109A6006EEB8F /* libOCMock.a */; };
+		186AC47A19411C13006EEB8F /* RotationEventTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC47919411C13006EEB8F /* RotationEventTestCase.m */; };
+		186AC47C1941213D006EEB8F /* GestureEventTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 186AC47B1941213D006EEB8F /* GestureEventTestCase.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		183CB4FA194159B40079076A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 186AC3F819400009006EEB8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 186AC3FF19400009006EEB8F;
+			remoteInfo = OpenSpatialV6414;
+		};
+		186AC4161940000A006EEB8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 186AC3F819400009006EEB8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 186AC3FF19400009006EEB8F;
+			remoteInfo = OpenSpatialV6414;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		186AC3FE19400009006EEB8F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		183CB4F419414CB40079076A /* OpenSpatialDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialDecoder.h; sourceTree = "<group>"; };
+		183CB4F519414CB40079076A /* OpenSpatialDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialDecoder.m; sourceTree = "<group>"; };
+		186AC40019400009006EEB8F /* libOpenSpatialV6414.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libOpenSpatialV6414.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		186AC40319400009006EEB8F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		186AC40719400009006EEB8F /* OpenSpatialV6414-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OpenSpatialV6414-Prefix.pch"; sourceTree = "<group>"; };
+		186AC41019400009006EEB8F /* OpenSpatialV6414Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenSpatialV6414Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		186AC41119400009006EEB8F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		186AC4141940000A006EEB8F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		186AC41B1940000A006EEB8F /* OpenSpatialV6414Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OpenSpatialV6414Tests-Info.plist"; sourceTree = "<group>"; };
+		186AC41D1940000A006EEB8F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		186AC4291940004F006EEB8F /* ButtonEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonEvent.h; sourceTree = "<group>"; };
+		186AC42A1940004F006EEB8F /* ButtonEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonEvent.m; sourceTree = "<group>"; };
+		186AC42B1940004F006EEB8F /* PointerEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointerEvent.h; sourceTree = "<group>"; };
+		186AC42C1940004F006EEB8F /* PointerEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointerEvent.m; sourceTree = "<group>"; };
+		186AC42D1940004F006EEB8F /* RotationEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RotationEvent.h; sourceTree = "<group>"; };
+		186AC42E1940004F006EEB8F /* RotationEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationEvent.m; sourceTree = "<group>"; };
+		186AC42F1940004F006EEB8F /* GestureEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureEvent.h; sourceTree = "<group>"; };
+		186AC4301940004F006EEB8F /* GestureEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureEvent.m; sourceTree = "<group>"; };
+		186AC4311940004F006EEB8F /* OpenSpatialBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialBluetooth.h; sourceTree = "<group>"; };
+		186AC4321940004F006EEB8F /* OpenSpatialBluetooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialBluetooth.m; sourceTree = "<group>"; };
+		186AC43E1940007A006EEB8F /* OpenSpatial2DEventsTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatial2DEventsTestCase.m; sourceTree = "<group>"; };
+		186AC4401940014D006EEB8F /* OpenSpatialTestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialTestDelegate.h; sourceTree = "<group>"; };
+		186AC4411940014D006EEB8F /* OpenSpatialTestDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialTestDelegate.m; sourceTree = "<group>"; };
+		186AC44B19400AFD006EEB8F /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		186AC44D19400B04006EEB8F /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		186AC44F19400B7E006EEB8F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		186AC477194109A6006EEB8F /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOCMock.a; path = usr/lib/libOCMock.a; sourceTree = "<group>"; };
+		186AC47919411C13006EEB8F /* RotationEventTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RotationEventTestCase.m; sourceTree = "<group>"; };
+		186AC47B1941213D006EEB8F /* GestureEventTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureEventTestCase.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		186AC3FD19400009006EEB8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC45019400B7E006EEB8F /* UIKit.framework in Frameworks */,
+				186AC44E19400B04006EEB8F /* CoreMotion.framework in Frameworks */,
+				186AC44C19400AFD006EEB8F /* CoreBluetooth.framework in Frameworks */,
+				186AC40419400009006EEB8F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		186AC40D19400009006EEB8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC478194109A6006EEB8F /* libOCMock.a in Frameworks */,
+				186AC4181940000A006EEB8F /* libOpenSpatialV6414.a in Frameworks */,
+				186AC41219400009006EEB8F /* XCTest.framework in Frameworks */,
+				186AC4151940000A006EEB8F /* UIKit.framework in Frameworks */,
+				186AC4131940000A006EEB8F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		186AC3F719400009006EEB8F = {
+			isa = PBXGroup;
+			children = (
+				186AC40519400009006EEB8F /* OpenSpatialV6414 */,
+				186AC4191940000A006EEB8F /* OpenSpatialV6414Tests */,
+				186AC40219400009006EEB8F /* Frameworks */,
+				186AC40119400009006EEB8F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		186AC40119400009006EEB8F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				186AC40019400009006EEB8F /* libOpenSpatialV6414.a */,
+				186AC41019400009006EEB8F /* OpenSpatialV6414Tests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		186AC40219400009006EEB8F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				186AC477194109A6006EEB8F /* libOCMock.a */,
+				186AC44F19400B7E006EEB8F /* UIKit.framework */,
+				186AC44D19400B04006EEB8F /* CoreMotion.framework */,
+				186AC44B19400AFD006EEB8F /* CoreBluetooth.framework */,
+				186AC40319400009006EEB8F /* Foundation.framework */,
+				186AC41119400009006EEB8F /* XCTest.framework */,
+				186AC4141940000A006EEB8F /* UIKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		186AC40519400009006EEB8F /* OpenSpatialV6414 */ = {
+			isa = PBXGroup;
+			children = (
+				186AC4291940004F006EEB8F /* ButtonEvent.h */,
+				186AC42A1940004F006EEB8F /* ButtonEvent.m */,
+				186AC42B1940004F006EEB8F /* PointerEvent.h */,
+				186AC42C1940004F006EEB8F /* PointerEvent.m */,
+				186AC42D1940004F006EEB8F /* RotationEvent.h */,
+				186AC42E1940004F006EEB8F /* RotationEvent.m */,
+				186AC42F1940004F006EEB8F /* GestureEvent.h */,
+				186AC4301940004F006EEB8F /* GestureEvent.m */,
+				186AC4311940004F006EEB8F /* OpenSpatialBluetooth.h */,
+				186AC4321940004F006EEB8F /* OpenSpatialBluetooth.m */,
+				183CB4F419414CB40079076A /* OpenSpatialDecoder.h */,
+				183CB4F519414CB40079076A /* OpenSpatialDecoder.m */,
+				186AC40619400009006EEB8F /* Supporting Files */,
+			);
+			path = OpenSpatialV6414;
+			sourceTree = "<group>";
+		};
+		186AC40619400009006EEB8F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				186AC40719400009006EEB8F /* OpenSpatialV6414-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		186AC4191940000A006EEB8F /* OpenSpatialV6414Tests */ = {
+			isa = PBXGroup;
+			children = (
+				186AC43E1940007A006EEB8F /* OpenSpatial2DEventsTestCase.m */,
+				186AC47B1941213D006EEB8F /* GestureEventTestCase.m */,
+				186AC47919411C13006EEB8F /* RotationEventTestCase.m */,
+				186AC4401940014D006EEB8F /* OpenSpatialTestDelegate.h */,
+				186AC4411940014D006EEB8F /* OpenSpatialTestDelegate.m */,
+				186AC41A1940000A006EEB8F /* Supporting Files */,
+			);
+			path = OpenSpatialV6414Tests;
+			sourceTree = "<group>";
+		};
+		186AC41A1940000A006EEB8F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				186AC41B1940000A006EEB8F /* OpenSpatialV6414Tests-Info.plist */,
+				186AC41C1940000A006EEB8F /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		186AC44319400A58006EEB8F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC44419400A86006EEB8F /* ButtonEvent.h in Headers */,
+				186AC44519400A86006EEB8F /* PointerEvent.h in Headers */,
+				183CB4F619414CB40079076A /* OpenSpatialDecoder.h in Headers */,
+				186AC44619400A86006EEB8F /* RotationEvent.h in Headers */,
+				186AC44719400A86006EEB8F /* GestureEvent.h in Headers */,
+				186AC44819400A86006EEB8F /* OpenSpatialBluetooth.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		186AC3FF19400009006EEB8F /* OpenSpatialV6414 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 186AC4231940000A006EEB8F /* Build configuration list for PBXNativeTarget "OpenSpatialV6414" */;
+			buildPhases = (
+				186AC3FC19400009006EEB8F /* Sources */,
+				186AC3FD19400009006EEB8F /* Frameworks */,
+				186AC3FE19400009006EEB8F /* CopyFiles */,
+				186AC44319400A58006EEB8F /* Headers */,
+				186AC45119400F8F006EEB8F /* Build Framework */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OpenSpatialV6414;
+			productName = OpenSpatialV6414;
+			productReference = 186AC40019400009006EEB8F /* libOpenSpatialV6414.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		186AC40F19400009006EEB8F /* OpenSpatialV6414Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 186AC4261940000A006EEB8F /* Build configuration list for PBXNativeTarget "OpenSpatialV6414Tests" */;
+			buildPhases = (
+				186AC40C19400009006EEB8F /* Sources */,
+				186AC40D19400009006EEB8F /* Frameworks */,
+				186AC40E19400009006EEB8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				186AC4171940000A006EEB8F /* PBXTargetDependency */,
+			);
+			name = OpenSpatialV6414Tests;
+			productName = OpenSpatialV6414Tests;
+			productReference = 186AC41019400009006EEB8F /* OpenSpatialV6414Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		186AC3F819400009006EEB8F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = NL;
+			};
+			buildConfigurationList = 186AC3FB19400009006EEB8F /* Build configuration list for PBXProject "OpenSpatialV6414" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 186AC3F719400009006EEB8F;
+			productRefGroup = 186AC40119400009006EEB8F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				186AC3FF19400009006EEB8F /* OpenSpatialV6414 */,
+				186AC40F19400009006EEB8F /* OpenSpatialV6414Tests */,
+				186AC45219401127006EEB8F /* Framework */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		186AC40E19400009006EEB8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC41E1940000A006EEB8F /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		186AC45119400F8F006EEB8F /* Build Framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Build Framework";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"\n\n# Link the \"Current\" version to \"A\"\n/bin/ln -sfh A \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/Current\"\n/bin/ln -sfh Versions/Current/Headers \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers\"\n/bin/ln -sfh \"Versions/Current/${PRODUCT_NAME}\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/${PRODUCT_NAME}\"\n\n# The -a ensures that the headers maintain the source modification date so that we don't constantly\n# cause propagating rebuilds of files that import these headers.\n/bin/cp -a \"${TARGET_BUILD_DIR}/${PUBLIC_HEADERS_FOLDER_PATH}/\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Versions/A/Headers\"";
+		};
+		186AC45819401153006EEB8F /* Multiplatform Build */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Multiplatform Build";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\n\n# If we're already inside this script then die\nif [ -n \"$RW_MULTIPLATFORM_BUILD_IN_PROGRESS\" ]; then\nexit 0\nfi\nexport RW_MULTIPLATFORM_BUILD_IN_PROGRESS=1\n\nRW_FRAMEWORK_NAME=${PROJECT_NAME}\nRW_INPUT_STATIC_LIB=\"lib${PROJECT_NAME}.a\"\nRW_FRAMEWORK_LOCATION=\"${BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework\"\n\nfunction build_static_library {\n    # Will rebuild the static library as specified\n    #     build_static_library sdk\n    xcrun xcodebuild -project \"${PROJECT_FILE_PATH}\" \\\n    -target \"${TARGET_NAME}\" \\\n    -configuration \"${CONFIGURATION}\" \\\n    -sdk \"${1}\" \\\n    ONLY_ACTIVE_ARCH=NO \\\n    BUILD_DIR=\"${BUILD_DIR}\" \\\n    OBJROOT=\"${OBJROOT}\" \\\n    BUILD_ROOT=\"${BUILD_ROOT}\" \\\n    SYMROOT=\"${SYMROOT}\" $ACTION\n}\n\nfunction make_fat_library {\n    # Will smash 2 static libs together\n    #     make_fat_library in1 in2 out\n    xcrun lipo -create \"${1}\" \"${2}\" -output \"${3}\"\n}\n\n# 1 - Extract the platform (iphoneos/iphonesimulator) from the SDK name\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]; then\nRW_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 2 - Extract the version from the SDK\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]; then\nRW_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\n# 3 - Determine the other platform\nif [ \"$RW_SDK_PLATFORM\" == \"iphoneos\" ]; then\nRW_OTHER_PLATFORM=iphonesimulator\nelse\nRW_OTHER_PLATFORM=iphoneos\nfi\n\n# 4 - Find the build directory\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$RW_SDK_PLATFORM$ ]]; then\nRW_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${RW_OTHER_PLATFORM}\"\nelse\necho \"Could not find other platform build directory.\"\nexit 1\nfi\n\n# Build the other platform.\nbuild_static_library \"${RW_OTHER_PLATFORM}${RW_SDK_VERSION}\"\n\n# If we're currently building for iphonesimulator, then need to rebuild\n#   to ensure that we get both i386 and x86_64\nif [ \"$RW_SDK_PLATFORM\" == \"iphonesimulator\" ]; then\nbuild_static_library \"${SDK_NAME}\"\nfi\n\n# Join the 2 static libs into 1 and push into the .framework\nmake_fat_library \"${BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_INPUT_STATIC_LIB}\" \\\n\"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Ensure that the framework is present in both platform's build directories\ncp -a \"${RW_FRAMEWORK_LOCATION}/Versions/A/${RW_FRAMEWORK_NAME}\" \\\n\"${RW_OTHER_BUILT_PRODUCTS_DIR}/${RW_FRAMEWORK_NAME}.framework/Versions/A/${RW_FRAMEWORK_NAME}\"\n\n# Copy the framework to the user's desktop\nditto \"${RW_FRAMEWORK_LOCATION}\" \"${HOME}/Desktop/${RW_FRAMEWORK_NAME}.framework\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		186AC3FC19400009006EEB8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC4391940004F006EEB8F /* RotationEvent.m in Sources */,
+				186AC43B1940004F006EEB8F /* OpenSpatialBluetooth.m in Sources */,
+				186AC4371940004F006EEB8F /* ButtonEvent.m in Sources */,
+				183CB4F719414CB40079076A /* OpenSpatialDecoder.m in Sources */,
+				186AC43A1940004F006EEB8F /* GestureEvent.m in Sources */,
+				186AC4381940004F006EEB8F /* PointerEvent.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		186AC40C19400009006EEB8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				186AC43F1940007A006EEB8F /* OpenSpatial2DEventsTestCase.m in Sources */,
+				186AC4421940014D006EEB8F /* OpenSpatialTestDelegate.m in Sources */,
+				186AC47C1941213D006EEB8F /* GestureEventTestCase.m in Sources */,
+				186AC47A19411C13006EEB8F /* RotationEventTestCase.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		183CB4FB194159B40079076A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 186AC3FF19400009006EEB8F /* OpenSpatialV6414 */;
+			targetProxy = 183CB4FA194159B40079076A /* PBXContainerItemProxy */;
+		};
+		186AC4171940000A006EEB8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 186AC3FF19400009006EEB8F /* OpenSpatialV6414 */;
+			targetProxy = 186AC4161940000A006EEB8F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		186AC41C1940000A006EEB8F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				186AC41D1940000A006EEB8F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		186AC4211940000A006EEB8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		186AC4221940000A006EEB8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		186AC4241940000A006EEB8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				DSTROOT = /tmp/OpenSpatialV6414.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSpatialV6414/OpenSpatialV6414-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = OpenSpatialV6414;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PROJECT_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Debug;
+		};
+		186AC4251940000A006EEB8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				DSTROOT = /tmp/OpenSpatialV6414.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSpatialV6414/OpenSpatialV6414-Prefix.pch";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = OpenSpatialV6414;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/$(PROJECT_NAME)";
+				SKIP_INSTALL = YES;
+				STRIP_STYLE = "non-global";
+			};
+			name = Release;
+		};
+		186AC4271940000A006EEB8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSpatialV6414/OpenSpatialV6414-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/usr/include\"",
+				);
+				INFOPLIST_FILE = "OpenSpatialV6414Tests/OpenSpatialV6414Tests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OpenSpatialV6414",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/usr/lib",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
+					"-force_load",
+					"\"$(SRCROOT)/usr/lib/libOCMock.a\"",
+				);
+				PRODUCT_NAME = OpenSpatialV6414Tests;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		186AC4281940000A006EEB8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OpenSpatialV6414/OpenSpatialV6414-Prefix.pch";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"\"$(SRCROOT)/usr/include\"",
+				);
+				INFOPLIST_FILE = "OpenSpatialV6414Tests/OpenSpatialV6414Tests-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/OpenSpatialV6414",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/usr/lib",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
+					"-force_load",
+					"\"$(SRCROOT)/usr/lib/libOCMock.a\"",
+				);
+				PRODUCT_NAME = OpenSpatialV6414Tests;
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+		186AC45419401127006EEB8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		186AC45519401127006EEB8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		186AC3FB19400009006EEB8F /* Build configuration list for PBXProject "OpenSpatialV6414" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186AC4211940000A006EEB8F /* Debug */,
+				186AC4221940000A006EEB8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		186AC4231940000A006EEB8F /* Build configuration list for PBXNativeTarget "OpenSpatialV6414" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186AC4241940000A006EEB8F /* Debug */,
+				186AC4251940000A006EEB8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		186AC4261940000A006EEB8F /* Build configuration list for PBXNativeTarget "OpenSpatialV6414Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186AC4271940000A006EEB8F /* Debug */,
+				186AC4281940000A006EEB8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		186AC45319401127006EEB8F /* Build configuration list for PBXAggregateTarget "Framework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				186AC45419401127006EEB8F /* Debug */,
+				186AC45519401127006EEB8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 186AC3F819400009006EEB8F /* Project object */;
+}
