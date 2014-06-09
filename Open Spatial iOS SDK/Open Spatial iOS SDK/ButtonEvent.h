@@ -2,8 +2,8 @@
 //  ButtonEvent.h
 //  Open Spatial iOS SDK
 //
-//  Created by Neel Bhoopalam on 5/29/14.
-//  Copyright (c) 2014 Neel Bhoopalam. All rights reserved.
+//  Created by Neel Bhoopalam on 6/9/14.
+//  Copyright (c) 2014 Nod Labs. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
