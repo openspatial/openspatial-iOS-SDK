@@ -2,7 +2,7 @@
 //  Nod_EmulatorTests.m
 //  Nod EmulatorTests
 //
-//  Created by Khwaab Dave on 5/14/14.
+// 
 //  Copyright (c) 2014 Nod Inc. All rights reserved.
 //
 
