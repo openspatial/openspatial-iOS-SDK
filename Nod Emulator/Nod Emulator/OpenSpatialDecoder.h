@@ -10,38 +10,36 @@
  *  array. The function will return an array containing useful
  *  values from the openspatial pointer
  *
- *  The decodeOpenSpatialPointer returns a dictionary containing keys:
+ *  The decode2DPOSPointer method returns a dictionary containing keys:
  *      "x" = x coordinate
  *      "y" = y coordinate
- *      "touch" = touch value
- *                  0 = no touch
- *                  1 = touch left
- *                  2 = touch right
- *                  3 = touch left+right
- *                  4 = hold slider
- *                  5 = touch left+slider
- *                  6 = touch right+slider
- *                  7 = touch all
- *      "slide" = Slider Value
- *                  Value from 0-15
- *      "tactile = Tactile
- *                  0 = no touch
- *                  1 = left tactile
- *                  2 = right tactile
- *                  3 = both tacticle
  *
- *  The decodeRawQuatPointer returns a dictionary containing keys:
- *      "x" = x quaternion value
- *      "y" = y quaternion value
- *      "z" = z quaternion value
- *      "w" = w quaternion value
+ *  The decode3DTransPointer method returns a dictionary containing keys:
+ *      "x" = x translation value
+ *      "y" = y translation value
+ *      "z" = z translation value
+ *      "pitch" = pitch value
+ *      "roll" = roll value
+ *      "yaw" = yaw value
  * 
- *  The decodeGestPointer retruns a dictionary container keys:
- *      "gest" = gesture value
+ *  The decodeGestPointer method retuns a dictionary containing keys:
+ *      "gest" = gesture op code (determines the gesture type)
+ *      "data" = gesture data
  *
+ *      op code values are listed below in the format G_OP_XXXXXX
+ *      gesture values are listed below op codes
+ *
+ *  The decodeButtonPointer method returns dictionary containing keys:
+ *      "touch0" = the value of touch0
+ *      "touch1" = the value of touch1
+ *      "touch2" = the value of touch2
+ *      "tactile0" = the value of tactile0
+ *      "tactile1" = the value of tactile1
+ *
+ *      touch values are defined in BUTTON_UNUSED, BUTTON_UP, BUTTON_DOWN
  *
  *  The create values are used to create a pointer to data for
- *  either OS2D, Quaternions or Gestures. The bytes reffered to by
+ *  either 2D, 3D, Buttons, or Gestures. The bytes reffered to by
  *  the pointer are formatted according to the Open Spatial specification
  */
 
@@ -50,22 +48,38 @@
 #define X @"x"
 #define Y @"y"
 #define Z @"z"
-#define W @"w"
-#define TOUCH @"touch"
-#define SLIDE @"slide"
-#define TACTILE @"tactile"
-#define GEST @"gest"
-#define GUP 0x52
-#define GDOWN 0x51
-#define GLEFT 0x50
-#define GRIGHT 0x4f
+#define ROLL @"roll"
+#define PITCH @"pitch"
+#define YAW @"yaw"
+#define TOUCH_0 @"touch0"
+#define TOUCH_1 @"touch1"
+#define TOUCH_2 @"touch2"
+#define TACTILE_0 @"tactile0"
+#define TACTILE_1 @"tactile1"
+#define GEST_OPCODE @"gest"
+#define GEST_DATA @"data"
+#define G_OP_SCROLL 0x0001
+#define G_OP_DIRECTION 0x0002
+#define GRIGHT 0x01
+#define GLEFT 0x02
+#define GDOWN 0x03
+#define GUP 0x04
+#define GCW 0x05
+#define GCCW 0x06
+#define SLIDE_LEFT 0x01
+#define SLIDE_RIGHT 0x02
+#define BUTTON_UNUSED 0
+#define BUTTON_UP 1
+#define BUTTON_DOWN 2
 
 @interface OpenSpatialDecoder : NSObject
 
-+(NSDictionary*) decodeOpenSpatialPointer: (const uint8_t*) opSpcPtr;
-+(void*) createPointer:(NSDictionary*) OSData;
-+(NSDictionary*) decodeRawQuatPointer: (const uint8_t*) opSpcPtr;
-+(void*) createQuatPointer: (NSDictionary*) OSData;
++(NSDictionary*) decodePos2DPointer: (const uint8_t*) opSpcPtr;
++(void*) createPos2DPointer:(NSDictionary*) OSData;
++(NSDictionary*) decode3DTransPointer: (const uint8_t*) opSpcPtr;
++(void*) create3DTransPointer: (NSDictionary*) OSData;
++(NSDictionary*) decodeButtonPointer: (const uint8_t*) opSpcPtr;
++(void*) createButtonPointer: (NSDictionary*) OSData;
 +(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr;
 +(void*) createGestPointer: (NSDictionary*) OSData;
 
