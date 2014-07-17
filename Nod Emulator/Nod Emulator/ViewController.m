@@ -17,17 +17,7 @@
 
 @implementation ViewController
 
-#define NOPRESS 0
-#define LTOUCHPRESSED 1
-#define RTOUCHPRESSED 2
-#define BOTHTOUCHPRESSED 3
-#define SLIDEHOLDPRESSED 4
-#define SLIDEHOLDLTOUCH 5
-#define SLIDEHOLDRTOUCH 6
-#define ALL3PRESSED 7
-#define LTACTPRESSED 1
-#define RTACTPRESSED 2
-#define BOTHTACTPRESSED 3
+
 
 - (void)viewDidLoad
 {
@@ -58,7 +48,7 @@
           forControlEvents:UIControlEventTouchDown];
     [self.RSlide addTarget:self action:@selector(rightSlidePressed)
           forControlEvents:UIControlEventTouchDown];
-    [self.quatBut addTarget:self action:@selector(enableQuat)
+    [self.quatBut addTarget:self action:@selector(enableTrans3D)
            forControlEvents:UIControlEventTouchDown];
     [self.swipeUp addTarget:self action:@selector(swipedUp)
            forControlEvents:UIControlEventTouchDown];
@@ -114,266 +104,170 @@
     // Dispose of any resources that can be recreated.
 }
 
-uint8_t touchVal = 0;
-uint8_t slideVal = 0;
-uint8_t tactVal = 0;
+
+
+short touch0 = 0;
+short touch1 = 0;
+short touch2 = 0;
+short tact0 = 0;
+short tact1 = 0;
+
+/*                  FOR ALL EMULATOR TOUCH METHODS
+ *                  touch0 -> left touch
+ *                  touch1 -> right touch
+ *                  touch2 -> slider touch
+ *                  tact0 -> left tact
+ *                  tact1 -> right tact
+ */
 
 - (void) leftTouchPressed
 {
-    switch (touchVal) {
-        case NOPRESS:
-            touchVal = LTOUCHPRESSED;
-            [self.LTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case LTOUCHPRESSED:
-            touchVal = NOPRESS;
-            [self.LTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case RTOUCHPRESSED:
-            touchVal = BOTHTOUCHPRESSED;
-            [self.LTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case BOTHTOUCHPRESSED:
-            touchVal = RTOUCHPRESSED;
-            [self.LTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDPRESSED:
-            touchVal = SLIDEHOLDLTOUCH;
-            [self.LTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDLTOUCH:
-            touchVal = SLIDEHOLDPRESSED;
-            [self.LTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDRTOUCH:
-            touchVal = ALL3PRESSED;
-            [self.LTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case ALL3PRESSED:
-            touchVal = SLIDEHOLDRTOUCH;
-            [self.LTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
+    if(touch0 == BUTTON_UNUSED || touch0 == BUTTON_UP)
+    {
+        touch0 = BUTTON_DOWN;
+        [self.LTouch setImage:[UIImage imageNamed:@"RedButton.png"]
+                     forState:UIControlStateNormal];
     }
+    else
+    {
+        touch0 = BUTTON_UP;
+        [self.LTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
+                     forState:UIControlStateNormal];
+    }
+    NSLog(@"%d",touch0);
+    NSDictionary* retDic = @{ TOUCH_0 : @(touch0),
+                              TOUCH_1 : @(0),
+                              TOUCH_2 : @(0),
+                              TACTILE_0 : @(0),
+                              TACTILE_1 : @(0),
+                              };
 
-    NSDictionary* retDic = @{ X : @0,
-                      Y : @0,
-                      TOUCH : @(touchVal),
-                      SLIDE : @(slideVal),
-                      TACTILE : @(tactVal),
-                      };
-
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    char* bytes = [OpenSpatialDecoder createButtonPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:BUTTON_SIZE];
+    [self.NBE sendButton:temp];
 }
+
+
 
 - (void) rightTouchPressed
 {
-    switch (touchVal) {
-        case NOPRESS:
-            touchVal = RTOUCHPRESSED;
-            [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case LTOUCHPRESSED:
-            touchVal = BOTHTOUCHPRESSED;
-            [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case RTOUCHPRESSED:
-            touchVal = NOPRESS;
-            [self.RTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case BOTHTOUCHPRESSED:
-            touchVal = LTOUCHPRESSED;
-            [self.RTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDPRESSED:
-            touchVal = SLIDEHOLDRTOUCH;
-            [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDLTOUCH:
-            touchVal = ALL3PRESSED;
-            [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case SLIDEHOLDRTOUCH:
-            touchVal = SLIDEHOLDPRESSED;
-            [self.RTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case ALL3PRESSED:
-            touchVal = SLIDEHOLDLTOUCH;
-            [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
+    if(touch1 == BUTTON_UNUSED || touch1 == BUTTON_UP)
+    {
+        touch1 = BUTTON_DOWN;
+        [self.RTouch setImage:[UIImage imageNamed:@"RedButton.png"]
+                     forState:UIControlStateNormal];
+    }
+    else
+    {
+        touch1 = BUTTON_UP;
+        [self.RTouch setImage:[UIImage imageNamed:@"BlueButton.png"]
+                     forState:UIControlStateNormal];
     }
 
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
+    NSDictionary* retDic = @{ TOUCH_0 : @(0),
+                              TOUCH_1 : @(touch1),
+                              TOUCH_2 : @(0),
+                              TACTILE_0 : @(0),
+                              TACTILE_1 : @(0),
                               };
 
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    char* bytes = [OpenSpatialDecoder createButtonPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:BUTTON_SIZE];
+    [self.NBE sendButton:temp];
 }
 
 - (void) SlideHoldPressed
 {
-    switch (touchVal) {
-        case NOPRESS:
-            touchVal = SLIDEHOLDPRESSED;
-            break;
-        case LTOUCHPRESSED:
-            touchVal = SLIDEHOLDLTOUCH;
-            break;
-        case RTOUCHPRESSED:
-            touchVal = SLIDEHOLDRTOUCH;
-            break;
-        case BOTHTOUCHPRESSED:
-            touchVal = ALL3PRESSED;
-            break;
-        case SLIDEHOLDPRESSED:
-            touchVal = NOPRESS;
-            break;
-        case SLIDEHOLDLTOUCH:
-            touchVal = LTOUCHPRESSED;
-            break;
-        case SLIDEHOLDRTOUCH:
-            touchVal = RTOUCHPRESSED;
-            break;
-        case ALL3PRESSED:
-            touchVal = BOTHTOUCHPRESSED;
-            break;
+    if(touch2 == BUTTON_UNUSED || touch2 == BUTTON_UP)
+    {
+        touch2 = BUTTON_DOWN;
+    }
+    else
+    {
+        touch2 = BUTTON_UP;
     }
 
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
+    NSDictionary* retDic = @{ TOUCH_0 : @(0),
+                              TOUCH_1 : @(0),
+                              TOUCH_2 : @(touch2),
+                              TACTILE_0 : @(0),
+                              TACTILE_1 : @(0),
                               };
 
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    char* bytes = [OpenSpatialDecoder createButtonPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:BUTTON_SIZE];
+    [self.NBE sendButton:temp];
 }
 
 - (void) leftTactPressed
 {
-    switch (tactVal) {
-        case NOPRESS:
-            tactVal = LTACTPRESSED;
-            [self.LTact setImage:[UIImage imageNamed:@"RedButton.png"]
-                         forState:UIControlStateNormal];
-            break;
-        case LTACTPRESSED:
-            tactVal = NOPRESS;
-            [self.LTact setImage:[UIImage imageNamed:@"BlueButton.png"]
-                        forState:UIControlStateNormal];
-            break;
-        case RTACTPRESSED:
-            tactVal = BOTHTACTPRESSED;
-            [self.LTact setImage:[UIImage imageNamed:@"RedButton.png"]
-                        forState:UIControlStateNormal];
-            break;
-        case BOTHTACTPRESSED:
-            tactVal = RTACTPRESSED;
-            [self.LTact setImage:[UIImage imageNamed:@"BlueButton.png"]
-                        forState:UIControlStateNormal];
-            break;
+    if(tact0 == BUTTON_UNUSED || tact0 == BUTTON_UP)
+    {
+        tact0 = BUTTON_DOWN;
+        [self.LTact setImage:[UIImage imageNamed:@"RedButton.png"]
+                     forState:UIControlStateNormal];
+    }
+    else
+    {
+        [self.LTact setImage:[UIImage imageNamed:@"BlueButton.png"]
+                     forState:UIControlStateNormal];
+        tact0 = BUTTON_UP;
     }
 
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
+    NSDictionary* retDic = @{ TOUCH_0 : @(0),
+                              TOUCH_1 : @(0),
+                              TOUCH_2 : @(0),
+                              TACTILE_0 : @(tact0),
+                              TACTILE_1 : @(0),
                               };
 
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    char* bytes = [OpenSpatialDecoder createButtonPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:BUTTON_SIZE];
+    [self.NBE sendButton:temp];
 }
 
 - (void) rightTactPressed
 {
-    switch (tactVal) {
-        case NOPRESS:
-            tactVal = RTACTPRESSED;
-            [self.RTact setImage:[UIImage imageNamed:@"RedButton.png"]
-                        forState:UIControlStateNormal];
-            break;
-        case LTACTPRESSED:
-            tactVal = BOTHTACTPRESSED;
-            [self.RTact setImage:[UIImage imageNamed:@"RedButton.png"]
-                        forState:UIControlStateNormal];
-            break;
-        case RTACTPRESSED:
-            tactVal = NOPRESS;
-            [self.RTact setImage:[UIImage imageNamed:@"BlueButton.png"]
-                        forState:UIControlStateNormal];
-            break;
-        case BOTHTACTPRESSED:
-            tactVal = LTACTPRESSED;
-            [self.RTact setImage:[UIImage imageNamed:@"RedButton.png"]
-                        forState:UIControlStateNormal];
-            break;
+    if(tact1 == BUTTON_UNUSED || tact1 == BUTTON_UP)
+    {
+        tact1 = BUTTON_DOWN;
+        [self.RTact setImage:[UIImage imageNamed:@"RedButton.png"]
+                     forState:UIControlStateNormal];
+    }
+    else
+    {
+        tact1 = BUTTON_UP;
+        [self.RTact setImage:[UIImage imageNamed:@"BlueButton.png"]
+                     forState:UIControlStateNormal];
     }
 
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
+    NSDictionary* retDic = @{ TOUCH_0 : @(0),
+                              TOUCH_1 : @(0),
+                              TOUCH_2 : @(0),
+                              TACTILE_0 : @(0),
+                              TACTILE_1 : @(tact1),
                               };
 
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    char* bytes = [OpenSpatialDecoder createButtonPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:BUTTON_SIZE];
+    [self.NBE sendButton:temp];
 }
 
 -(void) leftSlidePressed
 {
-    slideVal--;
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
-                              };
-
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    NSDictionary* retDic = @{GEST_OPCODE : @G_OP_SCROLL,
+                            GEST_DATA : @SLIDE_LEFT,
+                             };
+    char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
 }
 -(void) rightSlidePressed
 {
-    slideVal++;
-    NSDictionary* retDic = @{ X : @0,
-                              Y : @0,
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
-                              };
-
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
-    [self.NBE sendOS2D:temp];
+    NSDictionary* retDic = @{GEST_OPCODE : @G_OP_SCROLL,
+                             GEST_DATA : @SLIDE_RIGHT,
+                             };
+    char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
 }
 
 -(void) sendCoordinates:(int)x y:(int)y
@@ -382,20 +276,17 @@ uint8_t tactVal = 0;
     short int y2 = y;
     NSDictionary* retDic = @{ X : @(x2),
                               Y : @(y2),
-                              TOUCH : @(touchVal),
-                              SLIDE : @(slideVal),
-                              TACTILE : @(tactVal),
                               };
 
-    char* bytes = [OpenSpatialDecoder createPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:OS2DSIZE];
+    char* bytes = [OpenSpatialDecoder createPos2DPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:POS2D_SIZE];
     [self.NBE sendOS2D:temp];
 }
 
-bool quatEnabled = false;
--(void) enableQuat
+bool trans3DEnabled = false;
+-(void) enableTrans3D
 {
-    if(!quatEnabled)
+    if(!trans3DEnabled)
     {
         // Create a CMMotionManager
         if(!self.motionManager)
@@ -412,58 +303,67 @@ bool quatEnabled = false;
         [self.motionManager startDeviceMotionUpdatesToQueue:[NSOperationQueue currentQueue]
             withHandler:^(CMDeviceMotion *motion, NSError *error)
             {
-                CMQuaternion quat = motion.attitude.quaternion;
-                NSDictionary* retDic = @{ X : @(-quat.x),
-                                          Y : @(-quat.z),
-                                          Z : @(-quat.y),
-                                          W : @(quat.w),
+                NSDictionary* retDic = @{ X : @(0),
+                                          Y : @(0),
+                                          Z : @(0),
+                                          ROLL : @(motion.attitude.roll),
+                                          PITCH : @(motion.attitude.pitch),
+                                          YAW : @(motion.attitude.yaw),
                                           };
-                char* bytes = [OpenSpatialDecoder createQuatPointer:retDic];
-                NSData* temp = [NSData dataWithBytes:bytes length:QUATSIZE];
-                [self.NBE sendRawQuat:temp];
+                char* bytes = [OpenSpatialDecoder create3DTransPointer:retDic];
+                NSData* temp = [NSData dataWithBytes:bytes length:TRANS3D_SIZE];
+                [self.NBE send3DTrans:temp];
             }
         ];
         self.quatBut.alpha = 1.0;
-        quatEnabled = true;
+        trans3DEnabled = true;
     }
     else
     {
         [self.motionManager stopDeviceMotionUpdates];
         self.quatBut.alpha = .4;
-        quatEnabled = false;
+        trans3DEnabled = false;
     }
 
 }
 
 - (void) swipedUp
 {
-    NSDictionary* retDic = @{GEST: @GUP};
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GUP,
+                             };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:GESTSIZE];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
     [self.NBE sendGesture:temp];
 }
 
 - (void) swipedDown
 {
-    NSDictionary* retDic = @{GEST: @GDOWN};
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GDOWN,
+                             };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:GESTSIZE];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
     [self.NBE sendGesture:temp];
 }
 
 - (void) swipedLeft
 {
-    NSDictionary* retDic = @{GEST: @GLEFT};
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GLEFT,
+                             };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:GESTSIZE];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
     [self.NBE sendGesture:temp];
 }
 
 - (void) swipedRight
 {
-    NSDictionary* retDic = @{GEST: @GRIGHT};
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GRIGHT,
+                             };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
-    NSData* temp = [NSData dataWithBytes:bytes length:GESTSIZE];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
     [self.NBE sendGesture:temp];
 }
 

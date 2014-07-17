@@ -80,13 +80,14 @@
 
 -(void) enableServices
 {
-    CBUUID* osUUID = [CBUUID UUIDWithString:OSUUID];
+    CBUUID* osUUID = [CBUUID UUIDWithString:OS_UUID];
     CBMutableService* osService = [[CBMutableService alloc] initWithType:osUUID
                                                                  primary:YES];
 
-    CBUUID* os2DUUID = [CBUUID UUIDWithString:OS2DUUID];
-    CBUUID* rawQuatUUID = [CBUUID UUIDWithString:QUATUUID];
-    CBUUID* gestUUID = [CBUUID UUIDWithString:GESTUUID];
+    CBUUID* os2DUUID = [CBUUID UUIDWithString:POS2D_UUID];
+    CBUUID* rawQuatUUID = [CBUUID UUIDWithString:TRANS3D_UUID];
+    CBUUID* gestUUID = [CBUUID UUIDWithString:GEST_UUID];
+    CBUUID* buttonUUID = [CBUUID UUIDWithString:BUTTON_UUID];
 
 
 
@@ -96,7 +97,7 @@
                                             CBCharacteristicPropertyNotify
                                          value:nil
                                          permissions:CBAttributePermissionsReadable];
-    self.rawQuatChar = [[CBMutableCharacteristic alloc]
+    self.trans3DChar = [[CBMutableCharacteristic alloc]
                                             initWithType:rawQuatUUID
                                             properties:CBCharacteristicPropertyRead|
                                                 CBCharacteristicPropertyNotify
@@ -109,36 +110,55 @@
                                             value:nil
                                             permissions:CBAttributePermissionsReadable];
 
-    osService.characteristics = @[self.os2dChar,self.rawQuatChar,self.gestChar];
+    self.buttonChar = [[CBMutableCharacteristic alloc]
+                                         initWithType:buttonUUID
+                                         properties:CBCharacteristicPropertyRead|
+                                         CBCharacteristicPropertyNotify
+                                         value:nil
+                                         permissions:CBAttributePermissionsReadable];
+
+    osService.characteristics = @[self.os2dChar,self.trans3DChar,
+                                  self.gestChar,self.buttonChar];
     [self.services addObject:osService];
     [self.periphMan addService:osService];
 
     NSDictionary* retDic = @{ X : @0,
                               Y : @0,
-                              TOUCH : @0,
-                              SLIDE : @0,
-                              TACTILE : @0,
                               };
-
-    NSData* temp = [NSData dataWithBytes:[OpenSpatialDecoder createPointer:retDic]
-                                  length:OS2DSIZE];
+    NSData* temp = [NSData dataWithBytes: [OpenSpatialDecoder createPos2DPointer:retDic]
+                                  length:POS2D_SIZE];
     self.os2dChar.value = temp;
+
     retDic = @{ X : @0,
-                  Y : @0,
-                  Z : @0,
-                  W : @0,
+                Y : @0,
+                Z : @0,
+                ROLL : @0,
+                PITCH : @0,
+                YAW : @0,
                 };
 
-    temp = [NSData dataWithBytes:[OpenSpatialDecoder createQuatPointer:retDic]
-                                  length:QUATSIZE];
-    self.rawQuatChar.value = temp;
+    temp = [NSData dataWithBytes: [OpenSpatialDecoder create3DTransPointer:retDic]
+                                  length:TRANS3D_SIZE];
+    self.trans3DChar.value = temp;
 
-    retDic = @{ GEST : @0 };
 
-    temp = [NSData dataWithBytes:[OpenSpatialDecoder createGestPointer:retDic]
-                          length:GESTSIZE];
+    retDic = @{ GEST_OPCODE : @0,
+                GEST_DATA : @0,
+                };
+    temp = [NSData dataWithBytes: [OpenSpatialDecoder createGestPointer:retDic]
+                          length:GEST_SIZE];
     self.gestChar.value = temp;
 
+
+    retDic = @{TOUCH_0 : @0,
+               TOUCH_1 : @0,
+               TOUCH_2 : @0,
+               TACTILE_0 : @0,
+               TACTILE_1 : @0,
+               };
+    temp = [NSData dataWithBytes:[OpenSpatialDecoder createButtonPointer:retDic]
+                          length:BUTTON_SIZE];
+    self.buttonChar.value = temp;
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
@@ -210,20 +230,20 @@ didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
 
 - (void) sendOS2D: (NSData*) data
 {
-    NSLog(@"%@",[OpenSpatialDecoder decodeOpenSpatialPointer:data.bytes]);
+    NSLog(@"%@",[OpenSpatialDecoder decodePos2DPointer:data.bytes]);
     self.os2dChar.value = data;
     NSData *updatedValue = self.os2dChar.value;
     [self.periphMan updateValue:updatedValue
               forCharacteristic:self.os2dChar onSubscribedCentrals:nil];
 }
 
-- (void) sendRawQuat: (NSData*) data
+- (void) send3DTrans: (NSData*) data
 {
-    NSLog(@"%@",[OpenSpatialDecoder decodeRawQuatPointer:data.bytes]);
-    self.rawQuatChar.value = data;
-    NSData *updatedValue = self.rawQuatChar.value;
+    NSLog(@"%@",[OpenSpatialDecoder decode3DTransPointer:data.bytes]);
+    self.trans3DChar.value = data;
+    NSData *updatedValue = self.trans3DChar.value;
     [self.periphMan updateValue:updatedValue
-              forCharacteristic:self.rawQuatChar onSubscribedCentrals:nil];
+              forCharacteristic:self.trans3DChar onSubscribedCentrals:nil];
 }
 
 - (void) sendGesture: (NSData*) data
@@ -233,6 +253,15 @@ didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
     NSData *updatedValue = self.gestChar.value;
     [self.periphMan updateValue:updatedValue
               forCharacteristic:self.gestChar onSubscribedCentrals:nil];
+}
+
+- (void) sendButton: (NSData*) data
+{
+    NSLog(@"%@",[OpenSpatialDecoder decodeButtonPointer:data.bytes]);
+    self.buttonChar.value = data;
+    NSData *updatedValue = self.buttonChar.value;
+    [self.periphMan updateValue:updatedValue
+              forCharacteristic:self.buttonChar onSubscribedCentrals:nil];
 }
 
 @end
