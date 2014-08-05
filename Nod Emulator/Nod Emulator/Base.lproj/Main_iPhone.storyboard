@@ -289,6 +289,20 @@
                                     <segue destination="vXZ-lx-hvc" kind="modal" id="1Gp-do-k4Q"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NKr-yH-aOp">
+                                <rect key="frame" x="0.0" y="87" width="112" height="110"/>
+                                <state key="normal" title="Twist Left" backgroundImage="twistLeft.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBy-Je-llh">
+                                <rect key="frame" x="208" y="87" width="112" height="110"/>
+                                <state key="normal" title="Twist Right" backgroundImage="twistRight.png">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -297,6 +311,8 @@
                         <outlet property="swipeLeft" destination="8qx-sN-6Sf" id="uot-jB-Nma"/>
                         <outlet property="swipeRight" destination="F4Q-Tp-ttF" id="mBn-tT-aBb"/>
                         <outlet property="swipeUp" destination="9RN-Oe-Amy" id="GD4-6r-4Tv"/>
+                        <outlet property="twistLeft" destination="NKr-yH-aOp" id="c97-UX-wm6"/>
+                        <outlet property="twistRight" destination="dBy-Je-llh" id="TN8-5C-wSa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MTw-hb-b6n" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -312,6 +328,8 @@
         <image name="BlueButton.png" width="40" height="40"/>
         <image name="Ring.png" width="550" height="700"/>
         <image name="RingTop.png" width="343" height="182"/>
+        <image name="twistLeft.png" width="400" height="400"/>
+        <image name="twistRight.png" width="400" height="400"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

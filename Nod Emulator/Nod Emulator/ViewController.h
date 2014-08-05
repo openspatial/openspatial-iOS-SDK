@@ -26,6 +26,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *swipeDown;
 @property (weak, nonatomic) IBOutlet UIButton *swipeLeft;
 @property (weak, nonatomic) IBOutlet SliderView *sliderView;
+@property (weak, nonatomic) IBOutlet UIButton *twistLeft;
+@property (weak, nonatomic) IBOutlet UIButton *twistRight;
 @property CMMotionManager* motionManager;
 
 -(void) leftSlidePressed;

@@ -22,7 +22,6 @@
 		183CB6A2194655D80079076A /* Example_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6A1194655D80079076A /* Example_AppTests.m */; };
 		183CB6AD194656890079076A /* RingScanTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AC194656890079076A /* RingScanTableViewController.m */; };
 		183CB6B0194657040079076A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AF194657040079076A /* MainViewController.m */; };
-		183CB6B2194657600079076A /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB6B1194657600079076A /* OpenSpatial.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,7 +56,6 @@
 		183CB6AC194656890079076A /* RingScanTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingScanTableViewController.m; sourceTree = "<group>"; };
 		183CB6AE194657040079076A /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		183CB6AF194657040079076A /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		183CB6B1194657600079076A /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenSpatial.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,7 +64,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */,
-				183CB6B2194657600079076A /* OpenSpatial.framework in Frameworks */,
 				183CB67B194655D80079076A /* UIKit.framework in Frameworks */,
 				183CB677194655D80079076A /* Foundation.framework in Frameworks */,
 			);
@@ -107,7 +104,6 @@
 		183CB675194655D80079076A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				183CB6B1194657600079076A /* OpenSpatial.framework */,
 				183CB676194655D80079076A /* Foundation.framework */,
 				183CB678194655D80079076A /* CoreGraphics.framework */,
 				183CB67A194655D80079076A /* UIKit.framework */,
@@ -389,10 +385,13 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/khwaab/repos/openspatial-iOS-SDK/release",
+					"/Users/khwaab/repos/openspatial/ios-sdk/release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -406,10 +405,13 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
+					"/Users/khwaab/repos/openspatial-iOS-SDK/release",
+					"/Users/khwaab/repos/openspatial/ios-sdk/release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -474,6 +476,7 @@
 				183CB6A7194655D80079076A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		183CB6A8194655D80079076A /* Build configuration list for PBXNativeTarget "Example AppTests" */ = {
 			isa = XCConfigurationList;
@@ -482,6 +485,7 @@
 				183CB6AA194655D80079076A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

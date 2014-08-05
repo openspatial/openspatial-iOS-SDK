@@ -26,9 +26,10 @@
 		B026D84B193E7A9A00439B8B /* ArrowL.png in Resources */ = {isa = PBXBuildFile; fileRef = B026D847193E7A9A00439B8B /* ArrowL.png */; };
 		B026D84C193E7A9A00439B8B /* ArrowR.png in Resources */ = {isa = PBXBuildFile; fileRef = B026D848193E7A9A00439B8B /* ArrowR.png */; };
 		B026D84D193E7A9A00439B8B /* ArrowU.png in Resources */ = {isa = PBXBuildFile; fileRef = B026D849193E7A9A00439B8B /* ArrowU.png */; };
+		B0568EFF19809F54004270B8 /* twistLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = B0568EFD19809F54004270B8 /* twistLeft.png */; };
+		B0568F0019809F54004270B8 /* twistRight.png in Resources */ = {isa = PBXBuildFile; fileRef = B0568EFE19809F54004270B8 /* twistRight.png */; };
 		B05C795019243FE800B8FBB3 /* NodBluetoothEmulator.m in Sources */ = {isa = PBXBuildFile; fileRef = B05C794F19243FE800B8FBB3 /* NodBluetoothEmulator.m */; };
 		B05C79521924400E00B8FBB3 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B05C79511924400E00B8FBB3 /* CoreBluetooth.framework */; };
-		B05C79551925457600B8FBB3 /* OpenSpatialDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B05C79541925457600B8FBB3 /* OpenSpatialDecoder.m */; };
 		B06536C219381A97006469C1 /* RingTop.png in Resources */ = {isa = PBXBuildFile; fileRef = B06536C119381A97006469C1 /* RingTop.png */; };
 		B06536C619381D63006469C1 /* BlueButton.png in Resources */ = {isa = PBXBuildFile; fileRef = B06536C519381D63006469C1 /* BlueButton.png */; };
 		B06536CD193821D6006469C1 /* SliderView.m in Sources */ = {isa = PBXBuildFile; fileRef = B06536CC193821D6006469C1 /* SliderView.m */; };
@@ -45,6 +46,7 @@
 		B06536ED193938C6006469C1 /* spotlight.png in Resources */ = {isa = PBXBuildFile; fileRef = B06536E3193938C6006469C1 /* spotlight.png */; };
 		B06536EE193938C6006469C1 /* spotlight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = B06536E4193938C6006469C1 /* spotlight@2x.png */; };
 		B09ED37219256547000EB6B0 /* TouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = B09ED37119256547000EB6B0 /* TouchView.m */; };
+		B0C4A85D1978707A008EC400 /* OpenSpatialDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = B0C4A85C1978707A008EC400 /* OpenSpatialDecoder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,11 +84,11 @@
 		B026D847193E7A9A00439B8B /* ArrowL.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ArrowL.png; sourceTree = "<group>"; };
 		B026D848193E7A9A00439B8B /* ArrowR.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ArrowR.png; sourceTree = "<group>"; };
 		B026D849193E7A9A00439B8B /* ArrowU.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ArrowU.png; sourceTree = "<group>"; };
+		B0568EFD19809F54004270B8 /* twistLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twistLeft.png; sourceTree = "<group>"; };
+		B0568EFE19809F54004270B8 /* twistRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = twistRight.png; sourceTree = "<group>"; };
 		B05C794E19243FE800B8FBB3 /* NodBluetoothEmulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodBluetoothEmulator.h; sourceTree = "<group>"; };
 		B05C794F19243FE800B8FBB3 /* NodBluetoothEmulator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NodBluetoothEmulator.m; sourceTree = "<group>"; };
 		B05C79511924400E00B8FBB3 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
-		B05C79531925457600B8FBB3 /* OpenSpatialDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialDecoder.h; sourceTree = "<group>"; };
-		B05C79541925457600B8FBB3 /* OpenSpatialDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialDecoder.m; sourceTree = "<group>"; };
 		B06536C119381A97006469C1 /* RingTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RingTop.png; sourceTree = "<group>"; };
 		B06536C519381D63006469C1 /* BlueButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BlueButton.png; sourceTree = "<group>"; };
 		B06536CB193821D6006469C1 /* SliderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SliderView.h; sourceTree = "<group>"; };
@@ -105,6 +107,8 @@
 		B06536E4193938C6006469C1 /* spotlight@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spotlight@2x.png"; sourceTree = "<group>"; };
 		B09ED37019256547000EB6B0 /* TouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TouchView.h; sourceTree = "<group>"; };
 		B09ED37119256547000EB6B0 /* TouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TouchView.m; sourceTree = "<group>"; };
+		B0C4A85B1978707A008EC400 /* OpenSpatialDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialDecoder.h; sourceTree = "<group>"; };
+		B0C4A85C1978707A008EC400 /* OpenSpatialDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialDecoder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,13 +173,13 @@
 				B026D841193E740700439B8B /* iPad */,
 				B013AC4D192431A800FF104A /* AppDelegate.h */,
 				B013AC4E192431A800FF104A /* AppDelegate.m */,
-				B05C79531925457600B8FBB3 /* OpenSpatialDecoder.h */,
-				B05C79541925457600B8FBB3 /* OpenSpatialDecoder.m */,
 				B013AC50192431A800FF104A /* Main_iPhone.storyboard */,
 				B06536CB193821D6006469C1 /* SliderView.h */,
 				B06536CC193821D6006469C1 /* SliderView.m */,
 				B013AC56192431A800FF104A /* ViewController.h */,
 				B013AC57192431A800FF104A /* ViewController.m */,
+				B0C4A85C1978707A008EC400 /* OpenSpatialDecoder.m */,
+				B0C4A85B1978707A008EC400 /* OpenSpatialDecoder.h */,
 				B09ED37019256547000EB6B0 /* TouchView.h */,
 				B09ED37119256547000EB6B0 /* TouchView.m */,
 				B013AC59192431A800FF104A /* Images.xcassets */,
@@ -191,6 +195,8 @@
 				B026D847193E7A9A00439B8B /* ArrowL.png */,
 				B026D848193E7A9A00439B8B /* ArrowR.png */,
 				B026D849193E7A9A00439B8B /* ArrowU.png */,
+				B0568EFD19809F54004270B8 /* twistLeft.png */,
+				B0568EFE19809F54004270B8 /* twistRight.png */,
 				B06536DA193938C6006469C1 /* icons */,
 			);
 			path = "Nod Emulator";
@@ -296,6 +302,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Nod Inc";
 				TargetAttributes = {
+					B013AC3A192431A800FF104A = {
+						DevelopmentTeam = BM62RN4H49;
+					};
 					B013AC5E192431A800FF104A = {
 						TestTargetID = B013AC3A192431A800FF104A;
 					};
@@ -328,6 +337,7 @@
 				B06536EC193938C6006469C1 /* splash_640x960.png in Resources */,
 				B06536ED193938C6006469C1 /* spotlight.png in Resources */,
 				B06536C619381D63006469C1 /* BlueButton.png in Resources */,
+				B0568EFF19809F54004270B8 /* twistLeft.png in Resources */,
 				B026D84A193E7A9A00439B8B /* ArrowD.png in Resources */,
 				B026D84B193E7A9A00439B8B /* ArrowL.png in Resources */,
 				B013AC5A192431A800FF104A /* Images.xcassets in Resources */,
@@ -342,6 +352,7 @@
 				B013AC52192431A800FF104A /* Main_iPhone.storyboard in Resources */,
 				B06536EA193938C6006469C1 /* settings@2x.png in Resources */,
 				B06536E7193938C6006469C1 /* icon_iPhone.png in Resources */,
+				B0568F0019809F54004270B8 /* twistRight.png in Resources */,
 				B06536EB193938C6006469C1 /* splash_640x1136.png in Resources */,
 				B026D84C193E7A9A00439B8B /* ArrowR.png in Resources */,
 				B06536E5193938C6006469C1 /* icon_iPad.png in Resources */,
@@ -370,7 +381,7 @@
 				B05C795019243FE800B8FBB3 /* NodBluetoothEmulator.m in Sources */,
 				B06536CD193821D6006469C1 /* SliderView.m in Sources */,
 				B013AC4F192431A800FF104A /* AppDelegate.m in Sources */,
-				B05C79551925457600B8FBB3 /* OpenSpatialDecoder.m in Sources */,
+				B0C4A85D1978707A008EC400 /* OpenSpatialDecoder.m in Sources */,
 				B013AC4B192431A800FF104A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -500,6 +511,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Nod Emulator/Nod Emulator-Prefix.pch";
 				INFOPLIST_FILE = "Nod Emulator/Nod Emulator-Info.plist";
@@ -515,6 +527,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-2";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Nod Emulator/Nod Emulator-Prefix.pch";
 				INFOPLIST_FILE = "Nod Emulator/Nod Emulator-Info.plist";

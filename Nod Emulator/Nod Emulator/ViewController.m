@@ -58,6 +58,10 @@
              forControlEvents:UIControlEventTouchDown];
     [self.swipeRight addTarget:self action:@selector(swipedRight)
               forControlEvents:UIControlEventTouchDown];
+    [self.twistRight addTarget:self action:@selector(twistedRight)
+              forControlEvents:UIControlEventTouchDown];
+    [self.twistLeft addTarget:self action:@selector(twistedLeft)
+              forControlEvents:UIControlEventTouchDown];
 }
 
 +(UIColor*)colorWithHexString:(NSString*)hex
@@ -260,6 +264,7 @@ short tact1 = 0;
                              };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
     NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
+    [self.NBE sendGesture:temp];
 }
 -(void) rightSlidePressed
 {
@@ -268,6 +273,7 @@ short tact1 = 0;
                              };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
     NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
+    [self.NBE sendGesture:temp];
 }
 
 -(void) sendCoordinates:(int)x y:(int)y
@@ -361,6 +367,26 @@ bool trans3DEnabled = false;
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GRIGHT,
+                             };
+    char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
+    [self.NBE sendGesture:temp];
+}
+
+- (void) twistedLeft
+{
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GCW,
+                             };
+    char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
+    NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
+    [self.NBE sendGesture:temp];
+}
+
+- (void) twistedRight
+{
+    NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
+                             GEST_DATA : @GCCW,
                              };
     char* bytes = [OpenSpatialDecoder createGestPointer:retDic];
     NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];

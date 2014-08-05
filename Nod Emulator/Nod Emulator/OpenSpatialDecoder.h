@@ -69,8 +69,8 @@
 #define SLIDE_LEFT 0x01
 #define SLIDE_RIGHT 0x02
 #define BUTTON_UNUSED 0
-#define BUTTON_UP 1
-#define BUTTON_DOWN 2
+#define BUTTON_UP 2
+#define BUTTON_DOWN 1
 
 @interface OpenSpatialDecoder : NSObject
 

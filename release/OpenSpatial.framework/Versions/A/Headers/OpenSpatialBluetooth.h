@@ -2,7 +2,6 @@
 //  OpenSpatialBluetooth.h
 //  Open Spatial iOS SDK
 //
-//  Created by Neel Bhoopalam on 6/6/14.
 //  Copyright (c) 2014 Nod Labs. All rights reserved.
 //
 
@@ -15,30 +14,21 @@
 #import "RotationEvent.h"
 #import "GestureEvent.h"
 
-#define OSUUID @"00000002-0000-1000-8000-A0E5E9000000"
-#define OS2DUUID @"00000200-0000-1000-8000-A0E5E9000000"
-#define QUATUUID @"00000205-0000-1000-8000-A0E5E9000000"
-#define GESTUUID @"00000204-0000-1000-8000-A0E5E9000000"
-
-#define NOPRESS 0
-#define LTOUCHPRESSED 1
-#define RTOUCHPRESSED 2
-#define BOTHTOUCHPRESSED 3
-
-#define SLIDEHOLDPRESSED 4
-#define SLIDEHOLDLTOUCH 5
-#define SLIDEHOLDRTOUCH 6
-
-#define ALL3PRESSED 7
-
-#define LTACTPRESSED 1
-#define RTACTPRESSED 2
-#define BOTHTACTPRESSED 3
+#define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
+#define POS2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
+#define TRANS3D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
+#define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
+#define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
 
 #define BUTTON @"button"
 #define POINTER @"pointer"
 #define GESTURE @"gesture"
 #define ROTATION @"rotation"
+
+#define POS2D_SIZE 4
+#define TRANS3D_SIZE 12
+#define GEST_SIZE 5
+#define BUTTON_SIZE 2
 
 @protocol OpenSpatialBluetoothDelegate <NSObject>
 
@@ -48,7 +38,7 @@
 -(GestureEvent *)gestureEventFired: (GestureEvent *) gestureEvent;
 
 - (void) didConnectToNod: (CBPeripheral*) peripheral;
-- (void) didFindNewDevice: (CBPeripheral*) peripheral;
+- (void) didFindNewDevice: (NSArray*) peripherals;
 @end
 
 @interface OpenSpatialBluetooth: NSObject

@@ -17,6 +17,10 @@ typedef enum GestureEventType {
     SWIPE_LEFT,
     SWIPE_RIGHT,
     SWIPE_UP,
+    CW,
+    CCW,
+    SLIDER_LEFT,
+    SLIDER_RIGHT,
 } GestureEventType;
 
 @interface GestureEvent : NSObject 

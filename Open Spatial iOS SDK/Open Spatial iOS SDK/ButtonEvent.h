@@ -13,18 +13,16 @@
  * The different button event types a button event can hold
  */
 typedef enum ButtonEventType {
+    TOUCH0_DOWN,
+    TOUCH0_UP,
     TOUCH1_DOWN,
     TOUCH1_UP,
     TOUCH2_DOWN,
     TOUCH2_UP,
     TACTILE1_DOWN,
     TACTILE1_UP,
-    TACTILE2_DOWN,
-    TACTILE2_UP,
-    SCROLL_UP,
-    SCROLL_DOWN,
-    SCROLL_TOUCH_DOWN,
-    SCROLL_TOUCH_UP
+    TACTILE0_DOWN,
+    TACTILE0_UP,
 } ButtonEventType;
 
 

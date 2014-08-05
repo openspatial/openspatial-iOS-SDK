@@ -24,7 +24,6 @@
 @property CBMutableCharacteristic *testCharacteristic;
 @property OpenSpatialBluetooth *testBluetooth;
 @property OpenSpatialTestDelegate *testDelegate;
-@property id bluetoothMock;
 
 @end
 
@@ -33,16 +32,13 @@
 - (void)setUp
 {
     [super setUp];
-    CBUUID *characteristicGestureUUID = [CBUUID UUIDWithString:GESTUUID];
+    CBUUID *characteristicGestureUUID = [CBUUID UUIDWithString:GEST_UUID];
     self.testCharacteristic = [[CBMutableCharacteristic alloc] initWithType:characteristicGestureUUID properties:CBCharacteristicPropertyRead|CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsReadable|CBAttributePermissionsWriteable];
     
     self.testBluetooth = [[OpenSpatialBluetooth alloc] init];
     self.testDelegate =  [[OpenSpatialTestDelegate alloc] init];
     self.testBluetooth.delegate  = self.testDelegate;
-    
-    self.bluetoothMock = [OCMockObject partialMockForObject:self.testBluetooth];
-    
-    [[[self.bluetoothMock stub] andReturnValue:OCMOCK_VALUE((BOOL){TRUE})] isSubscribedToEvent:[OCMArg any] forPeripheral:[OCMArg any]];
+
 }
 
 - (void)tearDown
@@ -54,45 +50,67 @@
 -(void)testGestureUp
 {
     NSDictionary* gestureDic =
-    @{ GEST : @GUP};
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GUP};
     const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
-    NSData *data = [NSData dataWithBytes:pointer1 length:GESTSIZE];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
     self.testCharacteristic.value = data;
-    NSArray *gestureEvents = [self.bluetoothMock testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
     XCTAssertEqual([gestureEvents[0] getGestureEventType], SWIPE_UP, @"The Gesture Up didn't match.");
 }
 
 -(void)testGestureDown
 {
     NSDictionary* gestureDic =
-    @{ GEST : @GDOWN};
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GDOWN};
     const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
-    NSData *data = [NSData dataWithBytes:pointer1 length:GESTSIZE];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
     self.testCharacteristic.value = data;
-    NSArray *gestureEvents = [self.bluetoothMock testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
     XCTAssertEqual([gestureEvents[0] getGestureEventType], SWIPE_DOWN, @"The Gesture Down didn't match.");
 }
 
 -(void)testGestureLeft
 {
     NSDictionary* gestureDic =
-    @{ GEST : @GLEFT};
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GLEFT};
     const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
-    NSData *data = [NSData dataWithBytes:pointer1 length:GESTSIZE];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
     self.testCharacteristic.value = data;
-    NSArray *gestureEvents = [self.bluetoothMock testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
     XCTAssertEqual([gestureEvents[0] getGestureEventType], SWIPE_LEFT, @"The Gesture Left didn't match.");
 }
 
 -(void)testGestureRight
 {
     NSDictionary* gestureDic =
-    @{ GEST : @GRIGHT};
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GRIGHT};
     const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
-    NSData *data = [NSData dataWithBytes:pointer1 length:GESTSIZE];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
     self.testCharacteristic.value = data;
-    NSArray *gestureEvents = [self.bluetoothMock testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
     XCTAssertEqual([gestureEvents[0] getGestureEventType], SWIPE_RIGHT, @"The Gesture Right didn't match.");
+}
+
+-(void)testTwistCW
+{
+    NSDictionary* gestureDic =
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GCW};
+    const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
+    self.testCharacteristic.value = data;
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    XCTAssertEqual([gestureEvents[0] getGestureEventType], CW, @"The Gesture Up didn't match.");
+}
+
+-(void)testTiwstCCW
+{
+    NSDictionary* gestureDic =
+    @{ GEST_OPCODE : @G_OP_DIRECTION, GEST_DATA : @GCCW};
+    const char* pointer1  = [OpenSpatialDecoder createGestPointer:gestureDic];
+    NSData *data = [NSData dataWithBytes:pointer1 length:GEST_SIZE];
+    self.testCharacteristic.value = data;
+    NSArray *gestureEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+    XCTAssertEqual([gestureEvents[0] getGestureEventType], CCW, @"The Gesture Up didn't match.");
 }
 
 @end
