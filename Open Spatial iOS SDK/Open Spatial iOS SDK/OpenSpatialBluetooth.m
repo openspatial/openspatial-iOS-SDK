@@ -52,7 +52,7 @@
 {
     NSLog(@"Scanning");
     [self.foundPeripherals removeAllObjects];
-    [self.centralManager scanForPeripheralsWithServices:nil options:nil];
+    [self.centralManager retrieveConnectedPeripherals];
 }
 
 /*
@@ -78,21 +78,14 @@
  * Helper method for peripheral scanning, each time a peripheral is found add it to the
  * peripheral array
  */
-- (void)centralManager:(CBCentralManager *)central
- didDiscoverPeripheral:(CBPeripheral *)peripheral
-     advertisementData: (NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
+-(void) centralManager:(CBCentralManager *)central didRetrieveConnectedPeripherals:(NSArray *)peripherals
 {
-    if(![self.foundPeripherals containsObject:peripheral])
+    self.foundPeripherals = peripherals;
+    if([self.delegate respondsToSelector:@selector(didFindNewDevice:)])
     {
-        [self.foundPeripherals addObject:peripheral];
-        NSLog(@"Found Peripheral: %@",peripheral.name);
-        NSLog(@"%@", self.delegate);
-        if([self.delegate respondsToSelector:@selector(didFindNewDevice:)])
-        {
-            NSLog(@"Delegate method called/");
+        NSLog(@"Delegate method called/");
 
-            [self.delegate didFindNewDevice:peripheral];
-        }
+        [self.delegate didFindNewDevice:peripherals];
     }
 }
 
@@ -142,7 +135,7 @@
     for (CBService *service in peripheral.services)
     {
         NSLog(@"Discovered service %@", service);
-        if([[service.UUID UUIDString] isEqualToString:OSUUID])
+        if([[service.UUID UUIDString] isEqualToString:OS_UUID])
         {
             [self getCharacteristics:service peripheral:peripheral];
         }
@@ -168,15 +161,19 @@ service error:(NSError *)error
     {
         NSLog(@"%@",characteristic.UUID.UUIDString);
         
-        if([characteristic.UUID.UUIDString isEqualToString:OS2DUUID])
+        if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
-        if([characteristic.UUID.UUIDString isEqualToString:QUATUUID])
+        if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
-        if([characteristic.UUID.UUIDString isEqualToString:GESTUUID])
+        if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
+        {
+            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+        }
+        if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
@@ -298,21 +295,27 @@ service error:(NSError *)error
                      (CBCharacteristic *)characteristic error:(NSError *)error
 {
     // Checks if the characteristic is the open spatial 2d characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:OS2DUUID])
+    if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
     {
-        [self openSpatial2DFunction:characteristic peripheral:peripheral];
+        [self pos2DFunction:characteristic peripheral:peripheral];
     }
     
     // Checks if the characteristic is the quaternion characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:QUATUUID])
+    if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
     {
-        [self rotationFunction:characteristic peripheral:peripheral];
+        [self trans3DFunction:characteristic peripheral:peripheral];
     }
     
     // Checks if the characteristic is the gesture characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:GESTUUID])
+    if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
     {
         [self gestureFunction:characteristic peripheral:peripheral];
+    }
+
+    // Checks if the characteristic is the button characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
+    {
+        [self buttonFunction:characteristic peripheral:peripheral];
     }
 }
 
@@ -321,989 +324,79 @@ service error:(NSError *)error
  */
 -(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral
 {
+    NSArray* array;
     // Checks if the characteristic is the open spatial 2d characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:OS2DUUID])
+    if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
     {
-        return [self openSpatial2DFunction:characteristic peripheral:peripheral];
+        NSLog(@"Pos2D");
+        array = [self pos2DFunction:characteristic peripheral:peripheral];
     }
-    
-    // Checks if the characteristic is the quaternion characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:QUATUUID])
-    {
-        return [self rotationFunction:characteristic peripheral:peripheral];
-    }
-    
-    // Checks if the characteristic is the gesture characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:GESTUUID])
-    {
-        return [self gestureFunction:characteristic peripheral:peripheral];
-    }
-    return nil;
-}
 
-uint8_t lastSlideVal = 0;
-uint8_t lastTouchVal = 0;
-uint8_t lastTactileVal = 0;
-short int lastXVal = 0;
-short int lastYVal = 0;
+    // Checks if the characteristic is the quaternion characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
+    {
+        NSLog(@"trans3d");
+        array = [self trans3DFunction:characteristic peripheral:peripheral];
+    }
+
+    // Checks if the characteristic is the gesture characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
+    {
+        NSLog(@"gesture");
+        array = [self gestureFunction:characteristic peripheral:peripheral];
+    }
+
+    // Checks if the characteristic is the button characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
+    {
+        NSLog(@"Button");
+        array = [self buttonFunction:characteristic peripheral:peripheral];
+    }
+    return array;
+}
 
 /*
  * Method that handles the Open Spatial 2D events
  */
--(NSArray *)openSpatial2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
+-(NSArray *)pos2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
 {
     const uint8_t* bytePtr = [characteristic.value bytes];
-    NSDictionary* OSData = [OpenSpatialDecoder decodeOpenSpatialPointer:bytePtr];
+    NSDictionary* OSData = [OpenSpatialDecoder decodePos2DPointer:bytePtr];
     
     short int x = [[OSData objectForKey:X] shortValue];
     short int y = [[OSData objectForKey:Y] shortValue];
-    uint8_t currentTouchVal = [[OSData objectForKey:TOUCH] charValue];
-    uint8_t currentSlideVal = [[OSData objectForKey:SLIDE] charValue];
-    uint8_t currentTactileVal = [[OSData objectForKey:TACTILE] charValue];
     
     NSMutableArray *openSpatial2DEvents = [[NSMutableArray alloc] init];
-    
-    // Button Events
-    if( [self isSubscribedToEvent:BUTTON forPeripheral:[peripheral name]]  )
-    {
-        // Touch Values within Button Events
-        
-        if(currentTouchVal == NOPRESS)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    // Nothing happens in this case.
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_UP];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                }
-            }
-        }
-        else if(currentTouchVal == LTOUCHPRESSED)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
 
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    // Nothing in this case
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:TOUCH1_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                }
-            }
+    PointerEvent *pEvent = [[PointerEvent alloc] init];
+    [pEvent setPointerEventCoordinates:x andY:y];
+    pEvent.peripheral = peripheral;
+    [openSpatial2DEvents addObject:pEvent];
 
-        }
-        else if(currentTouchVal == RTOUCHPRESSED)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:TOUCH2_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                }
-            }
-        }
-        else if(currentTouchVal == BOTHTOUCHPRESSED)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    // Nothing happens in this case.
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:TOUCH2_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-            }
-        }
-        else if(currentTouchVal == SLIDEHOLDPRESSED)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_UP];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-            }
-        }
-        else if(currentTouchVal == SLIDEHOLDLTOUCH)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                    // Nothing happens in this case
-                    break;
-                    
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-            }
-        }
-        else if(currentTouchVal == SLIDEHOLDRTOUCH)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-            }
-        }
-        else if(currentTouchVal == ALL3PRESSED)
-        {
-            switch (lastTouchVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent3 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [bEvent3 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent3.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    [openSpatial2DEvents addObject:bEvent3];
-                    break;
-                }
-                case BOTHTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case LTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case RTOUCHPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:SCROLL_TOUCH_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TOUCH2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case SLIDEHOLDRTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case SLIDEHOLDLTOUCH:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TOUCH2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case ALL3PRESSED:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-            }
-    }
-    
-        // Tactile Values within Button Events
-        if(currentTactileVal == NOPRESS)
-        {
-            switch (lastTactileVal)
-            {
-                case NOPRESS:
-                    // Nothing happens in this case
-                    break;
-                case BOTHTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TACTILE2_UP];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case LTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case RTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-            }
-        }
-        else if(currentTactileVal == LTACTPRESSED)
-        {
-            switch (lastTactileVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case BOTHTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case LTACTPRESSED:
-                    // Nothing happens in this case
-                    break;    
-                case RTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE2_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TACTILE1_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-            }
-        }
-        else if(currentTactileVal == RTACTPRESSED)
-        {
-            switch (lastTactileVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case BOTHTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case LTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_UP];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TACTILE2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case RTACTPRESSED:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-            }
-        }
-        else if(currentTactileVal == BOTHTACTPRESSED)
-        {
-            switch (lastTactileVal)
-            {
-                case NOPRESS:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    ButtonEvent *bEvent2 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [bEvent2 setButtonEventType:TACTILE2_DOWN];
-                    bEvent2.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    [openSpatial2DEvents addObject:bEvent2];
-                    break;
-                }
-                case BOTHTACTPRESSED:
-                {
-                    // Nothing happens in this case
-                    break;
-                }
-                case LTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE2_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-                case RTACTPRESSED:
-                {
-                    ButtonEvent *bEvent1 = [[ButtonEvent alloc]init];
-                    [bEvent1 setButtonEventType:TACTILE1_DOWN];
-                    bEvent1.peripheral = peripheral;
-                    [openSpatial2DEvents addObject:bEvent1];
-                    break;
-                }
-            }
-        }
-        
-        // Slide Values within Button Events
-        if(currentSlideVal == 0 && lastSlideVal == 15)
-        {
-            ButtonEvent *bEvent1 = [[ButtonEvent alloc] init];
-            [bEvent1 setButtonEventType:SCROLL_UP];
-            bEvent1.peripheral = peripheral;
-            [openSpatial2DEvents addObject:bEvent1];
-        }
-        else if (currentSlideVal == 15 && lastSlideVal == 0)
-        {
-            ButtonEvent *bEvent1 = [[ButtonEvent alloc] init];
-            [bEvent1 setButtonEventType:SCROLL_DOWN];
-            bEvent1.peripheral = peripheral;
-            [openSpatial2DEvents addObject:bEvent1];
-        } else if(currentSlideVal > lastSlideVal)
-        {
-            ButtonEvent *bEvent1 = [[ButtonEvent alloc] init];
-            [bEvent1 setButtonEventType:SCROLL_UP];
-            bEvent1.peripheral = peripheral;
-            [openSpatial2DEvents addObject:bEvent1];
-        }
-        else if (currentSlideVal < lastSlideVal)
-        {
-            ButtonEvent *bEvent1 = [[ButtonEvent alloc] init];
-            [bEvent1 setButtonEventType:SCROLL_DOWN];
-            bEvent1.peripheral = peripheral;
-            [openSpatial2DEvents addObject:bEvent1];
-        }
-        else
-        {
-            // Nothing happens
-        }
-    }
-    
-    // Pointer Values
     if([self isSubscribedToEvent:POINTER forPeripheral:[peripheral name]])
     {
-        if(lastXVal != x || lastYVal != y)
-        {
-            PointerEvent *pEvent = [[PointerEvent alloc] init];
-            [pEvent setPointerEventCoordinates:x andY:y];
-            pEvent.peripheral = peripheral;
-            [openSpatial2DEvents addObject:pEvent];
-        }
-    }
-    
-    lastTouchVal = currentTouchVal;
-    lastSlideVal = currentSlideVal;
-    lastTactileVal = currentTactileVal;
-    lastXVal = x;
-    lastYVal = y;
-    
-    for (ButtonEvent* bEvent in openSpatial2DEvents) {
-        if([bEvent respondsToSelector:@selector(getButtonEventType)])
-        {
-            [self.delegate buttonEventFired:bEvent];
-        }
-        else{
-            [self.delegate pointerEventFired:(PointerEvent *)bEvent];
-        }
+        [self.delegate pointerEventFired:pEvent];
     }
     
     // For testing purposes
     return openSpatial2DEvents;
 }
 
--(NSArray *)rotationFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
+-(NSArray *)trans3DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
 {
     const uint8_t* bytePtr = [characteristic.value bytes];
-    NSDictionary* OSData = [OpenSpatialDecoder decodeRawQuatPointer:bytePtr];
-    
+    NSDictionary* OSData = [OpenSpatialDecoder decode3DTransPointer:bytePtr];
     NSMutableArray *rotationEvent = [[NSMutableArray alloc] init];
     
     RotationEvent *rEvent = [[RotationEvent alloc] init];
     
-    float x = [[OSData objectForKey:X] floatValue];
-    float y = [[OSData objectForKey:Y] floatValue];
-    float z = [[OSData objectForKey:Z] floatValue];
-    float w = [[OSData objectForKey:W] floatValue];
+    rEvent.x = [[OSData objectForKey:X] floatValue];
+    rEvent.y = [[OSData objectForKey:Y] floatValue];
+    rEvent.z = [[OSData objectForKey:Z] floatValue];
+    rEvent.roll = [[OSData objectForKey:ROLL] floatValue];
+    rEvent.pitch = [[OSData objectForKey:PITCH] floatValue];
+    rEvent.yaw = [[OSData objectForKey:YAW] floatValue];
 
-    CMQuaternion *quaternion = malloc(sizeof(CMQuaternion));
-    quaternion->x = x;
-    quaternion->y = y;
-    quaternion->z = z;
-    quaternion->w = w;
-    
-    [rEvent setQuaternion:*quaternion];
     rEvent.peripheral = peripheral;
     [rotationEvent addObject:rEvent];
 
@@ -1316,58 +409,178 @@ short int lastYVal = 0;
     return rotationEvent;
 }
 
+-(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
+{
+    const uint8_t* bytePtr = [characteristic.value bytes];
+    NSDictionary* OSData = [OpenSpatialDecoder decodeButtonPointer:bytePtr];
+    short touch0 = [[OSData objectForKey:TOUCH_0] shortValue];
+    short touch1 = [[OSData objectForKey:TOUCH_1] shortValue];
+    short touch2 = [[OSData objectForKey:TOUCH_2] shortValue];
+    short tact0 = [[OSData objectForKey:TACTILE_0] shortValue];
+    short tact1 = [[OSData objectForKey:TACTILE_1] shortValue];
+    NSMutableArray* buttonEvents = [[NSMutableArray alloc] init];
+
+    if(touch0 == BUTTON_UP)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH0_UP];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+    else if(touch0 == BUTTON_DOWN)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH0_DOWN];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+
+    if(touch1 == BUTTON_UP)
+    {   ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH1_UP];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+    else if(touch1 == BUTTON_DOWN)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH1_DOWN];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+
+    if(touch2 == BUTTON_UP)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH2_UP];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+    else if(touch2 == BUTTON_DOWN)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TOUCH2_DOWN];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+
+    if(tact0 == BUTTON_UP)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TACTILE0_UP];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+    else if(tact0 == BUTTON_DOWN)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TACTILE0_DOWN];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+
+    if(tact1 == BUTTON_UP)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TACTILE1_UP];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+    else if(tact1 == BUTTON_DOWN)
+    {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+        [bEvent setButtonEventType:TACTILE1_DOWN];
+        bEvent.peripheral = peripheral;
+        [buttonEvents addObject:bEvent];
+    }
+
+    if([self isSubscribedToEvent:BUTTON forPeripheral:[peripheral name]])
+    {
+        for(ButtonEvent* bEvent in buttonEvents)
+        {
+            [self.delegate buttonEventFired:bEvent];
+        }
+    }
+
+    return buttonEvents;
+}
+
 -(NSArray *)gestureFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
 {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeGestPointer:bytePtr];
-    uint8_t gesture = [[OSData objectForKey:GEST] charValue];
+    short gestureC = [[OSData objectForKey:GEST_OPCODE] shortValue];
+    uint8_t gesture = [[OSData objectForKey:GEST_DATA] charValue];
     NSMutableArray *gestureEvent = [[NSMutableArray alloc] init];
     GestureEvent *gEvent = [[GestureEvent alloc] init];
-    
-    if(gesture == GUP)
+
+    if(gestureC == G_OP_DIRECTION)
     {
-        [gEvent setGestureEventType:SWIPE_UP];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
+        if(gesture == GUP)
+        {
+            [gEvent setGestureEventType:SWIPE_UP];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if (gesture == GDOWN)
+        {
+            [gEvent setGestureEventType:SWIPE_DOWN];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if(gesture == GLEFT)
+        {
+            [gEvent setGestureEventType:SWIPE_LEFT];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if(gesture == GRIGHT)
+        {
+            [gEvent setGestureEventType:SWIPE_RIGHT];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if(gesture == GCW)
+        {
+            [gEvent setGestureEventType:CW];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if(gesture == GCCW)
+        {
+            [gEvent setGestureEventType:CCW];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else
+        {
+            NSLog(@"No match found for gesture event.");
+        }
     }
-    else if (gesture == GDOWN)
+    else if(gestureC == G_OP_SCROLL)
     {
-        [gEvent setGestureEventType:SWIPE_DOWN];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
-    }
-    else if(gesture == GLEFT)
-    {
-        [gEvent setGestureEventType:SWIPE_LEFT];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
-    }
-    else if(gesture == GRIGHT)
-    {
-        [gEvent setGestureEventType:SWIPE_RIGHT];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
+        if(gesture == SLIDE_LEFT)
+        {
+            [gEvent setGestureEventType:SLIDER_LEFT];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else if(gesture == SLIDE_RIGHT)
+        {
+            [gEvent setGestureEventType:SLIDER_RIGHT];
+            gEvent.peripheral = peripheral;
+            [gestureEvent addObject:gEvent];
+        }
+        else
+        {
+            NSLog(@"No match found for gesture event.");
+        }
     }
     else
     {
         NSLog(@"No match found for gesture event.");
     }
-    
-    /*
-    else if(gesture == GTWISTLEFT)
-    {
-        [gEvent setGestureEventType:TWIST_LEFT];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
-    }
-    else if(gesture == GTWISTRIGHT)
-    {
-        [gEvent setGestureEventType:TWIST_RIGHT];
-        gEvent.peripheral = peripheral;
-        [gestureEvent addObject:gEvent];
-    }
-    */
-    
+
     if([self isSubscribedToEvent:GESTURE forPeripheral:[peripheral name]])
     {
         [self.delegate gestureEventFired:gEvent];

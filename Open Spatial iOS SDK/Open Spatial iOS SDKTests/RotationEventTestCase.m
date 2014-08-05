@@ -37,16 +37,13 @@
 - (void)setUp
 {
     [super setUp];
-    CBUUID *characteristicQuaternionUUID = [CBUUID UUIDWithString:QUATUUID];
+    CBUUID *characteristicQuaternionUUID = [CBUUID UUIDWithString:TRANS3D_UUID];
     self.testCharacteristic = [[CBMutableCharacteristic alloc] initWithType:characteristicQuaternionUUID properties:CBCharacteristicPropertyRead|CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsReadable|CBAttributePermissionsWriteable];
     
     self.testBluetooth = [[OpenSpatialBluetooth alloc] init];
     self.testDelegate =  [[OpenSpatialTestDelegate alloc] init];
     self.testBluetooth.delegate  = self.testDelegate;
-    
-    self.bluetoothMock = [OCMockObject partialMockForObject:self.testBluetooth];
-    
-    [[[self.bluetoothMock stub] andReturnValue:OCMOCK_VALUE((BOOL){TRUE})] isSubscribedToEvent:[OCMArg any] forPeripheral:[OCMArg any]];
+
 }
 
 - (void)tearDown
@@ -55,18 +52,21 @@
     [super tearDown];
 }
 
- -(void)testQuaternion
- {
+ -(void)test3D
+{
      NSDictionary* quaternionDic =
-     @{ X : @0.3, Y : @0.03, Z : @0.847, W : @0.2 };
-     const char* pointer1  = [OpenSpatialDecoder createQuatPointer:quaternionDic];
+     @{ X : @0.3, Y : @0.03, Z : @0.847, ROLL : @0.349, PITCH : @0.494, YAW : @0.294};
+     const char* pointer1  = [OpenSpatialDecoder create3DTransPointer:quaternionDic];
      NSData *data = [NSData dataWithBytes:pointer1 length:QUATSIZE];
      self.testCharacteristic.value = data;
-     NSArray *rotationEvents = [self.bluetoothMock testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
-     XCTAssertEqualWithAccuracy([rotationEvents[0] getQuaternion].x, 0.3, 0.000001, @"The Quaternion x value doesn't match the x value entered in the dictionary.");
-     XCTAssertEqualWithAccuracy([rotationEvents[0] getQuaternion].y, 0.03, 0.000001, @"The Quaternion y value doesn't match the y value entered in the dictionary.");
-     XCTAssertEqualWithAccuracy([rotationEvents[0] getQuaternion].z, 0.847, 0.000001, @"The Quaternion z value doesn't match the z value entered in the dictionary.");
-     XCTAssertEqualWithAccuracy([rotationEvents[0] getQuaternion].w, 0.2, 0.000001, @"The Quaternion w value doesn't match the w value entered in the dictionary.");
+     NSArray *rotationEvents = [self.testBluetooth testBluetoothCharacteristic:self.testCharacteristic andPeripheral:nil];
+     RotationEvent* rot = [rotationEvents objectAtIndex:0];
+     XCTAssertEqualWithAccuracy(rot.x, 0.3, 0.001, @"The Quaternion x value doesn't match the x value entered in the dictionary.");
+     XCTAssertEqualWithAccuracy(rot.y, 0.03, 0.001, @"The Quaternion y value doesn't match the y value entered in the dictionary.");
+     XCTAssertEqualWithAccuracy(rot.z, 0.847, 0.001, @"The Quaternion z value doesn't match the z value entered in the dictionary.");
+     XCTAssertEqualWithAccuracy(rot.roll, 0.349, 0.001, @"The Quaternion roll value doesn't match the roll value entered in the dictionary.");
+     XCTAssertEqualWithAccuracy(rot.pitch, 0.494, 0.001, @"The Quaternion pitch value doesn't match the pitch value entered in the dictionary.");
+     XCTAssertEqualWithAccuracy(rot.yaw, 0.294, 0.001, @"The Quaternion yaw value doesn't match the yaw value entered in the dictionary.");
  }
 
 @end

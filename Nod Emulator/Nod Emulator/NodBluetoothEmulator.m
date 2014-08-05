@@ -81,13 +81,18 @@
 -(void) enableServices
 {
     CBUUID* osUUID = [CBUUID UUIDWithString:OS_UUID];
+    CBUUID* nodUUID = [CBUUID UUIDWithString:NOD_SERVICE_UUID];
+
     CBMutableService* osService = [[CBMutableService alloc] initWithType:osUUID
                                                                  primary:YES];
+    CBMutableService* nodService = [[CBMutableService alloc] initWithType:nodUUID
+                                                                  primary:YES];
 
     CBUUID* os2DUUID = [CBUUID UUIDWithString:POS2D_UUID];
     CBUUID* rawQuatUUID = [CBUUID UUIDWithString:TRANS3D_UUID];
     CBUUID* gestUUID = [CBUUID UUIDWithString:GEST_UUID];
     CBUUID* buttonUUID = [CBUUID UUIDWithString:BUTTON_UUID];
+    CBUUID* modeUUID = [CBUUID UUIDWithString:MODE_SWITCH_UUID];
 
 
 
@@ -117,10 +122,20 @@
                                          value:nil
                                          permissions:CBAttributePermissionsReadable];
 
+    CBMutableCharacteristic* modeSwitchChar = [[CBMutableCharacteristic alloc]
+                                        initWithType:modeUUID
+                                        properties:CBCharacteristicPropertyRead|
+                                        CBCharacteristicPropertyNotify|CBCharacteristicPropertyWrite
+                                        value:nil
+                                        permissions:CBAttributePermissionsReadable];
+
     osService.characteristics = @[self.os2dChar,self.trans3DChar,
                                   self.gestChar,self.buttonChar];
+    nodService.characteristics = @[modeSwitchChar];
     [self.services addObject:osService];
     [self.periphMan addService:osService];
+    [self.services addObject:nodService];
+    [self.periphMan addService:nodService];
 
     NSDictionary* retDic = @{ X : @0,
                               Y : @0,
@@ -159,6 +174,10 @@
     temp = [NSData dataWithBytes:[OpenSpatialDecoder createButtonPointer:retDic]
                           length:BUTTON_SIZE];
     self.buttonChar.value = temp;
+
+    uint8_t data = 1;
+    temp = [NSData dataWithBytes:&data length:sizeof(data)];
+    modeSwitchChar.value = temp;
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral

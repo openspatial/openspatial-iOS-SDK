@@ -42,11 +42,11 @@
     int z = opSpcPtr[4] | (opSpcPtr[5] << 8);
     float zf = (z << 13);
     int roll = opSpcPtr[6] | (opSpcPtr[7] << 8);
-    float rollf = (roll << 13);
+    float rollf = (roll << 16);
     int pitch = opSpcPtr[8] | (opSpcPtr[9] << 8);
-    float pitchf = (pitch << 13);
+    float pitchf = (pitch << 16);
     int yaw = opSpcPtr[10] | (opSpcPtr[11] << 8);
-    float yawf = (yaw << 13);
+    float yawf = (yaw << 16);
 
     xf = xf / (1 << 29);
     yf = yf / (1 << 29);
@@ -77,9 +77,9 @@
     int16_t xt = x * (1 << 16);
     int16_t yt = y * (1 << 16);
     int16_t zt = z * (1 << 16);
-    int16_t rollt = roll * (1 << 16);
-    int16_t pitcht = pitch * (1 << 16);
-    int16_t yawt = yaw * (1<<16);
+    int16_t rollt = roll * (1 << 13);
+    int16_t pitcht = pitch * (1 << 13);
+    int16_t yawt = yaw * (1 << 13);
 
     NSMutableData* data = [[NSMutableData alloc] initWithCapacity:12];
     [data appendBytes:&xt length:sizeof(xt)];
@@ -96,12 +96,11 @@
 +(NSDictionary*) decodeButtonPointer:(const uint8_t *)opSpcPtr
 {
     short button = opSpcPtr[0] | (opSpcPtr[1] << 8);
-
     short touch0 = (button & 0x3);
-    short touch1 = (button & 0x30) >> 2;
-    short touch2 = (button & 0x300) >> 4;
-    short tact0 =  (button & 0x3000) >> 6;
-    short tact1 =  (button & 0x30000) >> 8;
+    short touch1 = (button >> 2) & 0x3;
+    short touch2 = (button >> 4) & 0x3;
+    short tact0 =  (button >> 6) & 0x3;
+    short tact1 =  (button >> 8) & 0x3;
 
     NSDictionary* retDic = @{ TOUCH_0 : @(touch0),
                                TOUCH_1 : @(touch1),
@@ -119,7 +118,7 @@
     short touch2 = [[OSData objectForKey:TOUCH_2] shortValue];
     short tact0 = [[OSData objectForKey:TACTILE_0] shortValue];
     short tact1 = [[OSData objectForKey:TACTILE_1] shortValue];
-
+    
     short button = touch0 | touch1 << 2 | touch2  << 4 | tact0 << 6 | tact1 << 8;
     NSData* data = [NSData dataWithBytes:&button length:sizeof(button)];
     return [data bytes];
@@ -128,7 +127,7 @@
 +(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr
 {
     short opCode = opSpcPtr[0] | opSpcPtr[1] << 8;
-    char data = opSpcPtr[3];
+    char data = opSpcPtr[2];
 
     NSDictionary* retDic = @{ GEST_OPCODE : @(opCode),
                               GEST_DATA : @(data),

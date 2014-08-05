@@ -10,14 +10,5 @@
 
 @implementation RotationEvent
 
--(void)setQuaternion:(CMQuaternion)tempQuat
-{
-    self.quat = tempQuat;
-}
-
--(CMQuaternion)getQuaternion
-{
-    return self.quat;
-}
 
 @end
