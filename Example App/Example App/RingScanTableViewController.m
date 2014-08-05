@@ -29,6 +29,15 @@
 {
     [self loadInitialData];
     [super viewDidLoad];
+    
+    UISwipeGestureRecognizer * swipeRight=[[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(swipeRight:)];
+    swipeRight.direction=UISwipeGestureRecognizerDirectionRight;
+    [self.view addGestureRecognizer:swipeRight];
+}
+
+-(void)swipeRight:(UISwipeGestureRecognizer*)gestureRecognizer
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 /*
@@ -70,6 +79,7 @@
 {
     [self.tableView reloadData];
 }
+
 
 /*
  * When a devices is chosen stop scanning and send the device data to the next screen and connect to

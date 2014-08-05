@@ -22,6 +22,7 @@
 		183CB6A2194655D80079076A /* Example_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6A1194655D80079076A /* Example_AppTests.m */; };
 		183CB6AD194656890079076A /* RingScanTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AC194656890079076A /* RingScanTableViewController.m */; };
 		183CB6B0194657040079076A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AF194657040079076A /* MainViewController.m */; };
+		18F649701991938B0037ABCF /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F6496F1991938B0037ABCF /* OpenSpatial.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		183CB6AC194656890079076A /* RingScanTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingScanTableViewController.m; sourceTree = "<group>"; };
 		183CB6AE194657040079076A /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		183CB6AF194657040079076A /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		18F6496F1991938B0037ABCF /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = ../release/OpenSpatial.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */,
+				18F649701991938B0037ABCF /* OpenSpatial.framework in Frameworks */,
 				183CB67B194655D80079076A /* UIKit.framework in Frameworks */,
 				183CB677194655D80079076A /* Foundation.framework in Frameworks */,
 			);
@@ -104,6 +107,7 @@
 		183CB675194655D80079076A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				18F6496F1991938B0037ABCF /* OpenSpatial.framework */,
 				183CB676194655D80079076A /* Foundation.framework */,
 				183CB678194655D80079076A /* CoreGraphics.framework */,
 				183CB67A194655D80079076A /* UIKit.framework */,
@@ -204,6 +208,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Nod Labs";
 				TargetAttributes = {
+					183CB672194655D80079076A = {
+						DevelopmentTeam = BM62RN4H49;
+					};
 					183CB693194655D80079076A = {
 						TestTargetID = 183CB672194655D80079076A;
 					};
@@ -382,17 +389,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"/Users/khwaab/repos/openspatial-iOS-SDK/release",
-					"/Users/khwaab/repos/openspatial/ios-sdk/release",
+					"/Users/neel/Documents/openspatial-iOS-SDK/release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -402,17 +412,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 					"/Users/khwaab/repos/openspatial-iOS-SDK/release",
-					"/Users/khwaab/repos/openspatial/ios-sdk/release",
+					"/Users/neel/Documents/openspatial-iOS-SDK/release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
