@@ -22,6 +22,7 @@
 		183CB6A2194655D80079076A /* Example_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6A1194655D80079076A /* Example_AppTests.m */; };
 		183CB6AD194656890079076A /* RingScanTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AC194656890079076A /* RingScanTableViewController.m */; };
 		183CB6B0194657040079076A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AF194657040079076A /* MainViewController.m */; };
+		B0D7C97419B932FC0012BCA2 /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B0D7C97319B932FC0012BCA2 /* OpenSpatial.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		183CB6AC194656890079076A /* RingScanTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingScanTableViewController.m; sourceTree = "<group>"; };
 		183CB6AE194657040079076A /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		183CB6AF194657040079076A /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
+		B0D7C97319B932FC0012BCA2 /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = ../release/OpenSpatial.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */,
+				B0D7C97419B932FC0012BCA2 /* OpenSpatial.framework in Frameworks */,
 				183CB67B194655D80079076A /* UIKit.framework in Frameworks */,
 				183CB677194655D80079076A /* Foundation.framework in Frameworks */,
 			);
@@ -85,6 +88,7 @@
 		183CB66A194655D80079076A = {
 			isa = PBXGroup;
 			children = (
+				B0D7C97319B932FC0012BCA2 /* OpenSpatial.framework */,
 				183CB67C194655D80079076A /* Example App */,
 				183CB69B194655D80079076A /* Example AppTests */,
 				183CB675194655D80079076A /* Frameworks */,

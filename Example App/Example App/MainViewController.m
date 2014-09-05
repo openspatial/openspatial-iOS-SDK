@@ -14,6 +14,7 @@
 
 @implementation MainViewController
 
+uint8_t mode = POINTER_MODE;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -28,8 +29,21 @@
 {
     self.HIDServ = [OpenSpatialBluetooth sharedBluetoothServ];
     self.HIDServ.delegate = self;
-    
     [super viewDidLoad];
+}
+
+-(void) startLoop
+{
+    [self.HIDServ setMode:mode forDeviceNamed:self.lastNodPeripheral.name];
+    if(mode == POINTER_MODE)
+    {
+        mode = THREE_D_MODE;
+    }
+    else
+    {
+        mode = POINTER_MODE;
+    }
+    [self performSelector:@selector(startLoop) withObject:nil afterDelay:5];
 }
 
 -(ButtonEvent *)buttonEventFired: (ButtonEvent *) buttonEvent
@@ -153,6 +167,7 @@
     [self.HIDServ subscribeToGestureEvents:self.lastNodPeripheral.name];
     [self.HIDServ subscribeToPointerEvents:self.lastNodPeripheral.name];
     [self.HIDServ subscribeToRotationEvents:self.lastNodPeripheral.name];
+    [self performSelector:@selector(startLoop) withObject:nil afterDelay:5];
 }
 
 @end

@@ -34,6 +34,7 @@
         self.foundPeripherals = [[NSMutableArray alloc] init];
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
         self.connectedPeripherals = [[NSMutableDictionary alloc] init];
+        self.modeMapping = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -135,7 +136,8 @@
     for (CBService *service in peripheral.services)
     {
         NSLog(@"Discovered service %@", service);
-        if([[service.UUID UUIDString] isEqualToString:OS_UUID])
+        if([[service.UUID UUIDString] isEqualToString:OS_UUID] ||
+           [service.UUID.UUIDString isEqualToString:NCONTROL_UUID])
         {
             [self getCharacteristics:service peripheral:peripheral];
         }
@@ -177,7 +179,33 @@ service error:(NSError *)error
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
         }
+        if([characteristic.UUID.UUIDString isEqualToString:MODE_SWITCH_CHAR])
+        {
+            NSLog(@"found");
+            [self.modeMapping setValue:characteristic forKey:peripheral.name];
+        }
     }
+}
+
+/*
+ *  Temporary method for mode switch from iOS while app is not ready
+ */
+-(void) setMode:(uint8_t)modeNumber forDeviceNamed:(NSString *)name
+{
+    NSMutableData* val = [[NSMutableData alloc] init];
+    [val appendBytes:&modeNumber length:sizeof(modeNumber)];
+    NSArray* keys = [self.connectedPeripherals allKeys];
+
+    for(CBPeripheral* p in keys)
+    {
+        if([p.name isEqualToString:name])
+        {
+            [p writeValue:val forCharacteristic:[self.modeMapping objectForKey:name]
+                                                        type:CBCharacteristicWriteWithResponse];
+        }
+    }
+
+
 }
 
 -(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName
