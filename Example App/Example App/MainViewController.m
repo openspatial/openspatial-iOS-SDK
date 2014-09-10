@@ -159,6 +159,8 @@ uint8_t mode = POINTER_MODE;
 - (void) didConnectToNod: (CBPeripheral*) peripheral
 {
     self.lastNodPeripheral = peripheral;
+
+    [self.HIDServ setMode:POINTER_MODE forDeviceNamed:self.lastNodPeripheral.name];
 }
 
 - (IBAction)subscribeEvents:(UIButton *)sender
