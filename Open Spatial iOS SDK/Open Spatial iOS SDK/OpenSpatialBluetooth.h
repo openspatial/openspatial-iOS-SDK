@@ -20,9 +20,6 @@
 #define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
 #define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
 
-#define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
-#define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
-
 #define BUTTON @"button"
 #define POINTER @"pointer"
 #define GESTURE @"gesture"
@@ -32,11 +29,6 @@
 #define TRANS3D_SIZE 12
 #define GEST_SIZE 5
 #define BUTTON_SIZE 2
-
-#define POINTER_MODE 0x00
-#define GAME_MODE 0x01
-#define THREE_D_MODE 0x02
-#define FREE_POINTER_MODE 0x03
 
 @protocol OpenSpatialBluetoothDelegate <NSObject>
 
@@ -51,8 +43,6 @@
 
 @interface OpenSpatialBluetooth: NSObject
 
-@property NSMutableDictionary* modeMapping;
-
 @property CBCentralManager *centralManager;
 @property NSMutableArray *foundPeripherals;
 
@@ -64,7 +54,6 @@
 +(id) sharedBluetoothServ;
 -(id) delegate;
 -(void) setDelegate:(id<OpenSpatialBluetoothDelegate>)newDelegate;
--(void) setMode: (uint8_t) modeNumber forDeviceNamed: (NSString*) name;
 
 /*
  * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array
