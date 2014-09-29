@@ -34,7 +34,6 @@
         self.foundPeripherals = [[NSMutableArray alloc] init];
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
         self.connectedPeripherals = [[NSMutableDictionary alloc] init];
-        self.modeMapping = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -111,7 +110,8 @@
     [self.connectedPeripherals setObject:booleans forKey:peripheral];
     NSLog(@"Connected to %@", peripheral.name);
     peripheral.delegate = self;
-
+    
+    [self.delegate didConnectToNod:peripheral];
     [self getServicesForConnectedDevice: peripheral];
 }
 
@@ -135,8 +135,7 @@
     for (CBService *service in peripheral.services)
     {
         NSLog(@"Discovered service %@", service);
-        if([[service.UUID UUIDString] isEqualToString:OS_UUID] ||
-           [service.UUID.UUIDString isEqualToString:NCONTROL_UUID])
+        if([[service.UUID UUIDString] isEqualToString:OS_UUID])
         {
             [self getCharacteristics:service peripheral:peripheral];
         }
@@ -151,7 +150,7 @@
     [peripheral discoverCharacteristics:nil forService:serv];
 }
 
-int countChars = 0;
+
 /*
  * Helper Method for discovering characteristics prints all characteristics to log
  */
@@ -165,56 +164,20 @@ service error:(NSError *)error
         if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
         {
             [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            countChars++;
-        }
-        if([characteristic.UUID.UUIDString isEqualToString:MODE_SWITCH_CHAR])
-        {
-            NSLog(@"found");
-            [self.modeMapping setValue:characteristic forKey:peripheral.name];
-            countChars++;
         }
     }
-    if(countChars == 5)
-    {
-        [self.delegate didConnectToNod:peripheral];
-        countChars = 0; 
-    }
-}
-
-/*
- *  Temporary method for mode switch from iOS while app is not ready
- */
--(void) setMode:(uint8_t)modeNumber forDeviceNamed:(NSString *)name
-{
-    NSMutableData* val = [[NSMutableData alloc] init];
-    [val appendBytes:&modeNumber length:sizeof(modeNumber)];
-    NSArray* keys = [self.connectedPeripherals allKeys];
-
-    for(CBPeripheral* p in keys)
-    {
-        if([p.name isEqualToString:name])
-        {
-            [p writeValue:val forCharacteristic:[self.modeMapping objectForKey:name]
-                                                        type:CBCharacteristicWriteWithResponse];
-        }
-    }
-
-
 }
 
 -(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName
