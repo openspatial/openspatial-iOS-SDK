@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <OpenSpatial/OpenSpatialBluetooth.h>
+#import "OpenSpatialBluetooth.h"
 #import "MainViewController.h"
 
 @interface RingScanTableViewController : UITableViewController <OpenSpatialBluetoothDelegate>
