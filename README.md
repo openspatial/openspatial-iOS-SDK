@@ -24,6 +24,8 @@ In order to run the emulator and the example app, you will need two iOS devices.
 3. Press the "Subscribe to Events' in the Example App
 4. Play with buttons, tactiles, slider, etc. on the emulator app and watch for logs for events
 
+Please vist out [Developer Portal](http://developer.nod.com) for more detailed instructions and tutorials.
+
 ## Open Spatial SDK for Android
 
 For information on Open Spatial SDK for Android see (https://github.com/openspatial/android-sdk)

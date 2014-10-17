@@ -14,7 +14,7 @@
 				183CB669194655350079076A /* MultiPlatform Build */,
 			);
 			dependencies = (
-				B034A28719C0D26B003BD5F0 /* PBXTargetDependency */,
+				B0414A2419DB4D6400721147 /* PBXTargetDependency */,
 			);
 			name = Framework;
 			productName = Framework;
@@ -56,7 +56,7 @@
 			remoteGlobalIDString = 183CB6111946512F0079076A;
 			remoteInfo = "Open Spatial iOS SDK";
 		};
-		B034A28619C0D26B003BD5F0 /* PBXContainerItemProxy */ = {
+		B0414A2319DB4D6400721147 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 183CB60A1946512F0079076A /* Project object */;
 			proxyType = 1;
@@ -420,10 +420,10 @@
 			target = 183CB6111946512F0079076A /* Open Spatial iOS SDK */;
 			targetProxy = 183CB628194651300079076A /* PBXContainerItemProxy */;
 		};
-		B034A28719C0D26B003BD5F0 /* PBXTargetDependency */ = {
+		B0414A2419DB4D6400721147 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 183CB6111946512F0079076A /* Open Spatial iOS SDK */;
-			targetProxy = B034A28619C0D26B003BD5F0 /* PBXContainerItemProxy */;
+			targetProxy = B0414A2319DB4D6400721147 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

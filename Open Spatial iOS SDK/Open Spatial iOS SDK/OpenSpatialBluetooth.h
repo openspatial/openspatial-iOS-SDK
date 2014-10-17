@@ -30,7 +30,7 @@
 
 #define POS2D_SIZE 4
 #define TRANS3D_SIZE 12
-#define GEST_SIZE 5
+#define GEST_SIZE 5x
 #define BUTTON_SIZE 2
 
 #define POINTER_MODE 0x00

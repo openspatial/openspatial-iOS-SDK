@@ -122,7 +122,7 @@
 {
     if(peripheral)
     {
-        NSLog(@"Discovering Services");
+        NSLog(@"Discovering Services, %@", peripheral.delegate);
         [peripheral discoverServices:nil];
     }
 }
@@ -135,8 +135,7 @@
     for (CBService *service in peripheral.services)
     {
         NSLog(@"Discovered service %@", service);
-        if([[service.UUID UUIDString] isEqualToString:OS_UUID] ||
-           [service.UUID.UUIDString isEqualToString:NCONTROL_UUID])
+        if([[service.UUID UUIDString] isEqualToString:OS_UUID])
         {
             [self getCharacteristics:service peripheral:peripheral];
         }
@@ -307,6 +306,7 @@ service error:(NSError *)error
                  error:(NSError *)error
 {
     NSLog(@"Disconnected: %@", error);
+    [self connectToPeripheral:peripheral];
 }
 
 /*******************************************************************************************
@@ -325,7 +325,6 @@ service error:(NSError *)error
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:
                      (CBCharacteristic *)characteristic error:(NSError *)error
 {
-    NSLog(@"yyo");
     // Checks if the characteristic is the open spatial 2d characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
     {
