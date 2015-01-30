@@ -12,6 +12,14 @@
 
 #import "OpenSpatialBluetooth.h"
 
+@interface NodDevice ()
+
+@end
+
+@implementation NodDevice
+
+@end
+
 @interface OpenSpatialBluetooth()  <CBCentralManagerDelegate, CBPeripheralDelegate>
 
 @end
@@ -34,7 +42,6 @@
         self.foundPeripherals = [[NSMutableArray alloc] init];
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
         self.connectedPeripherals = [[NSMutableDictionary alloc] init];
-        self.modeMapping = [[NSMutableDictionary alloc] init];
     }
     return self;
 }
@@ -53,7 +60,10 @@
 {
     NSLog(@"Scanning");
     [self.foundPeripherals removeAllObjects];
-    [self.centralManager retrieveConnectedPeripherals];
+    CBUUID* osUUID = [CBUUID UUIDWithString:@"1812"];
+    NSArray* services = @[osUUID];
+    [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    [self.centralManager retrieveConnectedPeripheralsWithServices:services];
 }
 
 /*
@@ -76,17 +86,32 @@
 }
 
 /*
- * Helper method for peripheral scanning, each time a peripheral is found add it to the
+ * Delegate method for peripheral scanning, each time a peripheral is found add it to the
  * peripheral array
  */
 -(void) centralManager:(CBCentralManager *)central didRetrieveConnectedPeripherals:(NSArray *)peripherals
 {
-    self.foundPeripherals = peripherals;
-    if([self.delegate respondsToSelector:@selector(didFindNewDevice:)])
+    self.pairedPeripherals = [NSMutableArray arrayWithArray:peripherals];
+    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)])
     {
         NSLog(@"Delegate method called/");
 
-        [self.delegate didFindNewDevice:peripherals];
+        [self.delegate didFindNewPairedDevice:peripherals];
+    }
+}
+
+-(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
+{
+    if(![self.foundPeripherals containsObject:peripheral])
+    {
+        [self.foundPeripherals addObject:peripheral];
+        if(self.delegate)
+        {
+            if([self.delegate respondsToSelector:@selector(didFindNewScannedDevice:)])
+            {
+                [self.delegate didFindNewScannedDevice:self.foundPeripherals];
+            }
+        }
     }
 }
 
@@ -96,7 +121,6 @@
 -(void) connectToPeripheral: (CBPeripheral *) peripheral
 {
     [self.centralManager stopScan];
-    [self.ConnectedServices removeAllObjects];
     [self.centralManager connectPeripheral:peripheral options:nil];
 }
 
@@ -107,11 +131,12 @@
   didConnectPeripheral:(CBPeripheral *)peripheral
 {
     NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE};
-    NSMutableDictionary* booleans = [NSMutableDictionary dictionaryWithDictionary:temp];
-    [self.connectedPeripherals setObject:booleans forKey:peripheral];
-    NSLog(@"Connected to %@", peripheral.name);
     peripheral.delegate = self;
-
+    NodDevice* dev = [[NodDevice alloc] init];
+    dev.BTPeripheral = peripheral;
+    dev.subscribedTo = [NSMutableDictionary dictionaryWithDictionary:temp];
+    [self.connectedPeripherals setObject:dev forKey:peripheral.name];
+    NSLog(@"Connected to %@", peripheral.name);
     [self getServicesForConnectedDevice: peripheral];
 }
 
@@ -128,7 +153,7 @@
 }
 
 /*
- * Helper Method for discovering services prints service to log
+ * Delegate Method for discovering services prints service to log
  */
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
 {
@@ -150,92 +175,82 @@
     [peripheral discoverCharacteristics:nil forService:serv];
 }
 
-int countChars = 0;
 /*
- * Helper Method for discovering characteristics prints all characteristics to log
+ * Delegate Method for discovering characteristics prints all characteristics to log
  */
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)
 service error:(NSError *)error
 {
+    int countChars = 0;
     for (CBCharacteristic *characteristic in service.characteristics)
     {
         NSLog(@"%@",characteristic.UUID.UUIDString);
         
         if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
         {
-            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            ((NodDevice*)[self.connectedPeripherals objectForKey:
+                          peripheral.name]).pointerCharacteristic = characteristic;
             countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
         {
-            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            ((NodDevice*)[self.connectedPeripherals objectForKey:
+                          peripheral.name]).pose6DCharacteristic = characteristic;
             countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
         {
-            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            ((NodDevice*)[self.connectedPeripherals objectForKey:
+                          peripheral.name]).gestureCharacteristic = characteristic;
             countChars++;
         }
         if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
         {
-            [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            ((NodDevice*)[self.connectedPeripherals objectForKey:
+                          peripheral.name]).buttonCharacteristic = characteristic;
             countChars++;
         }
     }
     if(countChars == 4)
     {
-        [self.delegate didConnectToNod:peripheral];
-        countChars = 0; 
-    }
-}
-
-/*
- *  Temporary method for mode switch from iOS while app is not ready
- */
--(void) setMode:(uint8_t)modeNumber forDeviceNamed:(NSString *)name
-{
-    NSMutableData* val = [[NSMutableData alloc] init];
-    [val appendBytes:&modeNumber length:sizeof(modeNumber)];
-    NSArray* keys = [self.connectedPeripherals allKeys];
-
-    for(CBPeripheral* p in keys)
-    {
-        if([p.name isEqualToString:name])
+        if([self.delegate respondsToSelector:@selector(didConnectToNod:)])
         {
-            [p writeValue:val forCharacteristic:[self.modeMapping objectForKey:name]
-                                                        type:CBCharacteristicWriteWithResponse];
+            [self.delegate didConnectToNod:peripheral];
         }
+        countChars = 0;
     }
-
-
 }
 
 -(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName
 {
     NSArray* keys = [self.connectedPeripherals allKeys];
-    for(CBPeripheral* p in keys)
+    /*for(CBPeripheral* p in keys)
     {
         if([p.name isEqualToString:peripheralName])
         {
             if([type isEqualToString:BUTTON])
             {
-                return [[[self.connectedPeripherals objectForKey:p] objectForKey:BUTTON] boolValue];
+                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
+                         objectForKey:BUTTON] boolValue];
             }
             else if([type isEqualToString:POINTER])
             {
-                return [[[self.connectedPeripherals objectForKey:p] objectForKey:POINTER] boolValue];
+                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
+                         objectForKey:POINTER] boolValue];
             }
             else if([type isEqualToString:ROTATION])
             {
-                return [[[self.connectedPeripherals objectForKey:p] objectForKey:ROTATION] boolValue];
+                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
+                         objectForKey:ROTATION] boolValue];
             }
             else if([type isEqualToString:GESTURE])
             {
-                return [[[self.connectedPeripherals objectForKey:p] objectForKey:GESTURE] boolValue];
+                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
+                         objectForKey:GESTURE] boolValue];
             }
         }
-    }
-    return FALSE;
+    }*/
+    return TRUE;
 }
 
 /*
@@ -243,14 +258,20 @@ service error:(NSError *)error
  */
 -(void)subscribeToRotationEvents:(NSString *)peripheralName
 {
-    NSArray* keys = [self.connectedPeripherals allKeys];
-    
-    for(CBPeripheral* p in keys)
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
     {
-        if([p.name isEqualToString:peripheralName])
-        {
-            [ (NSDictionary*)[self.connectedPeripherals objectForKey:p] setValue:@TRUE forKey:ROTATION];
-        }
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pose6DCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:ROTATION];
+    }
+}
+-(void)unsubscribeFromRotationEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pose6DCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:ROTATION];
     }
 }
 
@@ -259,14 +280,20 @@ service error:(NSError *)error
  */
 -(void)subscribeToGestureEvents:(NSString *)peripheralName
 {
-    NSArray* keys = [self.connectedPeripherals allKeys];
-    
-    for(CBPeripheral* p in keys)
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
     {
-        if([p.name isEqualToString:peripheralName])
-        {
-            [ [self.connectedPeripherals objectForKey:p] setValue:@TRUE forKey:GESTURE];
-        }
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.gestureCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:GESTURE];
+    }
+}
+-(void)unsubscribeFromGestureEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.gestureCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:GESTURE];
     }
 }
 
@@ -275,14 +302,20 @@ service error:(NSError *)error
  */
 -(void)subscribeToButtonEvents:(NSString *)peripheralName
 {
-    NSArray* keys = [self.connectedPeripherals allKeys];
-    
-    for(CBPeripheral* p in keys)
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
     {
-        if([p.name isEqualToString:peripheralName])
-        {
-            [ [self.connectedPeripherals objectForKey:p] setValue:@TRUE forKey:BUTTON];
-        }
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.buttonCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:BUTTON];
+    }
+}
+-(void)unsubscribeFromButtonEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.buttonCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:BUTTON];
     }
 }
 
@@ -291,17 +324,26 @@ service error:(NSError *)error
  */
 -(void)subscribeToPointerEvents:(NSString *)peripheralName
 {
-    NSArray* keys = [self.connectedPeripherals allKeys];
-    
-    for(CBPeripheral* p in keys)
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
     {
-        if([p.name isEqualToString:peripheralName])
-        {
-            [ [self.connectedPeripherals objectForKey:p] setValue:@TRUE forKey:POINTER];
-        }
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pointerCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:POINTER];
+    }
+}
+-(void)unsubscribeFromPointerEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pointerCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:POINTER];
     }
 }
 
+/*
+ *  Disconnection handler (currently just tries to reconnect)
+ */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
                  error:(NSError *)error
 {
@@ -406,7 +448,10 @@ service error:(NSError *)error
 
     if([self isSubscribedToEvent:POINTER forPeripheral:[peripheral name]])
     {
-        [self.delegate pointerEventFired:pEvent];
+        if([self.delegate respondsToSelector:@selector(pointerEventFired:)])
+        {
+            [self.delegate pointerEventFired:pEvent];
+        }
     }
     
     // For testing purposes
@@ -433,7 +478,10 @@ service error:(NSError *)error
 
     if([self isSubscribedToEvent:ROTATION forPeripheral:[peripheral name]])
     {
-        [self.delegate rotationEventFired:rEvent];
+        if([self.delegate respondsToSelector:@selector(rotationEventFired:)])
+        {
+            [self.delegate rotationEventFired:rEvent];
+        }
     }
     
     // For testing purposes
@@ -529,7 +577,10 @@ service error:(NSError *)error
     {
         for(ButtonEvent* bEvent in buttonEvents)
         {
-            [self.delegate buttonEventFired:bEvent];
+            if([self.delegate respondsToSelector:@selector(buttonEventFired:)])
+            {
+                [self.delegate buttonEventFired:bEvent];
+            }
         }
     }
 
@@ -614,7 +665,10 @@ service error:(NSError *)error
 
     if([self isSubscribedToEvent:GESTURE forPeripheral:[peripheral name]])
     {
-        [self.delegate gestureEventFired:gEvent];
+        if([self.delegate respondsToSelector:@selector(gestureEventFired:)])
+        {
+            [self.delegate gestureEventFired:gEvent];
+        }
     }
     // FOR TESTING PURPOSES ONLY
     return gestureEvent;

@@ -38,52 +38,86 @@
 #define THREE_D_MODE 0x02
 #define FREE_POINTER_MODE 0x03
 
+@interface NodDevice : NSObject
+
+@property CBPeripheral* BTPeripheral;
+@property CBCharacteristic* gestureCharacteristic;
+@property CBCharacteristic* pose6DCharacteristic;
+@property CBCharacteristic* pointerCharacteristic;
+@property CBCharacteristic* buttonCharacteristic;
+@property NSMutableDictionary* subscribedTo;
+
+@end
+/*!
+ Delegate for the OpenSpatialBluetooth object implementing classes will
+ recieve OpenSpatialEvents
+ */
 @protocol OpenSpatialBluetoothDelegate <NSObject>
 
+/*!
+ called when a button event is fired from Nod
+ */
 -(ButtonEvent *)buttonEventFired: (ButtonEvent *) buttonEvent;
+/*!
+ called when a pointer event is fired from Nod
+ */
 -(PointerEvent *)pointerEventFired: (PointerEvent *) pointerEvent;
+/*!
+ called when a rotation event is fired from Nod
+ */
 -(RotationEvent *)rotationEventFired: (RotationEvent *) rotationEvent;
+/*!
+ called when a gesture event is fired from Nod
+ */
 -(GestureEvent *)gestureEventFired: (GestureEvent *) gestureEvent;
-
+/*!
+ called when a Nod is connected to from connectToPeripheral
+ */
 - (void) didConnectToNod: (CBPeripheral*) peripheral;
-- (void) didFindNewDevice: (NSArray*) peripherals;
+/*
+ called when a new Nod is found from scanForPeripherals
+ */
+- (void) didFindNewScannedDevice: (NSArray*) peripherals;
+- (void) didFindNewPairedDevice: (NSArray*) peripherals;
+
 @end
 
 @interface OpenSpatialBluetooth: NSObject
 
-@property NSMutableDictionary* modeMapping;
-
 @property CBCentralManager *centralManager;
 @property NSMutableArray *foundPeripherals;
-
+@property NSMutableArray *pairedPeripherals;
 @property NSMutableDictionary *connectedPeripherals;
-
-@property NSMutableArray *ConnectedServices;
 @property id<OpenSpatialBluetoothDelegate> delegate;
 
+/*!
+ Singleton constructor method
+ */
 +(id) sharedBluetoothServ;
 -(id) delegate;
+/*!
+ sets the delegate
+ */
 -(void) setDelegate:(id<OpenSpatialBluetoothDelegate>)newDelegate;
--(void) setMode: (uint8_t) modeNumber forDeviceNamed: (NSString*) name;
 
-/*
+/*!
  * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array
  */
 -(void) scanForPeripherals;
 
-/*
+/*!
  * Connect to a peripheral device store as connected device, also stops scan
  * @param peripheral - the peripheral that the central manager will connect to
  */
 -(void) connectToPeripheral: (CBPeripheral *) peripheral;
 
-/*
+/*!
  * Returns an Array Containing the names of all the services associated with a device
  * @param peripheral
  */
 -(void) getServicesForConnectedDevice:(CBPeripheral *)peripheral;
 
-/*
+/*!
  * Checks to see if user subscribed to certain set of events
  * @param type - the string that is used to check for a certain event
  * @param peripheralName - the name of the peripheral that is compared to in the dictionary
@@ -91,7 +125,7 @@
 -(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName;
 
 
-/*
+/*!
  * Method used in unit tests to ensure that characteristic and data being sent by a peripheral device is being captured
  *
  * @param characteristic - the characteristic that is passed through the function to determine which events to execute upon
@@ -99,32 +133,38 @@
  */
 -(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral;
 
-/*
+/*!
  * Subscribes the specified peripheral device to the rotation events
  *
  * @param peripheralName - the name of the peripheral that will connect to rotation events
  */
 -(void)subscribeToRotationEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromRotationEvents: (NSString *)peripheralName;
 
-/*
+/*!
  * Subscribes the specified peripheral device to gesture events
  *
  * @param peripheralName - the name of the peripheral that will connect to gesture events
  */
 -(void)subscribeToGestureEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromGestureEvents: (NSString *)peripheralName;
 
-/*
+/*!
  * Subscribes the specified peripheral device to button events
  *
  * @param peripheralName - the name of the peripheral that will connect to button events
  */
 -(void)subscribeToButtonEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromButtonEvents: (NSString *)peripheralName;
 
-/*
+/*!
  * Subscribes the specified peripheral device to pointer events
  *
  * @param peripheralName - the name of the peripheral that will connect to pointer events
  */
 -(void)subscribeToPointerEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromPointerEvents: (NSString *)peripheralName;
 
 @end
+
+

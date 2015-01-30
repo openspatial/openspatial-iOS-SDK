@@ -12,12 +12,12 @@
 
 -(void)setGestureEventType:(GestureEventType)gestureEType
 {
-    self.myGestureEventNum = gestureEType;
+    self.eventNum = gestureEType;
 }
 
 -(GestureEventType)getGestureEventType
 {
-    return self.myGestureEventNum;
+    return self.eventNum;
 }
 
 @end

@@ -22,6 +22,7 @@
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
+    self.rings = [[NSMutableArray alloc] init];
     return self;
 }
 
@@ -46,13 +47,22 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 2;
 }
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    // Return the number of rows in the section.
-    return [self.myHIDServ.foundPeripherals count];
+    // Return the number of rows in the section
+    if(section == 0)
+    {
+        return self.myHIDServ.foundPeripherals.count;
+    }
+    if(section == 1)
+    {
+        return self.myHIDServ.pairedPeripherals.count;
+    }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView
@@ -61,12 +71,25 @@
     static NSString *CellIdentifier = @"DeviceCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:
                              indexPath];
-    CBPeripheral *rowElement = [self.myHIDServ.foundPeripherals objectAtIndex:indexPath.row];
+    CBPeripheral* rowElement;
+    if(indexPath.section == 0)
+    {
+        rowElement = [self.myHIDServ.foundPeripherals objectAtIndex:indexPath.row];
+    }
+    if(indexPath.section == 1)
+    {
+        rowElement = [self.myHIDServ.pairedPeripherals objectAtIndex:indexPath.row];
+    }
     cell.textLabel.text = rowElement.name;
     return cell;
 }
 
-- (void)didFindNewDevice:(CBPeripheral*) peripheral
+- (void)didFindNewPairedDevice:(NSArray *)peripherals
+{
+    [self.tableView reloadData];
+}
+
+-(void)didFindNewScannedDevice:(NSArray *)peripherals
 {
     [self.tableView reloadData];
 }
@@ -81,9 +104,17 @@
     NSIndexPath *path = [self.tableView indexPathForSelectedRow];
     self.selectedIndex = path.row;
     printf("%d",self.selectedIndex);
-    CBPeripheral *selected = (CBPeripheral*)[self.myHIDServ.foundPeripherals objectAtIndex:self.
+    CBPeripheral *selected;
+    if(path.section == 0)
+    {
+        selected = (CBPeripheral*)[self.myHIDServ.foundPeripherals objectAtIndex:self.
                                              selectedIndex];
-    
+    }
+    if(path.section == 1)
+    {
+        selected = (CBPeripheral*)[self.myHIDServ.pairedPeripherals objectAtIndex:self.
+                                   selectedIndex];
+    }
     
     //send selected device to destination screen and send the central manager for bluetooth
     //consistency

@@ -5,7 +5,7 @@
 //  Copyright (c) 2014 Nod Inc. All rights reserved.
 //
 
-/*
+/*!
  *  This class decodes an openspatial pointer sent as a byte
  *  array. The function will return an array containing useful
  *  values from the openspatial pointer
@@ -74,13 +74,37 @@
 
 @interface OpenSpatialDecoder : NSObject
 
+/*!
+ Decode 2D Data from Nod
+ */
 +(NSDictionary*) decodePos2DPointer: (const uint8_t*) opSpcPtr;
+/*!
+ Create a fake 2D data packet for testing
+ */
 +(void*) createPos2DPointer:(NSDictionary*) OSData;
+/*!
+ Decode Pose6D (3D) Data from Nod
+ */
 +(NSDictionary*) decode3DTransPointer: (const uint8_t*) opSpcPtr;
+/*!
+ Create a fake Pose6D (3D) data packet for testing
+ */
 +(void*) create3DTransPointer: (NSDictionary*) OSData;
+/*!
+ Decode Button Data from Nod
+ */
 +(NSDictionary*) decodeButtonPointer: (const uint8_t*) opSpcPtr;
+/*!
+ Create a fake Button data packet for testing
+ */
 +(void*) createButtonPointer: (NSDictionary*) OSData;
+/*!
+ Decode Gesture Data from Nod
+ */
 +(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr;
+/*!
+ Create a fake Gesture data packet for testing
+ */
 +(void*) createGestPointer: (NSDictionary*) OSData;
 
 @end

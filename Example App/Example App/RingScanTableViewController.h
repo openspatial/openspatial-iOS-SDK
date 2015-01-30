@@ -12,4 +12,6 @@
 
 @interface RingScanTableViewController : UITableViewController <OpenSpatialBluetoothDelegate>
 
+@property NSMutableArray* rings;
+
 @end

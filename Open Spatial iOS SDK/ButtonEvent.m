@@ -12,12 +12,12 @@
 
 -(void)setButtonEventType:(ButtonEventType)buttonEType
 {
-    self.myButtonEventNum = buttonEType;
+    self.eventNum = buttonEType;
 }
 
 -(ButtonEventType)getButtonEventType
 {
-    return self.myButtonEventNum;
+    return self.eventNum;
 }
 
 @end

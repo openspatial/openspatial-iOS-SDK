@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreMotion/CoreMotion.h>
+#if TARGET_OS_IPHONE
+    #import <CoreMotion/CoreMotion.h>
+#endif
 #import <CoreBluetooth/CoreBluetooth.h>
 
-
+/*!
+ Class which represents a Pose6D event containing x,y,z,yaw,pitch,roll
+ */
 @interface RotationEvent : NSObject 
 
 @property float x;
