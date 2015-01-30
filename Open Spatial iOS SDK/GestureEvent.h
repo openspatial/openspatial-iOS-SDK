@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-/*
+/*!
  * The different gesture event types a gesture event can hold
  */
 typedef enum GestureEventType {
@@ -25,16 +25,16 @@ typedef enum GestureEventType {
 
 @interface GestureEvent : NSObject 
 
-@property (nonatomic, assign) GestureEventType myGestureEventNum;
+@property (nonatomic, assign) GestureEventType eventNum;
 @property (nonatomic, assign) CBPeripheral* peripheral;
 
-/*
+/*!
  * Sets the type of the gesture event
  * @param gestureEType - the type of the gesture event that it will take on
  */
 -(void)setGestureEventType:(GestureEventType)gestureEType;
 
-/*
+/*!
  * Returns the type of the gesture event
  */
 -(GestureEventType)getGestureEventType;

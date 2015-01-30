@@ -34,7 +34,6 @@ uint8_t mode = POINTER_MODE;
 
 -(void) startLoop
 {
-    [self.HIDServ setMode:mode forDeviceNamed:self.lastNodPeripheral.name];
     if(mode == POINTER_MODE)
     {
         mode = THREE_D_MODE;
@@ -158,17 +157,30 @@ uint8_t mode = POINTER_MODE;
 
 - (void) didConnectToNod: (CBPeripheral*) peripheral
 {
-    NSLog(@"here");
-    self.lastNodPeripheral = peripheral;
+    NSLog(@"connected %@",peripheral);
 
 }
 
 - (IBAction)subscribeEvents:(UIButton *)sender
 {
-    [self.HIDServ subscribeToButtonEvents:self.lastNodPeripheral.name];
-    [self.HIDServ subscribeToGestureEvents:self.lastNodPeripheral.name];
-    [self.HIDServ subscribeToPointerEvents:self.lastNodPeripheral.name];
-    [self.HIDServ subscribeToRotationEvents:self.lastNodPeripheral.name];
+    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys])
+    {
+        [self.HIDServ subscribeToPointerEvents:name];
+        [self.HIDServ subscribeToButtonEvents:name];
+        [self.HIDServ subscribeToGestureEvents:name];
+        [self.HIDServ subscribeToRotationEvents:name];
+    }
+}
+- (IBAction)unsubscribe:(id)sender
+{
+    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys])
+    {
+        [self.HIDServ unsubscribeFromPointerEvents:name];
+        [self.HIDServ unsubscribeFromButtonEvents:name];
+        [self.HIDServ unsubscribeFromGestureEvents:name];
+        [self.HIDServ unsubscribeFromRotationEvents:name];
+    }
+
 }
 
 @end

@@ -2,15 +2,15 @@
 //  ButtonEvent.h
 //  Open Spatial iOS SDK
 //
-//  Created by Neel Bhoopalam on 6/9/14.
 //  Copyright (c) 2014 Nod Labs. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-/*
- * The different button event types a button event can hold
+
+/*!
+  The different button event types a button event can hold
  */
 typedef enum ButtonEventType {
     TOUCH0_DOWN,
@@ -25,19 +25,18 @@ typedef enum ButtonEventType {
     TACTILE0_UP,
 } ButtonEventType;
 
-
 @interface ButtonEvent : NSObject
 
-@property (nonatomic, assign) ButtonEventType myButtonEventNum;
+@property (nonatomic, assign) ButtonEventType eventNum;
 @property (nonatomic, assign) CBPeripheral* peripheral;
 
-/*
+/*!
  * Sets the type of the button event
  * @param buttonEType - the type of the button event that it will take on
  */
 -(void)setButtonEventType:(ButtonEventType)buttonEType;
 
-/*
+/*!
  * Returns the type of a button event
  */
 -(ButtonEventType)getButtonEventType;
