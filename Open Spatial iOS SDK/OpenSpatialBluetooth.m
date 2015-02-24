@@ -63,7 +63,7 @@
     CBUUID* osUUID = [CBUUID UUIDWithString:@"1812"];
     NSArray* services = @[osUUID];
     [self.centralManager scanForPeripheralsWithServices:services options:nil];
-    [self.centralManager retrieveConnectedPeripheralsWithServices:services];
+    [self.centralManager retrieveConnectedPeripherals];
 }
 
 /*
