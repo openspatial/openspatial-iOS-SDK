@@ -45,7 +45,7 @@ uint8_t mode = POINTER_MODE;
     [self performSelector:@selector(startLoop) withObject:nil afterDelay:5];
 }
 
--(ButtonEvent *)buttonEventFired: (ButtonEvent *) buttonEvent
+-(void)buttonEventFired: (ButtonEvent *) buttonEvent
 {
     NSLog(@"This is the value of button event type from %@", [buttonEvent.peripheral name]);
     switch([buttonEvent getButtonEventType])
@@ -81,11 +81,9 @@ uint8_t mode = POINTER_MODE;
             NSLog(@"Tactile 1 Up");
             break;
     }
-    
-    return nil;
 }
 
--(PointerEvent *)pointerEventFired: (PointerEvent *) pointerEvent
+-(void)pointerEventFired: (PointerEvent *) pointerEvent
 {
     
     NSLog(@"This is the x value of the pointer event from %@", [pointerEvent.peripheral name]);
@@ -94,11 +92,9 @@ uint8_t mode = POINTER_MODE;
     
     NSLog(@"This is the y value of the pointer event from %@", [pointerEvent.peripheral name]);
     NSLog(@"%hd", [pointerEvent getYValue]);
-    
-    return nil;
 }
 
--(GestureEvent *)gestureEventFired: (GestureEvent *) gestureEvent
+-(void) gestureEventFired: (GestureEvent *) gestureEvent
 {
     NSLog(@"This is the value of gesture event type from %@", [gestureEvent.peripheral name]);
     switch([gestureEvent getGestureEventType])
@@ -128,11 +124,9 @@ uint8_t mode = POINTER_MODE;
             NSLog(@"Clockwise");
             break;
     }
-    
-    return nil;
 }
 
--(RotationEvent *)rotationEventFired:(RotationEvent *)rotationEvent
+-(void) rotationEventFired:(RotationEvent *)rotationEvent
 {
     NSLog(@"This is the x value of the quaternion from %@", [rotationEvent.peripheral name]);
     NSLog(@"%f", rotationEvent.x);
@@ -151,8 +145,6 @@ uint8_t mode = POINTER_MODE;
 
     NSLog(@"This is the yaw value of the quaternion from %@", [rotationEvent.peripheral name]);
     NSLog(@"%f", rotationEvent.yaw);
-    
-    return nil;
 }
 
 - (void) didConnectToNod: (CBPeripheral*) peripheral
@@ -160,6 +152,10 @@ uint8_t mode = POINTER_MODE;
     NSLog(@"connected %@",peripheral);
 
 }
+
+/*
+ *  FUNCTIONS TO SUBSCRIBE TO EVENTS... COMMENT OUT UNWANTED EVENTS
+ */
 
 - (IBAction)subscribeEvents:(UIButton *)sender
 {
@@ -169,6 +165,7 @@ uint8_t mode = POINTER_MODE;
         [self.HIDServ subscribeToButtonEvents:name];
         [self.HIDServ subscribeToGestureEvents:name];
         [self.HIDServ subscribeToRotationEvents:name];
+        [self.HIDServ subscribeToMotion6DEvents:name];
     }
 }
 - (IBAction)unsubscribe:(id)sender
@@ -179,8 +176,16 @@ uint8_t mode = POINTER_MODE;
         [self.HIDServ unsubscribeFromButtonEvents:name];
         [self.HIDServ unsubscribeFromGestureEvents:name];
         [self.HIDServ unsubscribeFromRotationEvents:name];
+        [self.HIDServ unsubscribeFromMotion6DEvents:name];
     }
 
+}
+
+-(void) motion6DEventFired:(Motion6DEvent *)motion6DEvent
+{
+    NSLog(@"Motion 6D Event Fired:: xAccel:%f, yAccel:%f, zAccel:%f, xGyro: %f, yGyro:%f, zGyro:%f",
+          motion6DEvent.xAccel, motion6DEvent.yAccel, motion6DEvent.zAccel,
+          motion6DEvent.xGyro, motion6DEvent.yGryo, motion6DEvent.zGryo);
 }
 
 @end
