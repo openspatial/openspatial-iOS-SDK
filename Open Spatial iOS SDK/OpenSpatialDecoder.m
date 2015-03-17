@@ -29,7 +29,7 @@
     [data appendBytes:&y length:sizeof(y)];
    
     const char* ret = [data bytes];
-    return ret;
+    return (char*)ret;
 }
 
 
@@ -85,7 +85,7 @@
     [data appendBytes:&yawt length:sizeof(yawt)];
 
 
-    return [data bytes];
+    return (char*)[data bytes];
 }
 
 
@@ -117,7 +117,7 @@
     
     short button = touch0 | touch1 << 2 | touch2  << 4 | tact0 << 6 | tact1 << 8;
     NSData* data = [NSData dataWithBytes:&button length:sizeof(button)];
-    return [data bytes];
+    return (char*)[data bytes];
 }
 
 +(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr
@@ -138,7 +138,34 @@
     char dataV = [[OSData objectForKey:GEST_DATA] charValue];
     [data appendBytes:&opCode length:sizeof(opCode)];
     [data appendBytes:&dataV length:sizeof(dataV)];
-    return [data bytes];
+    return (char*)[data bytes];
+}
+
++(NSDictionary*) decodeMot6DPointer:(const uint8_t *)opSpcPtr
+{
+    short int x = opSpcPtr[0] | (opSpcPtr[1] << 8);
+    float xf = ((float) x) / 8192;
+    short int y = opSpcPtr[2] | (opSpcPtr[3] << 8);
+    float yf = ((float)y )/ 8192;
+    short int z = opSpcPtr[4] | (opSpcPtr[5] << 8);
+    float zf = ((float)z) / 8192;
+    
+    short x2 = opSpcPtr[6] | (opSpcPtr[7] << 8);
+    float x2f = (((float)x2)/16.4) * (M_PI/180);
+    short y2 = opSpcPtr[8] | (opSpcPtr[9] << 8);
+    float y2f = (((float)y2)/16.4) * (M_PI/180);
+    short z2 = opSpcPtr[10] | (opSpcPtr[11] << 8);
+    float z2f = (((float)z2)/16.4) * (M_PI/180);
+    
+    NSDictionary* retDic = @{ XA : @(xf),
+                              YA : @(yf),
+                              ZA : @(zf),
+                              XG : @(x2f),
+                              YG : @(y2f),
+                              ZG : @(z2f),
+                              };
+    return retDic;
+
 }
 
 

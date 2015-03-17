@@ -71,6 +71,12 @@
 #define BUTTON_UNUSED 0
 #define BUTTON_UP 2
 #define BUTTON_DOWN 1
+#define XA @"accelerometer x"
+#define YA @"accelerometer y"
+#define ZA @"accelerometer z"
+#define XG @"gyroscope x"
+#define YG @"gyroscope y"
+#define ZG @"gyroscope y"
 
 @interface OpenSpatialDecoder : NSObject
 
@@ -106,5 +112,11 @@
  Create a fake Gesture data packet for testing
  */
 +(void*) createGestPointer: (NSDictionary*) OSData;
+/*!
+ Decode Motion 6D Data from Nod
+ */
++(NSDictionary*) decodeMot6DPointer: (const uint8_t*) opSpcPtr;
+
+
 
 @end

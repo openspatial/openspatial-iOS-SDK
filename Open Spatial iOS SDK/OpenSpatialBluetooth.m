@@ -60,10 +60,19 @@
 {
     NSLog(@"Scanning");
     [self.foundPeripherals removeAllObjects];
-    CBUUID* osUUID = [CBUUID UUIDWithString:@"1812"];
-    NSArray* services = @[osUUID];
-    [self.centralManager scanForPeripheralsWithServices:services options:nil];
-    [self.centralManager retrieveConnectedPeripherals];
+    CBUUID* hidUUID = [CBUUID UUIDWithString:@"1812"];
+    CBUUID* osUUID = [CBUUID UUIDWithString:OS_UUID];
+    CBUUID* nUUID = [CBUUID UUIDWithString:NCONTROL_UUID];
+    NSArray* services = @[hidUUID, osUUID, nUUID];
+  //  [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    self.pairedPeripherals = [NSMutableArray arrayWithArray:
+                              [self.centralManager retrieveConnectedPeripheralsWithServices:services]];
+    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)])
+    {
+        NSLog(@"Delegate method called/");
+        
+        [self.delegate didFindNewPairedDevice:self.pairedPeripherals];
+    }
 }
 
 /*
@@ -130,7 +139,7 @@
 - (void)centralManager:(CBCentralManager *)central
   didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE};
+    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE, MOTION: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
     dev.BTPeripheral = peripheral;
@@ -210,8 +219,14 @@ service error:(NSError *)error
                           peripheral.name]).buttonCharacteristic = characteristic;
             countChars++;
         }
+        if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
+        {
+            ((NodDevice*)[self.connectedPeripherals objectForKey:
+                          peripheral.name]).motion6DCharacteristic = characteristic;
+            countChars++;
+        }
     }
-    if(countChars == 4)
+    if(countChars == 5)
     {
         if([self.delegate respondsToSelector:@selector(didConnectToNod:)])
         {
@@ -342,6 +357,28 @@ service error:(NSError *)error
 }
 
 /*
+ * Subscribes to motion6D events for the given device
+ */
+-(void)subscribeToMotion6DEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.motion6DCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:MOTION];
+    }
+}
+-(void)unsubscribeFromMotion6DEvents:(NSString *)peripheralName
+{
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev)
+    {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.motion6DCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:MOTION];
+    }
+}
+
+/*
  *  Disconnection handler (currently just tries to reconnect)
  */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
@@ -389,6 +426,12 @@ service error:(NSError *)error
     if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
     {
         [self buttonFunction:characteristic peripheral:peripheral];
+    }
+    
+    // Checks if the characteristic is the motion 6d characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
+    {
+        [self motion6DFunction:characteristic peripheral:peripheral];
     }
 }
 
@@ -672,6 +715,27 @@ service error:(NSError *)error
     }
     // FOR TESTING PURPOSES ONLY
     return gestureEvent;
+}
+
+-(void) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
+{
+    const uint8_t* bytePtr = [characteristic.value bytes];
+    NSDictionary* OSData = [OpenSpatialDecoder decodeMot6DPointer:bytePtr];
+    Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
+    mEvent.xAccel = [[OSData objectForKey:XA] floatValue];
+    mEvent.yAccel = [[OSData objectForKey:YA] floatValue];
+    mEvent.zAccel = [[OSData objectForKey:ZA] floatValue];
+    mEvent.xGyro = [[OSData objectForKey:XG] floatValue];
+    mEvent.yGryo = [[OSData objectForKey:YG] floatValue];
+    mEvent.zGryo = [[OSData objectForKey:ZG] floatValue];
+    
+    if([self isSubscribedToEvent:MOTION forPeripheral:peripheral.name])
+    {
+        if([self.delegate respondsToSelector:@selector(motion6DEventFired:)])
+        {
+            [self.delegate motion6DEventFired:mEvent];
+        }
+    }
 }
 
 

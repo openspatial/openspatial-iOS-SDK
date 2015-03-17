@@ -13,12 +13,14 @@
 #import "PointerEvent.h"
 #import "RotationEvent.h"
 #import "GestureEvent.h"
+#import "Motion6DEvent.h"
 
 #define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
 #define POS2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
 #define TRANS3D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
 #define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
 #define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
+#define MOTION6D_UUID @"00000209-0000-1000-8000-A0E5E9000000"
 
 #define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
 #define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
@@ -27,6 +29,7 @@
 #define POINTER @"pointer"
 #define GESTURE @"gesture"
 #define ROTATION @"rotation"
+#define MOTION @"motion"
 
 #define POS2D_SIZE 4
 #define TRANS3D_SIZE 12
@@ -45,6 +48,7 @@
 @property CBCharacteristic* pose6DCharacteristic;
 @property CBCharacteristic* pointerCharacteristic;
 @property CBCharacteristic* buttonCharacteristic;
+@property CBCharacteristic* motion6DCharacteristic;
 @property NSMutableDictionary* subscribedTo;
 
 @end
@@ -57,19 +61,24 @@
 /*!
  called when a button event is fired from Nod
  */
--(ButtonEvent *)buttonEventFired: (ButtonEvent *) buttonEvent;
+-(void)buttonEventFired: (ButtonEvent *) buttonEvent;
 /*!
  called when a pointer event is fired from Nod
  */
--(PointerEvent *)pointerEventFired: (PointerEvent *) pointerEvent;
+-(void)pointerEventFired: (PointerEvent *) pointerEvent;
 /*!
  called when a rotation event is fired from Nod
  */
--(RotationEvent *)rotationEventFired: (RotationEvent *) rotationEvent;
+-(void)rotationEventFired: (RotationEvent *) rotationEvent;
 /*!
  called when a gesture event is fired from Nod
  */
--(GestureEvent *)gestureEventFired: (GestureEvent *) gestureEvent;
+-(void)gestureEventFired: (GestureEvent *) gestureEvent;
+/*!
+ called when a motion6D event is fired from Nod
+ */
+-(void)motion6DEventFired: (Motion6DEvent *) motion6DEvent;
+
 /*!
  called when a Nod is connected to from connectToPeripheral
  */
@@ -164,6 +173,14 @@
  */
 -(void)subscribeToPointerEvents:(NSString *)peripheralName;
 -(void)unsubscribeFromPointerEvents: (NSString *)peripheralName;
+
+/*!
+ * Subscribes the specified peripheral device to motion6D events
+ *
+ * @param peripheralName - the name of the peripheral that will connect to motion6D events
+ */
+-(void)subscribeToMotion6DEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromMotion6DEvents: (NSString *)peripheralName;
 
 @end
 
