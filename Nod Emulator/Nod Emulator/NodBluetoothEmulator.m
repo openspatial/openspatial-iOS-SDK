@@ -57,7 +57,7 @@
         }
         case CBPeripheralManagerStateUnsupported: {
             NSLog(@"peripheralStateChange: Unsupported");
-            // TODO: Give user feedback that Bluetooth is not supported.
+            [self warnForUnsupportedBluetooth];
             break;
         }
         case CBPeripheralManagerStateUnknown:
@@ -67,6 +67,7 @@
             break;
     }
 }
+
 
 -(void) disableServices
 {
@@ -282,6 +283,23 @@ didSubscribeToCharacteristic:(CBCharacteristic *)characteristic
     [self.periphMan updateValue:updatedValue
               forCharacteristic:self.buttonChar onSubscribedCentrals:nil];
 }
+
+
+- (void)warnForUnsupportedBluetooth
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Bluetooth Unsupported" message:@"Nod Emulator requires Bluetooth.  Please try running the app again on a device that supports Bluetooth." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alertView show];
+    self.bluetoothUnsupportedAlertView = alertView;
+}
+
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView == self.bluetoothUnsupportedAlertView) {
+        exit(0); // Bluetooth is unsupported; self-destruct.
+    }
+}
+
 
 @end
 

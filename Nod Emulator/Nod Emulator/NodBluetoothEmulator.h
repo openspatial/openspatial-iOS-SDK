@@ -21,7 +21,7 @@
 #define GEST_SIZE 5
 #define BUTTON_SIZE 2
 
-@interface NodBluetoothEmulator : NSObject <CBPeripheralManagerDelegate>
+@interface NodBluetoothEmulator : NSObject <CBPeripheralManagerDelegate, UIAlertViewDelegate>
 
 @property CBPeripheralManager* periphMan;
 @property NSMutableArray* services;
@@ -29,6 +29,7 @@
 @property CBMutableCharacteristic* trans3DChar;
 @property CBMutableCharacteristic* gestChar;
 @property CBMutableCharacteristic* buttonChar;
+@property UIAlertView *bluetoothUnsupportedAlertView;
 
 +(id) sharedEmulator;
 -(void) sendOS2D: (NSData*) data;
