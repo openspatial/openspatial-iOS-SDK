@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6154.17" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6153.11"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Help View Controller-->
         <scene sceneID="FJs-9L-a60">
             <objects>
-                <viewController id="bhf-WC-Nc5" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HelpViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="bhf-WC-Nc5" userLabel="Help View Controller" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5Nb-oX-JNJ"/>
                         <viewControllerLayoutGuide type="bottom" id="m3D-D9-ZVu"/>
@@ -28,7 +28,7 @@
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Welcome to the Nod Emulator" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7N6-T1-4QY">
                                 <rect key="frame" x="35" y="73" width="231" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="This application is designed to emulate the" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lhe-Z9-Tuf">
@@ -149,10 +149,10 @@
             </objects>
             <point key="canvasLocation" x="137" y="-423"/>
         </scene>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vXZ-lx-hvc" userLabel="Main View Controller" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -170,6 +170,9 @@
                                 <state key="normal" title="3D Rotation">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="enableTrans3D" destination="vXZ-lx-hvc" eventType="touchUpInside" id="AIg-F5-tkV"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BcF-5J-ozz">
                                 <rect key="frame" x="234" y="518" width="62" height="30"/>
@@ -185,27 +188,39 @@
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fFt-Nq-NR4">
                                 <rect key="frame" x="55" y="83" width="39" height="40"/>
-                                <state key="normal" image="BlueButton.png">
+                                <state key="normal" title="L Tact" image="BlueButton.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="leftTactPressed" destination="vXZ-lx-hvc" eventType="touchUpInside" id="xZi-1L-hqi"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SGf-0g-eCI">
                                 <rect key="frame" x="222" y="83" width="41" height="40"/>
-                                <state key="normal" image="BlueButton.png">
+                                <state key="normal" title="R Tact" image="BlueButton.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="rightTactPressed" destination="vXZ-lx-hvc" eventType="touchUpInside" id="vHk-pr-8bj"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pqv-kH-bcK">
                                 <rect key="frame" x="35" y="137" width="40" height="40"/>
-                                <state key="normal" image="BlueButton.png">
+                                <state key="normal" title="L Touch" image="BlueButton.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="leftTouchPressed" destination="vXZ-lx-hvc" eventType="touchUpInside" id="aGJ-wL-36O"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jql-rN-eV9">
                                 <rect key="frame" x="245" y="137" width="40" height="40"/>
                                 <state key="normal" title="R Touch" image="BlueButton.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="rightTouchPressed" destination="vXZ-lx-hvc" eventType="touchUpInside" id="WmC-Ic-AKG"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e4k-BY-wIL" customClass="SliderView">
                                 <rect key="frame" x="95" y="81" width="131" height="35"/>
@@ -224,11 +239,11 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="LTact" destination="fFt-Nq-NR4" id="4pf-Ho-7qr"/>
-                        <outlet property="LTouch" destination="Pqv-kH-bcK" id="vQg-yd-zQc"/>
-                        <outlet property="RTact" destination="SGf-0g-eCI" id="xrX-bE-3pZ"/>
-                        <outlet property="RTouch" destination="jql-rN-eV9" id="Bb4-Ug-vmy"/>
-                        <outlet property="quatBut" destination="IWi-Wr-bXc" id="pHg-3M-iaE"/>
+                        <outlet property="LTact" destination="fFt-Nq-NR4" id="4UC-5M-SI0"/>
+                        <outlet property="LTouch" destination="Pqv-kH-bcK" id="sMv-8f-djV"/>
+                        <outlet property="RTact" destination="SGf-0g-eCI" id="RYZ-Mo-3Pq"/>
+                        <outlet property="RTouch" destination="jql-rN-eV9" id="bga-JB-9qp"/>
+                        <outlet property="quatBut" destination="IWi-Wr-bXc" id="bsX-w3-Ena"/>
                         <outlet property="sliderView" destination="e4k-BY-wIL" id="23x-Jj-qiF"/>
                         <outlet property="trackView" destination="Kff-Nk-Cf9" id="xlD-TS-R5M"/>
                     </connections>
@@ -237,10 +252,10 @@
             </objects>
             <point key="canvasLocation" x="137" y="234"/>
         </scene>
-        <!--View Controller-->
+        <!--Gestures View Controller-->
         <scene sceneID="MIa-Af-Fuf">
             <objects>
-                <viewController id="Ctn-5U-uhd" customClass="ViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="GesturesViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Ctn-5U-uhd" userLabel="Gestures View Controller" customClass="ViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9BP-1X-Aag"/>
                         <viewControllerLayoutGuide type="bottom" id="oJR-x9-ahl"/>
@@ -258,6 +273,9 @@
                                     <color key="titleColor" red="0.2941176593" green="0.2941176593" blue="0.2941176593" alpha="1" colorSpace="deviceRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="swipedUp" destination="Ctn-5U-uhd" eventType="touchUpInside" id="Xcj-a6-3P7"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="F4Q-Tp-ttF">
                                 <rect key="frame" x="203" y="256" width="107" height="56"/>
@@ -265,6 +283,9 @@
                                     <color key="titleColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="swipedRight" destination="Ctn-5U-uhd" eventType="touchUpInside" id="ymz-Sf-UvA"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="bottom" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8qx-sN-6Sf">
                                 <rect key="frame" x="9" y="256" width="106" height="56"/>
@@ -272,6 +293,9 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="swipedLeft" destination="Ctn-5U-uhd" eventType="touchUpInside" id="veS-lb-VUG"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zmv-6z-2fl">
                                 <rect key="frame" x="116" y="333" width="88" height="215"/>
@@ -279,6 +303,9 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="swipedDown" destination="Ctn-5U-uhd" eventType="touchUpInside" id="g8e-zB-RK6"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EXo-Rt-iKr">
                                 <rect key="frame" x="244" y="20" width="56" height="39"/>
@@ -295,6 +322,9 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="twistedLeft" destination="Ctn-5U-uhd" eventType="touchUpInside" id="c67-OA-FJ5"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBy-Je-llh">
                                 <rect key="frame" x="208" y="87" width="112" height="110"/>
@@ -302,18 +332,13 @@
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="twistedRight" destination="Ctn-5U-uhd" eventType="touchUpInside" id="X7C-bx-PpP"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <outlet property="swipeDown" destination="zmv-6z-2fl" id="Eaq-1l-eYT"/>
-                        <outlet property="swipeLeft" destination="8qx-sN-6Sf" id="uot-jB-Nma"/>
-                        <outlet property="swipeRight" destination="F4Q-Tp-ttF" id="mBn-tT-aBb"/>
-                        <outlet property="swipeUp" destination="9RN-Oe-Amy" id="GD4-6r-4Tv"/>
-                        <outlet property="twistLeft" destination="NKr-yH-aOp" id="c97-UX-wm6"/>
-                        <outlet property="twistRight" destination="dBy-Je-llh" id="TN8-5C-wSa"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MTw-hb-b6n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -337,6 +362,6 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="PEf-o2-EUy"/>
+        <segue reference="1Gp-do-k4Q"/>
     </inferredMetricsTieBreakers>
 </document>
