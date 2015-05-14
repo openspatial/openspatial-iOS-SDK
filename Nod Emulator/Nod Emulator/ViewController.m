@@ -36,32 +36,6 @@
     self.sliderView.parent = self;
     self.trackView.delegate = self;
     self.NBE = [NodBluetoothEmulator sharedEmulator];
-    [self.LTouch addTarget:self action:@selector(leftTouchPressed)
-          forControlEvents:UIControlEventTouchDown];
-    [self.RTouch addTarget:self action:@selector(rightTouchPressed)
-          forControlEvents:UIControlEventTouchDown];
-    [self.LTact addTarget:self action:@selector(leftTactPressed)
-         forControlEvents:UIControlEventTouchDown];
-    [self.RTact addTarget:self action:@selector(rightTactPressed)
-         forControlEvents:UIControlEventTouchDown];
-    [self.LSlide addTarget:self action:@selector(leftSlidePressed)
-          forControlEvents:UIControlEventTouchDown];
-    [self.RSlide addTarget:self action:@selector(rightSlidePressed)
-          forControlEvents:UIControlEventTouchDown];
-    [self.quatBut addTarget:self action:@selector(enableTrans3D)
-           forControlEvents:UIControlEventTouchDown];
-    [self.swipeUp addTarget:self action:@selector(swipedUp)
-           forControlEvents:UIControlEventTouchDown];
-    [self.swipeDown addTarget:self action:@selector(swipedDown)
-             forControlEvents:UIControlEventTouchDown];
-    [self.swipeLeft addTarget:self action:@selector(swipedLeft)
-             forControlEvents:UIControlEventTouchDown];
-    [self.swipeRight addTarget:self action:@selector(swipedRight)
-              forControlEvents:UIControlEventTouchDown];
-    [self.twistRight addTarget:self action:@selector(twistedRight)
-              forControlEvents:UIControlEventTouchDown];
-    [self.twistLeft addTarget:self action:@selector(twistedLeft)
-              forControlEvents:UIControlEventTouchDown];
 }
 
 +(UIColor*)colorWithHexString:(NSString*)hex
@@ -124,7 +98,7 @@ short tact1 = 0;
  *                  tact1 -> right tact
  */
 
-- (void) leftTouchPressed
+- (IBAction)leftTouchPressed
 {
     if(touch0 == BUTTON_UNUSED || touch0 == BUTTON_UP)
     {
@@ -152,8 +126,7 @@ short tact1 = 0;
 }
 
 
-
-- (void) rightTouchPressed
+- (IBAction)rightTouchPressed
 {
     if(touch1 == BUTTON_UNUSED || touch1 == BUTTON_UP)
     {
@@ -180,7 +153,7 @@ short tact1 = 0;
     [self.NBE sendButton:temp];
 }
 
-- (void) SlideHoldPressed
+- (IBAction) SlideHoldPressed
 {
     if(touch2 == BUTTON_UNUSED || touch2 == BUTTON_UP)
     {
@@ -203,7 +176,8 @@ short tact1 = 0;
     [self.NBE sendButton:temp];
 }
 
-- (void) leftTactPressed
+
+- (IBAction) leftTactPressed
 {
     if(tact0 == BUTTON_UNUSED || tact0 == BUTTON_UP)
     {
@@ -230,7 +204,8 @@ short tact1 = 0;
     [self.NBE sendButton:temp];
 }
 
-- (void) rightTactPressed
+
+- (IBAction) rightTactPressed
 {
     if(tact1 == BUTTON_UNUSED || tact1 == BUTTON_UP)
     {
@@ -257,7 +232,7 @@ short tact1 = 0;
     [self.NBE sendButton:temp];
 }
 
--(void) leftSlidePressed
+-(IBAction)leftSlidePressed
 {
     NSDictionary* retDic = @{GEST_OPCODE : @G_OP_SCROLL,
                             GEST_DATA : @SLIDE_LEFT,
@@ -266,7 +241,7 @@ short tact1 = 0;
     NSData* temp = [NSData dataWithBytes:bytes length:GEST_SIZE];
     [self.NBE sendGesture:temp];
 }
--(void) rightSlidePressed
+-(IBAction)rightSlidePressed
 {
     NSDictionary* retDic = @{GEST_OPCODE : @G_OP_SCROLL,
                              GEST_DATA : @SLIDE_RIGHT,
@@ -290,7 +265,7 @@ short tact1 = 0;
 }
 
 bool trans3DEnabled = false;
--(void) enableTrans3D
+- (IBAction) enableTrans3D
 {
     if(!trans3DEnabled)
     {
@@ -333,7 +308,8 @@ bool trans3DEnabled = false;
 
 }
 
-- (void) swipedUp
+
+- (IBAction) swipedUp
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GUP,
@@ -343,7 +319,7 @@ bool trans3DEnabled = false;
     [self.NBE sendGesture:temp];
 }
 
-- (void) swipedDown
+- (IBAction) swipedDown
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GDOWN,
@@ -353,7 +329,7 @@ bool trans3DEnabled = false;
     [self.NBE sendGesture:temp];
 }
 
-- (void) swipedLeft
+- (IBAction) swipedLeft
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GLEFT,
@@ -363,7 +339,7 @@ bool trans3DEnabled = false;
     [self.NBE sendGesture:temp];
 }
 
-- (void) swipedRight
+- (IBAction) swipedRight
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GRIGHT,
@@ -373,7 +349,7 @@ bool trans3DEnabled = false;
     [self.NBE sendGesture:temp];
 }
 
-- (void) twistedLeft
+- (IBAction) twistedLeft
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GCW,
@@ -383,7 +359,7 @@ bool trans3DEnabled = false;
     [self.NBE sendGesture:temp];
 }
 
-- (void) twistedRight
+- (IBAction) twistedRight
 {
     NSDictionary* retDic = @{GEST_OPCODE: @G_OP_DIRECTION,
                              GEST_DATA : @GCCW,
