@@ -136,20 +136,6 @@
 		183CB67C194655D80079076A /* Example App */ = {
 			isa = PBXGroup;
 			children = (
-				B0E03E011AB8F3BA00FD1A0F /* ButtonEvent.h */,
-				B0E03E021AB8F3BA00FD1A0F /* ButtonEvent.m */,
-				B0E03E031AB8F3BA00FD1A0F /* GestureEvent.h */,
-				B0E03E041AB8F3BA00FD1A0F /* GestureEvent.m */,
-				B0E03E051AB8F3BA00FD1A0F /* Motion6DEvent.h */,
-				B0E03E061AB8F3BA00FD1A0F /* Motion6DEvent.m */,
-				B0E03E071AB8F3BA00FD1A0F /* OpenSpatialBluetooth.h */,
-				B0E03E081AB8F3BA00FD1A0F /* OpenSpatialBluetooth.m */,
-				B0E03E091AB8F3BA00FD1A0F /* OpenSpatialDecoder.h */,
-				B0E03E0A1AB8F3BA00FD1A0F /* OpenSpatialDecoder.m */,
-				B0E03E0B1AB8F3BA00FD1A0F /* PointerEvent.h */,
-				B0E03E0C1AB8F3BA00FD1A0F /* PointerEvent.m */,
-				B0E03E0D1AB8F3BA00FD1A0F /* RotationEvent.h */,
-				B0E03E0E1AB8F3BA00FD1A0F /* RotationEvent.m */,
 				183CB685194655D80079076A /* AppDelegate.h */,
 				183CB686194655D80079076A /* AppDelegate.m */,
 				183CB688194655D80079076A /* Main.storyboard */,
@@ -157,6 +143,7 @@
 				183CB6AF194657040079076A /* MainViewController.m */,
 				183CB6AB194656890079076A /* RingScanTableViewController.h */,
 				183CB6AC194656890079076A /* RingScanTableViewController.m */,
+				5A58DDC01AC49921004E63E8 /* Open Spatial SDK */,
 				183CB68E194655D80079076A /* Images.xcassets */,
 				183CB67D194655D80079076A /* Supporting Files */,
 			);
@@ -190,6 +177,27 @@
 				183CB69E194655D80079076A /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		5A58DDC01AC49921004E63E8 /* Open Spatial SDK */ = {
+			isa = PBXGroup;
+			children = (
+				B0E03E011AB8F3BA00FD1A0F /* ButtonEvent.h */,
+				B0E03E021AB8F3BA00FD1A0F /* ButtonEvent.m */,
+				B0E03E031AB8F3BA00FD1A0F /* GestureEvent.h */,
+				B0E03E041AB8F3BA00FD1A0F /* GestureEvent.m */,
+				B0E03E051AB8F3BA00FD1A0F /* Motion6DEvent.h */,
+				B0E03E061AB8F3BA00FD1A0F /* Motion6DEvent.m */,
+				B0E03E071AB8F3BA00FD1A0F /* OpenSpatialBluetooth.h */,
+				B0E03E081AB8F3BA00FD1A0F /* OpenSpatialBluetooth.m */,
+				B0E03E091AB8F3BA00FD1A0F /* OpenSpatialDecoder.h */,
+				B0E03E0A1AB8F3BA00FD1A0F /* OpenSpatialDecoder.m */,
+				B0E03E0B1AB8F3BA00FD1A0F /* PointerEvent.h */,
+				B0E03E0C1AB8F3BA00FD1A0F /* PointerEvent.m */,
+				B0E03E0D1AB8F3BA00FD1A0F /* RotationEvent.h */,
+				B0E03E0E1AB8F3BA00FD1A0F /* RotationEvent.m */,
+			);
+			name = "Open Spatial SDK";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
