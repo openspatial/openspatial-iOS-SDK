@@ -21,13 +21,7 @@
 @property (weak, nonatomic) IBOutlet TouchView *trackView;
 @property (weak, nonatomic) IBOutlet UIButton *quatBut;
 @property (weak, nonatomic) IBOutlet UIButton *eulerBut;
-@property (weak, nonatomic) IBOutlet UIButton *swipeUp;
-@property (weak, nonatomic) IBOutlet UIButton *swipeRight;
-@property (weak, nonatomic) IBOutlet UIButton *swipeDown;
-@property (weak, nonatomic) IBOutlet UIButton *swipeLeft;
 @property (weak, nonatomic) IBOutlet SliderView *sliderView;
-@property (weak, nonatomic) IBOutlet UIButton *twistLeft;
-@property (weak, nonatomic) IBOutlet UIButton *twistRight;
 @property CMMotionManager* motionManager;
 
 -(void) leftSlidePressed;
