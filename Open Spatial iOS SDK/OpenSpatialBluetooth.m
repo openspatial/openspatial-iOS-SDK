@@ -728,6 +728,7 @@ service error:(NSError *)error
     mEvent.xGyro = [[OSData objectForKey:XG] floatValue];
     mEvent.yGyro = [[OSData objectForKey:YG] floatValue];
     mEvent.zGyro = [[OSData objectForKey:ZG] floatValue];
+    mEvent.peripheral = peripheral;
     
     if([self isSubscribedToEvent:MOTION forPeripheral:peripheral.name])
     {
