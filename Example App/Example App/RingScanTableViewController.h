@@ -13,5 +13,6 @@
 @interface RingScanTableViewController : UITableViewController <OpenSpatialBluetoothDelegate>
 
 @property NSMutableArray* rings;
+- (IBAction)cancelSelection:(id)sender;
 
 @end
