@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D2134" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--Main View Controller-->
@@ -23,7 +23,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="Gjx-oz-MGf" kind="modal" id="EuN-zF-onb"/>
+                                    <segue destination="aq2-cc-lhi" kind="modal" id="EuN-zF-onb"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W1x-8e-VFD">
@@ -52,7 +52,7 @@
             </objects>
             <point key="canvasLocation" x="-67" y="166"/>
         </scene>
-        <!--Ring Scan Table View Controller-->
+        <!--Nod Rings-->
         <scene sceneID="bdb-Sl-15y">
             <objects>
                 <tableViewController id="Gjx-oz-MGf" customClass="RingScanTableViewController" sceneMemberID="viewController">
@@ -78,8 +78,33 @@
                             <outlet property="delegate" destination="Gjx-oz-MGf" id="Puk-lU-XDZ"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Nod Rings" id="GOT-Pp-Ulg">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="ZKP-Ly-Lxi" userLabel="Cancel">
+                            <connections>
+                                <action selector="cancelSelection:" destination="Gjx-oz-MGf" id="grf-qZ-rUs"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9kL-MV-42d" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="883" y="166"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Q9H-zs-iBk">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="aq2-cc-lhi" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Dw2-Mu-Fs7">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Gjx-oz-MGf" kind="relationship" relationship="rootViewController" id="8RF-iY-G6x"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aiM-yo-3kv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="351" y="166"/>
         </scene>

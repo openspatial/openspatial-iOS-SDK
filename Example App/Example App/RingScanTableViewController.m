@@ -94,6 +94,10 @@
     [self.tableView reloadData];
 }
 
+- (IBAction)cancelSelection:(id)sender {
+    [self dismissViewControllerAnimated:true completion:nil];
+}
+
 /*
  * When a devices is chosen stop scanning and send the device data to the next screen and connect to
  * the device.
@@ -124,5 +128,6 @@
     
     [self.myHIDServ connectToPeripheral:selected];
 }
+
 
 @end
