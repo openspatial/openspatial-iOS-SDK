@@ -726,8 +726,8 @@ service error:(NSError *)error
     mEvent.yAccel = [[OSData objectForKey:YA] floatValue];
     mEvent.zAccel = [[OSData objectForKey:ZA] floatValue];
     mEvent.xGyro = [[OSData objectForKey:XG] floatValue];
-    mEvent.yGryo = [[OSData objectForKey:YG] floatValue];
-    mEvent.zGryo = [[OSData objectForKey:ZG] floatValue];
+    mEvent.yGyro = [[OSData objectForKey:YG] floatValue];
+    mEvent.zGyro = [[OSData objectForKey:ZG] floatValue];
     
     if([self isSubscribedToEvent:MOTION forPeripheral:peripheral.name])
     {

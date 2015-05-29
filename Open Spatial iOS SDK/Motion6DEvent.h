@@ -15,8 +15,8 @@
 @property float yAccel;
 @property float zAccel;
 @property float xGyro;
-@property float yGryo;
-@property float zGryo;
+@property float yGyro;
+@property float zGyro;
 @property (nonatomic, assign) CBPeripheral* peripheral;
 
 @end

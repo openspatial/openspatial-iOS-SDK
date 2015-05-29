@@ -185,7 +185,7 @@ uint8_t mode = POINTER_MODE;
 {
     NSLog(@"Motion 6D Event Fired:: xAccel:%f, yAccel:%f, zAccel:%f, xGyro: %f, yGyro:%f, zGyro:%f",
           motion6DEvent.xAccel, motion6DEvent.yAccel, motion6DEvent.zAccel,
-          motion6DEvent.xGyro, motion6DEvent.yGryo, motion6DEvent.zGryo);
+          motion6DEvent.xGyro, motion6DEvent.yGyro, motion6DEvent.zGyro);
 }
 
 @end
