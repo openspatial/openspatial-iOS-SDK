@@ -28,4 +28,4 @@ Please vist out [Developer Portal](http://developer.nod.com) for more detailed i
 
 ## Open Spatial SDK for Android
 
-For information on Open Spatial SDK for Android see (https://github.com/openspatial/android-sdk)
+
