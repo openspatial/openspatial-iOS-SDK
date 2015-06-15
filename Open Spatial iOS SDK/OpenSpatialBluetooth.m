@@ -139,7 +139,7 @@
 - (void)centralManager:(CBCentralManager *)central
   didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE, MOTION: @FALSE};
+    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE, MOTION: @FALSE, BATTERY: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
     dev.BTPeripheral = peripheral;
@@ -168,11 +168,8 @@
 {
     for (CBService *service in peripheral.services)
     {
-        NSLog(@"Discovered service %@", service);
-        if([[service.UUID UUIDString] isEqualToString:OS_UUID])
-        {
-            [self getCharacteristics:service peripheral:peripheral];
-        }
+        NSLog(@"Discovered Service %@", service);
+        [self getCharacteristics:service peripheral:peripheral];
     }
 }
 
@@ -195,38 +192,51 @@ service error:(NSError *)error
     {
         NSLog(@"%@",characteristic.UUID.UUIDString);
         
-        if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
-        {
-            ((NodDevice*)[self.connectedPeripherals objectForKey:
-                          peripheral.name]).pointerCharacteristic = characteristic;
-            countChars++;
+        
+        if([service.UUID.UUIDString isEqualToString:OS_UUID]) {
+        
+            if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).pointerCharacteristic = characteristic;
+                countChars++;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).pose6DCharacteristic = characteristic;
+                countChars++;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).gestureCharacteristic = characteristic;
+                countChars++;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).buttonCharacteristic = characteristic;
+                countChars++;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).motion6DCharacteristic = characteristic;
+                countChars++;
+            }
         }
-        if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
-        {
-            ((NodDevice*)[self.connectedPeripherals objectForKey:
-                          peripheral.name]).pose6DCharacteristic = characteristic;
-            countChars++;
-        }
-        if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
-        {
-            ((NodDevice*)[self.connectedPeripherals objectForKey:
-                          peripheral.name]).gestureCharacteristic = characteristic;
-            countChars++;
-        }
-        if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
-        {
-            ((NodDevice*)[self.connectedPeripherals objectForKey:
-                          peripheral.name]).buttonCharacteristic = characteristic;
-            countChars++;
-        }
-        if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
-        {
-            ((NodDevice*)[self.connectedPeripherals objectForKey:
-                          peripheral.name]).motion6DCharacteristic = characteristic;
-            countChars++;
+        else if([service.UUID.UUIDString isEqualToString:BATTERY_SERVICE_UUID]) {
+            
+            if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID])
+            {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).batteryCharacteristic = characteristic;
+                countChars++;
+            }
         }
     }
-    if(countChars == 5)
+    if(countChars == 6)
     {
         if([self.delegate respondsToSelector:@selector(didConnectToNod:)])
         {
@@ -379,6 +389,28 @@ service error:(NSError *)error
 }
 
 /*
+ * Subscribes to battery level events for the given device
+ */
+- (void)subscribeToBatteryLevel:(NSString *)peripheralName {
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.batteryCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:BATTERY];
+        
+        // Called to ensure that it updates the value in the beginning
+        [dev.BTPeripheral readValueForCharacteristic:dev.batteryCharacteristic];
+    }
+}
+
+-(void)unsubscribeFromBatteryLevel:(NSString *)peripheralName {
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.batteryCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:BATTERY];
+    }
+}
+
+/*
  *  Disconnection handler (currently just tries to reconnect)
  */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
@@ -433,6 +465,12 @@ service error:(NSError *)error
     {
         [self motion6DFunction:characteristic peripheral:peripheral];
     }
+    
+    // Checks if the characteristic is the battery status characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID])
+    {
+        [self batteryFunction:characteristic peripheral:peripheral];
+    }
 }
 
 /*
@@ -458,7 +496,7 @@ service error:(NSError *)error
     // Checks if the characteristic is the gesture characteristic
     if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
     {
-        NSLog(@"gesture");
+        NSLog(@"Gesture");
         array = [self gestureFunction:characteristic peripheral:peripheral];
     }
 
@@ -737,6 +775,13 @@ service error:(NSError *)error
             [self.delegate motion6DEventFired:mEvent];
         }
     }
+}
+
+-(void) batteryFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
+{
+    char* val2 = (char*)characteristic.value.bytes;
+    int val = (int) val2[0];
+    [self.delegate didReadBatteryLevel:val forRingNamed:peripheral.name];
 }
 
 

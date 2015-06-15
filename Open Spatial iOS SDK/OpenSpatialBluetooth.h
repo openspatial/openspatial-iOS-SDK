@@ -25,11 +25,15 @@
 #define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
 #define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
 
+#define BATTERY_SERVICE_UUID @"180F"
+#define BATTERY_STATUS_CHAR_UUID @"2A19"
+
 #define BUTTON @"button"
 #define POINTER @"pointer"
 #define GESTURE @"gesture"
 #define ROTATION @"rotation"
 #define MOTION @"motion"
+#define BATTERY @"battery"
 
 #define POS2D_SIZE 4
 #define TRANS3D_SIZE 12
@@ -49,6 +53,7 @@
 @property CBCharacteristic* pointerCharacteristic;
 @property CBCharacteristic* buttonCharacteristic;
 @property CBCharacteristic* motion6DCharacteristic;
+@property CBCharacteristic* batteryCharacteristic;
 @property NSMutableDictionary* subscribedTo;
 
 @end
@@ -88,6 +93,11 @@
  */
 - (void) didFindNewScannedDevice: (NSArray*) peripherals;
 - (void) didFindNewPairedDevice: (NSArray*) peripherals;
+
+/*
+ called when battery level is updated on Nod
+*/
+- (void) didReadBatteryLevel:(NSInteger) level forRingNamed:(NSString*) name;
 
 @end
 
@@ -181,6 +191,14 @@
  */
 -(void)subscribeToMotion6DEvents:(NSString *)peripheralName;
 -(void)unsubscribeFromMotion6DEvents: (NSString *)peripheralName;
+
+/*!
+ * Subscribes the specified peripheral device to battery level updates
+ *
+ * @param peripheralName - the name of the peripheral that will broadcast battery level updates
+ */
+- (void)subscribeToBatteryLevel:(NSString *)peripheralName;
+-(void)unsubscribeFromBatteryLevel:(NSString *)peripheralName;
 
 @end
 
