@@ -157,6 +157,29 @@
     [self getServicesForConnectedDevice: peripheral];
 }
 
+
+/*
+ * Disconnect from a peripheral device
+ */
+-(void)disconnectFromPeripheral: (CBPeripheral *)peripheral {
+    forceOff = true;
+    [self.centralManager cancelPeripheralConnection:peripheral];
+}
+
+/*
+ * Fails to connect to peripheral
+ */
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
+{
+    if(reconnect) {
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
+            [self.connectedPeripherals removeObjectForKey:peripheral.name];
+            [self.delegate didDisconnectFromNod:peripheral.name];
+        }
+        reconnect = false;
+    }
+}
+
 /*
  * Returns an Array Containing the names of all the services associated with a device
  */
@@ -419,14 +442,27 @@ service error:(NSError *)error
 }
 
 /*
- *  Disconnection handler (currently just tries to reconnect)
+ *  Disconnection Handler (if forceOff is true, it will disconnect from Nod, otherwise
+    it will try to reconnect)
  */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
                  error:(NSError *)error
 {
     NSLog(@"Disconnected: %@", error);
-    [self connectToPeripheral:peripheral];
+    if(forceOff){
+        forceOff = false;
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)])
+        {
+            [self.connectedPeripherals removeObjectForKey:peripheral.name];
+            [self.delegate didDisconnectFromNod:peripheral.name];
+        }
+    }
+    else {
+        [self connectToPeripheral:peripheral];
+        reconnect = true;
+    }
 }
+
 
 /*******************************************************************************************
  *                                                                                         *

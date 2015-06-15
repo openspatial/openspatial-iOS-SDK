@@ -97,7 +97,10 @@
 
 @end
 
-@interface OpenSpatialBluetooth: NSObject
+@interface OpenSpatialBluetooth: NSObject {
+    BOOL reconnect;
+    BOOL forceOff;
+}
 
 @property CBCentralManager *centralManager;
 @property NSMutableArray *foundPeripherals;
@@ -125,6 +128,12 @@
  * @param peripheral - the peripheral that the central manager will connect to
  */
 -(void) connectToPeripheral: (CBPeripheral *) peripheral;
+
+/*!
+ * Disconnect from peripheral device
+ * @param peripheral - the peripheral that the central manager will disconnect from
+ */
+-(void)disconnectFromPeripheral: (CBPeripheral *)peripheral;
 
 /*!
  * Returns an Array Containing the names of all the services associated with a device
