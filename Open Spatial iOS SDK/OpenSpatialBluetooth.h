@@ -88,6 +88,12 @@
  called when a Nod is connected to from connectToPeripheral
  */
 - (void) didConnectToNod: (CBPeripheral*) peripheral;
+
+/*!
+ called when a Nod disconnects from device
+ */
+- (void) didDisconnectFromNod: (NSString *)peripheral;
+
 /*
  called when a new Nod is found from scanForPeripherals
  */

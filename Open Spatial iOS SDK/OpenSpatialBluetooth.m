@@ -91,6 +91,14 @@
     else
     {
         NSLog(@"Bluetooth Off");
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)])
+        {
+            NSArray *allConnectedRingNames = [self.connectedPeripherals allKeys];
+            for(NSString *ringNameString in allConnectedRingNames) {
+                [self.connectedPeripherals removeObjectForKey:ringNameString];
+                [self.delegate didDisconnectFromNod:ringNameString];
+            }
+        }
     }
 }
 
