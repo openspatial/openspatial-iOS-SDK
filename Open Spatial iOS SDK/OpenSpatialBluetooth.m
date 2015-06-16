@@ -54,7 +54,7 @@
  *******************************************************************************************/
 
 /*
- * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array
+ * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array.
  */
 - (void) scanForPeripherals
 {
@@ -64,13 +64,10 @@
     CBUUID* osUUID = [CBUUID UUIDWithString:OS_UUID];
     CBUUID* nUUID = [CBUUID UUIDWithString:NCONTROL_UUID];
     NSArray* services = @[hidUUID, osUUID, nUUID];
-  //  [self.centralManager scanForPeripheralsWithServices:services options:nil];
+    
     self.pairedPeripherals = [NSMutableArray arrayWithArray:
                               [self.centralManager retrieveConnectedPeripheralsWithServices:services]];
-    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)])
-    {
-        NSLog(@"Delegate method called/");
-        
+    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)]) {
         [self.delegate didFindNewPairedDevice:self.pairedPeripherals];
     }
 }
@@ -102,20 +99,6 @@
     }
 }
 
-/*
- * Delegate method for peripheral scanning, each time a peripheral is found add it to the
- * peripheral array
- */
--(void) centralManager:(CBCentralManager *)central didRetrieveConnectedPeripherals:(NSArray *)peripherals
-{
-    self.pairedPeripherals = [NSMutableArray arrayWithArray:peripherals];
-    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)])
-    {
-        NSLog(@"Delegate method called/");
-
-        [self.delegate didFindNewPairedDevice:peripherals];
-    }
-}
 
 -(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
 {
@@ -156,7 +139,6 @@
     NSLog(@"Connected to %@", peripheral.name);
     [self getServicesForConnectedDevice: peripheral];
 }
-
 
 /*
  * Disconnect from a peripheral device
