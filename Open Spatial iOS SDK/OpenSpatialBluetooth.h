@@ -35,16 +35,6 @@
 #define MOTION @"motion"
 #define BATTERY @"battery"
 
-#define POS2D_SIZE 4
-#define TRANS3D_SIZE 12
-#define GEST_SIZE 5x
-#define BUTTON_SIZE 2
-
-#define POINTER_MODE 0x00
-#define GAME_MODE 0x01
-#define THREE_D_MODE 0x02
-#define FREE_POINTER_MODE 0x03
-
 @interface NodDevice : NSObject
 
 @property CBPeripheral* BTPeripheral;
