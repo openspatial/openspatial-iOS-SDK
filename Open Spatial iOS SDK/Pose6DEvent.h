@@ -1,5 +1,5 @@
 //
-//  RotationEvent.h
+//  Pose6DEvent.h
 //  Open Spatial iOS SDK
 //
 //  Created by Neel Bhoopalam on 6/9/14.
@@ -15,7 +15,7 @@
 /*!
  Class which represents a Pose6D event containing x,y,z,yaw,pitch,roll
  */
-@interface RotationEvent : NSObject 
+@interface Pose6DEvent: NSObject
 
 @property float x;
 @property float y;

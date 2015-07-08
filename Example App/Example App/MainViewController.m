@@ -111,25 +111,25 @@
     }
 }
 
--(void) rotationEventFired:(RotationEvent *)rotationEvent
+-(void) pose6DEventFired:(Pose6DEvent *)pose6DEvent
 {
-    NSLog(@"This is the x value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.x);
+    NSLog(@"This is the x value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.x);
     
-    NSLog(@"This is the y value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.y);
+    NSLog(@"This is the y value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.y);
 
-    NSLog(@"This is the z value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.z);
+    NSLog(@"This is the z value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.z);
 
-    NSLog(@"This is the roll value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.roll);
+    NSLog(@"This is the roll value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.roll);
 
-    NSLog(@"This is the pitch value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.pitch);
+    NSLog(@"This is the pitch value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.pitch);
 
-    NSLog(@"This is the yaw value of the quaternion from %@", [rotationEvent.peripheral name]);
-    NSLog(@"%f", rotationEvent.yaw);
+    NSLog(@"This is the yaw value of the quaternion from %@", [pose6DEvent.peripheral name]);
+    NSLog(@"%f", pose6DEvent.yaw);
 }
 
 - (void) didConnectToNod: (CBPeripheral*) peripheral
@@ -149,7 +149,7 @@
         [self.HIDServ subscribeToPointerEvents:name];
         [self.HIDServ subscribeToButtonEvents:name];
         [self.HIDServ subscribeToGestureEvents:name];
-        [self.HIDServ subscribeToRotationEvents:name];
+        [self.HIDServ subscribeToPose6DEvents:name];
         [self.HIDServ subscribeToMotion6DEvents:name];
     }
 }
@@ -160,7 +160,7 @@
         [self.HIDServ unsubscribeFromPointerEvents:name];
         [self.HIDServ unsubscribeFromButtonEvents:name];
         [self.HIDServ unsubscribeFromGestureEvents:name];
-        [self.HIDServ unsubscribeFromRotationEvents:name];
+        [self.HIDServ unsubscribeFromPose6DEvents:name];
         [self.HIDServ unsubscribeFromMotion6DEvents:name];
     }
 

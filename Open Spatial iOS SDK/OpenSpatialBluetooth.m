@@ -130,7 +130,7 @@
 - (void)centralManager:(CBCentralManager *)central
   didConnectPeripheral:(CBPeripheral *)peripheral
 {
-    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, ROTATION: @FALSE, GESTURE: @FALSE, MOTION: @FALSE, BATTERY: @FALSE};
+    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, BATTERY: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
     dev.BTPeripheral = peripheral;
@@ -214,7 +214,7 @@ service error:(NSError *)error
                               peripheral.name]).pointerCharacteristic = characteristic;
                 countChars++;
             }
-            if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
+            if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
             {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).pose6DCharacteristic = characteristic;
@@ -292,24 +292,24 @@ service error:(NSError *)error
 }
 
 /*
- * Subscribes to rotation events for the given device
+ * Subscribes to pose6D events for the given device
  */
--(void)subscribeToRotationEvents:(NSString *)peripheralName
+-(void)subscribeToPose6DEvents:(NSString *)peripheralName
 {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev)
     {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pose6DCharacteristic];
-        [dev.subscribedTo setValue:@TRUE forKey:ROTATION];
+        [dev.subscribedTo setValue:@TRUE forKey:POSE6D];
     }
 }
--(void)unsubscribeFromRotationEvents:(NSString *)peripheralName
+-(void)unsubscribeFromPose6DEvents:(NSString *)peripheralName
 {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev)
     {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pose6DCharacteristic];
-        [dev.subscribedTo setValue:@NO forKey:ROTATION];
+        [dev.subscribedTo setValue:@NO forKey:POSE6D];
     }
 }
 
@@ -388,7 +388,7 @@ service error:(NSError *)error
     if(dev)
     {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.motion6DCharacteristic];
-        [dev.subscribedTo setValue:@TRUE forKey:MOTION];
+        [dev.subscribedTo setValue:@TRUE forKey:MOTION6D];
     }
 }
 -(void)unsubscribeFromMotion6DEvents:(NSString *)peripheralName
@@ -397,7 +397,7 @@ service error:(NSError *)error
     if(dev)
     {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.motion6DCharacteristic];
-        [dev.subscribedTo setValue:@NO forKey:MOTION];
+        [dev.subscribedTo setValue:@NO forKey:MOTION6D];
     }
 }
 
@@ -469,9 +469,9 @@ service error:(NSError *)error
     }
     
     // Checks if the characteristic is the quaternion characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
+    if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
     {
-        [self trans3DFunction:characteristic peripheral:peripheral];
+        [self pose6DFunction:characteristic peripheral:peripheral];
     }
     
     // Checks if the characteristic is the gesture characteristic
@@ -513,10 +513,10 @@ service error:(NSError *)error
     }
 
     // Checks if the characteristic is the quaternion characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:TRANS3D_UUID])
+    if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
     {
-        NSLog(@"trans3d");
-        array = [self trans3DFunction:characteristic peripheral:peripheral];
+        NSLog(@"Pose6D");
+        array = [self pose6DFunction:characteristic peripheral:peripheral];
     }
 
     // Checks if the characteristic is the gesture characteristic
@@ -565,34 +565,34 @@ service error:(NSError *)error
     return openSpatial2DEvents;
 }
 
--(NSArray *)trans3DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
+-(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
 {
     const uint8_t* bytePtr = [characteristic.value bytes];
-    NSDictionary* OSData = [OpenSpatialDecoder decode3DTransPointer:bytePtr];
-    NSMutableArray *rotationEvent = [[NSMutableArray alloc] init];
+    NSDictionary* OSData = [OpenSpatialDecoder decodePose6DPointer:bytePtr];
+    NSMutableArray *pose6DEvent = [[NSMutableArray alloc] init];
     
-    RotationEvent *rEvent = [[RotationEvent alloc] init];
+    Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
     
-    rEvent.x = [[OSData objectForKey:X] floatValue];
-    rEvent.y = [[OSData objectForKey:Y] floatValue];
-    rEvent.z = [[OSData objectForKey:Z] floatValue];
-    rEvent.roll = [[OSData objectForKey:ROLL] floatValue];
-    rEvent.pitch = [[OSData objectForKey:PITCH] floatValue];
-    rEvent.yaw = [[OSData objectForKey:YAW] floatValue];
+    p6DEvent.x = [[OSData objectForKey:X] floatValue];
+    p6DEvent.y = [[OSData objectForKey:Y] floatValue];
+    p6DEvent.z = [[OSData objectForKey:Z] floatValue];
+    p6DEvent.roll = [[OSData objectForKey:ROLL] floatValue];
+    p6DEvent.pitch = [[OSData objectForKey:PITCH] floatValue];
+    p6DEvent.yaw = [[OSData objectForKey:YAW] floatValue];
 
-    rEvent.peripheral = peripheral;
-    [rotationEvent addObject:rEvent];
+    p6DEvent.peripheral = peripheral;
+    [pose6DEvent addObject:p6DEvent];
 
-    if([self isSubscribedToEvent:ROTATION forPeripheral:[peripheral name]])
+    if([self isSubscribedToEvent:POSE6D forPeripheral:[peripheral name]])
     {
-        if([self.delegate respondsToSelector:@selector(rotationEventFired:)])
+        if([self.delegate respondsToSelector:@selector(pose6DEventFired:)])
         {
-            [self.delegate rotationEventFired:rEvent];
+            [self.delegate pose6DEventFired:p6DEvent];
         }
     }
     
     // For testing purposes
-    return rotationEvent;
+    return pose6DEvent;
 }
 
 -(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
@@ -794,7 +794,7 @@ service error:(NSError *)error
     mEvent.zGyro = [[OSData objectForKey:ZG] floatValue];
     mEvent.peripheral = peripheral;
     
-    if([self isSubscribedToEvent:MOTION forPeripheral:peripheral.name])
+    if([self isSubscribedToEvent:MOTION6D forPeripheral:peripheral.name])
     {
         if([self.delegate respondsToSelector:@selector(motion6DEventFired:)])
         {

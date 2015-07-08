@@ -11,13 +11,13 @@
 
 #import "ButtonEvent.h"
 #import "PointerEvent.h"
-#import "RotationEvent.h"
+#import "Pose6DEvent.h"
 #import "GestureEvent.h"
 #import "Motion6DEvent.h"
 
 #define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
 #define POS2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
-#define TRANS3D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
+#define POSE6D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
 #define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
 #define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
 #define MOTION6D_UUID @"00000209-0000-1000-8000-A0E5E9000000"
@@ -31,8 +31,8 @@
 #define BUTTON @"button"
 #define POINTER @"pointer"
 #define GESTURE @"gesture"
-#define ROTATION @"rotation"
-#define MOTION @"motion"
+#define POSE6D @"pose6D"
+#define MOTION6D @"motion6D"
 #define BATTERY @"battery"
 
 @interface NodDevice : NSObject
@@ -64,7 +64,7 @@
 /*!
  called when a rotation event is fired from Nod
  */
--(void)rotationEventFired: (RotationEvent *) rotationEvent;
+-(void)pose6DEventFired: (Pose6DEvent *) pose6DEvent;
 /*!
  called when a gesture event is fired from Nod
  */
@@ -162,8 +162,8 @@
  *
  * @param peripheralName - the name of the peripheral that will connect to rotation events
  */
--(void)subscribeToRotationEvents:(NSString *)peripheralName;
--(void)unsubscribeFromRotationEvents: (NSString *)peripheralName;
+-(void)subscribeToPose6DEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromPose6DEvents: (NSString *)peripheralName;
 
 /*!
  * Subscribes the specified peripheral device to gesture events

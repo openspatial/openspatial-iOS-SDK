@@ -33,7 +33,7 @@
 }
 
 
-+(NSDictionary*) decode3DTransPointer: (const uint8_t*) opSpcPtr
++(NSDictionary*) decodePose6DPointer: (const uint8_t*) opSpcPtr
 {
     short int x = opSpcPtr[0] | (opSpcPtr[1] << 8);
     short int y = opSpcPtr[2] | (opSpcPtr[3] << 8);
@@ -60,7 +60,7 @@
     return retDic;
 }
 
-+(void*) create3DTransPointer: (NSDictionary*) OSData
++(void*) createPose6DPointer: (NSDictionary*) OSData
 {
     float x = [[OSData objectForKey:X] floatValue];
     float y = [[OSData objectForKey:Y] floatValue];

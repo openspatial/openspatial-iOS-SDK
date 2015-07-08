@@ -91,11 +91,11 @@
 /*!
  Decode Pose6D (3D) Data from Nod
  */
-+(NSDictionary*) decode3DTransPointer: (const uint8_t*) opSpcPtr;
++(NSDictionary*) decodePose6DPointer: (const uint8_t*) opSpcPtr;
 /*!
  Create a fake Pose6D (3D) data packet for testing
  */
-+(void*) create3DTransPointer: (NSDictionary*) OSData;
++(void*) createPose6DPointer: (NSDictionary*) OSData;
 /*!
  Decode Button Data from Nod
  */
