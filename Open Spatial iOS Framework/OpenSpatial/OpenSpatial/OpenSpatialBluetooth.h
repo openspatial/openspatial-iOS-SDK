@@ -62,7 +62,7 @@
  */
 -(void)pointerEventFired: (PointerEvent *) pointerEvent;
 /*!
- called when a rotation event is fired from Nod
+ called when a pose6D event is fired from Nod
  */
 -(void)pose6DEventFired: (Pose6DEvent *) pose6DEvent;
 /*!
@@ -158,9 +158,9 @@
 -(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral;
 
 /*!
- * Subscribes the specified peripheral device to the rotation events
+ * Subscribes the specified peripheral device to the pose6D events
  *
- * @param peripheralName - the name of the peripheral that will connect to rotation events
+ * @param peripheralName - the name of the peripheral that will connect to pose6D events
  */
 -(void)subscribeToPose6DEvents:(NSString *)peripheralName;
 -(void)unsubscribeFromPose6DEvents: (NSString *)peripheralName;
@@ -204,6 +204,12 @@
  */
 - (void)subscribeToBatteryLevel:(NSString *)peripheralName;
 -(void)unsubscribeFromBatteryLevel:(NSString *)peripheralName;
+
+/*
+ * Read battery level function
+ * @param peripheralName - the name of the peripheral that will get the battery level
+ */
+-(void) readBatteryLevel:(NSString*)peripheralName;
 
 @end
 

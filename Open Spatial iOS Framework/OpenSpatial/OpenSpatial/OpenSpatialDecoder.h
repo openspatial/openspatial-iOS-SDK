@@ -113,7 +113,7 @@
  */
 +(void*) createGestPointer: (NSDictionary*) OSData;
 /*!
- Decode Motion 6D Data from Nod
+ Decode Motion6D Data from Nod
  */
 +(NSDictionary*) decodeMot6DPointer: (const uint8_t*) opSpcPtr;
 

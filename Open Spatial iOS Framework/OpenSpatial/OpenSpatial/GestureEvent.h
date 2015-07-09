@@ -13,14 +13,15 @@
  * The different gesture event types a gesture event can hold
  */
 typedef enum GestureEventType {
-    SWIPE_DOWN,
-    SWIPE_LEFT,
-    SWIPE_RIGHT,
-    SWIPE_UP,
-    CW,
-    CCW,
-    SLIDER_LEFT,
-    SLIDER_RIGHT,
+    NONE = -1,
+    SWIPE_DOWN = 0,
+    SWIPE_LEFT = 1,
+    SWIPE_RIGHT = 2,
+    SWIPE_UP = 3,
+    CW = 4,
+    CCW = 5,
+    SLIDER_LEFT = 6,
+    SLIDER_RIGHT = 7,
 } GestureEventType;
 
 @interface GestureEvent : NSObject 

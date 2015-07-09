@@ -276,23 +276,28 @@ service error:(NSError *)error
                 return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
                          objectForKey:POINTER] boolValue];
             }
-            else if([type isEqualToString:ROTATION])
+            else if([type isEqualToString:POSE6D])
             {
                 return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-                         objectForKey:ROTATION] boolValue];
+                         objectForKey:POSE6D] boolValue];
             }
             else if([type isEqualToString:GESTURE])
             {
                 return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
                          objectForKey:GESTURE] boolValue];
             }
+             else if([type isEqualToString:GESTURE])
+             {
+             return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
+             objectForKey:GESTURE] boolValue];
+             }
         }
     }*/
     return TRUE;
 }
 
 /*
- * Subscribes to pose6D events for the given device
+ * Subscribes to rotation events for the given device
  */
 -(void)subscribeToPose6DEvents:(NSString *)peripheralName
 {
@@ -531,6 +536,13 @@ service error:(NSError *)error
     {
         NSLog(@"Button");
         array = [self buttonFunction:characteristic peripheral:peripheral];
+    }
+    
+    // Checks if the characteristic is the button characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
+    {
+        NSLog(@"Motion6D");
+        array = [self motion6DFunction:characteristic peripheral:peripheral];
     }
     return array;
 }
@@ -781,10 +793,11 @@ service error:(NSError *)error
     return gestureEvent;
 }
 
--(void) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
+-(NSArray *) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
 {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeMot6DPointer:bytePtr];
+    NSMutableArray *motion6DEvent = [[NSMutableArray alloc] init];
     Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
     mEvent.xAccel = [[OSData objectForKey:XA] floatValue];
     mEvent.yAccel = [[OSData objectForKey:YA] floatValue];
@@ -794,6 +807,8 @@ service error:(NSError *)error
     mEvent.zGyro = [[OSData objectForKey:ZG] floatValue];
     mEvent.peripheral = peripheral;
     
+    [motion6DEvent addObject:mEvent];
+    
     if([self isSubscribedToEvent:MOTION6D forPeripheral:peripheral.name])
     {
         if([self.delegate respondsToSelector:@selector(motion6DEventFired:)])
@@ -801,6 +816,9 @@ service error:(NSError *)error
             [self.delegate motion6DEventFired:mEvent];
         }
     }
+    
+    // FOR TESTING PURPOSES ONLY
+    return motion6DEvent;
 }
 
 -(void) batteryFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
@@ -810,5 +828,9 @@ service error:(NSError *)error
     [self.delegate didReadBatteryLevel:val forRingNamed:peripheral.name];
 }
 
+-(void)readBatteryLevel: (NSString *)peripheralName {
+    [((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).BTPeripheral
+     readValueForCharacteristic:((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).batteryCharacteristic];
+}
 
 @end
