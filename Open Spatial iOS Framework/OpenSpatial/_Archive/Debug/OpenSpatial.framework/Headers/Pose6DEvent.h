@@ -25,5 +25,4 @@
 @property float yaw;
 @property (nonatomic, assign) CBPeripheral* peripheral;
 
-
 @end

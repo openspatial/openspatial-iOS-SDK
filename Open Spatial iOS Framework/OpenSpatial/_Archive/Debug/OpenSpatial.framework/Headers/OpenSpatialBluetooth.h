@@ -142,14 +142,6 @@
 -(void) getServicesForConnectedDevice:(CBPeripheral *)peripheral;
 
 /*!
- * Checks to see if user subscribed to certain set of events
- * @param type - the string that is used to check for a certain event
- * @param peripheralName - the name of the peripheral that is compared to in the dictionary
- */
--(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName;
-
-
-/*!
  * Method used in unit tests to ensure that characteristic and data being sent by a peripheral device is being captured
  *
  * @param characteristic - the characteristic that is passed through the function to determine which events to execute upon

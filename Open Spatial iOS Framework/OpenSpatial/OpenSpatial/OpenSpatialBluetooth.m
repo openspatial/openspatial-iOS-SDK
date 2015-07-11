@@ -56,8 +56,7 @@
 /*
  * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array.
  */
-- (void) scanForPeripherals
-{
+- (void) scanForPeripherals {
     NSLog(@"Scanning");
     [self.foundPeripherals removeAllObjects];
     CBUUID* hidUUID = [CBUUID UUIDWithString:@"1812"];
@@ -76,20 +75,16 @@
  * State must be on to initiate scan this method is called after the initialization that occurs
  * in scanForPeripherals
  */
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central
-{
-    if(central.state == CBCentralManagerStatePoweredOn)
-    {
-        if([self.connectedPeripherals count] > 0)
-        {
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central {
+    if(central.state == CBCentralManagerStatePoweredOn) {
+        if([self.connectedPeripherals count] > 0) {
             [self.connectedPeripherals removeAllObjects];
         }
     }
     else
     {
         NSLog(@"Bluetooth Off");
-        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)])
-        {
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
             NSArray *allConnectedRingNames = [self.connectedPeripherals allKeys];
             for(NSString *ringNameString in allConnectedRingNames) {
                 [self.connectedPeripherals removeObjectForKey:ringNameString];
@@ -100,15 +95,11 @@
 }
 
 
--(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI
-{
-    if(![self.foundPeripherals containsObject:peripheral])
-    {
+-(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
+    if(![self.foundPeripherals containsObject:peripheral]) {
         [self.foundPeripherals addObject:peripheral];
-        if(self.delegate)
-        {
-            if([self.delegate respondsToSelector:@selector(didFindNewScannedDevice:)])
-            {
+        if(self.delegate) {
+            if([self.delegate respondsToSelector:@selector(didFindNewScannedDevice:)]) {
                 [self.delegate didFindNewScannedDevice:self.foundPeripherals];
             }
         }
@@ -118,8 +109,7 @@
 /*
  * Connect to a peripheral device store as connected device, also stops scan
  */
--(void) connectToPeripheral: (CBPeripheral *) peripheral
-{
+-(void) connectToPeripheral: (CBPeripheral *) peripheral {
     [self.centralManager stopScan];
     [self.centralManager connectPeripheral:peripheral options:nil];
 }
@@ -127,9 +117,7 @@
 /*
  * When device is connected set connected bool to true
  */
-- (void)centralManager:(CBCentralManager *)central
-  didConnectPeripheral:(CBPeripheral *)peripheral
-{
+- (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, BATTERY: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
@@ -151,8 +139,7 @@
 /*
  * Fails to connect to peripheral
  */
-- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error
-{
+- (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     if(reconnect) {
         if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
             [self.connectedPeripherals removeObjectForKey:peripheral.name];
@@ -165,10 +152,8 @@
 /*
  * Returns an Array Containing the names of all the services associated with a device
  */
--(void) getServicesForConnectedDevice:(CBPeripheral *)peripheral
-{
-    if(peripheral)
-    {
+-(void) getServicesForConnectedDevice:(CBPeripheral *)peripheral {
+    if(peripheral) {
         NSLog(@"Discovering Services, %@", peripheral.delegate);
         [peripheral discoverServices:nil];
     }
@@ -177,10 +162,8 @@
 /*
  * Delegate Method for discovering services prints service to log
  */
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error
-{
-    for (CBService *service in peripheral.services)
-    {
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+    for (CBService *service in peripheral.services) {
         NSLog(@"Discovered Service %@", service);
         [self getCharacteristics:service peripheral:peripheral];
     }
@@ -189,51 +172,39 @@
 /*
  * Gets characteristics of a specfied service
  */
--(void) getCharacteristics: (CBService*) serv peripheral:(CBPeripheral *)peripheral
-{
+-(void) getCharacteristics: (CBService*) serv peripheral:(CBPeripheral *)peripheral {
     [peripheral discoverCharacteristics:nil forService:serv];
 }
 
 /*
  * Delegate Method for discovering characteristics prints all characteristics to log
  */
-- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *)
-service error:(NSError *)error
-{
+- (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *) service error:(NSError *)error {
     int countChars = 0;
-    for (CBCharacteristic *characteristic in service.characteristics)
-    {
+    for (CBCharacteristic *characteristic in service.characteristics) {
         NSLog(@"%@",characteristic.UUID.UUIDString);
-        
-        
         if([service.UUID.UUIDString isEqualToString:OS_UUID]) {
-        
-            if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).pointerCharacteristic = characteristic;
                 countChars++;
             }
-            if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).pose6DCharacteristic = characteristic;
                 countChars++;
             }
-            if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).gestureCharacteristic = characteristic;
                 countChars++;
             }
-            if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).buttonCharacteristic = characteristic;
                 countChars++;
             }
-            if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).motion6DCharacteristic = characteristic;
                 countChars++;
@@ -241,78 +212,34 @@ service error:(NSError *)error
         }
         else if([service.UUID.UUIDString isEqualToString:BATTERY_SERVICE_UUID]) {
             
-            if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID])
-            {
+            if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).batteryCharacteristic = characteristic;
                 countChars++;
             }
         }
     }
-    if(countChars == 6)
-    {
-        if([self.delegate respondsToSelector:@selector(didConnectToNod:)])
-        {
+    if(countChars == 6) {
+        if([self.delegate respondsToSelector:@selector(didConnectToNod:)]) {
             [self.delegate didConnectToNod:peripheral];
         }
         countChars = 0;
     }
 }
 
--(BOOL)isSubscribedToEvent:(NSString *)type forPeripheral:(NSString *)peripheralName
-{
-    NSArray* keys = [self.connectedPeripherals allKeys];
-    /*for(CBPeripheral* p in keys)
-    {
-        if([p.name isEqualToString:peripheralName])
-        {
-            if([type isEqualToString:BUTTON])
-            {
-                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-                         objectForKey:BUTTON] boolValue];
-            }
-            else if([type isEqualToString:POINTER])
-            {
-                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-                         objectForKey:POINTER] boolValue];
-            }
-            else if([type isEqualToString:POSE6D])
-            {
-                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-                         objectForKey:POSE6D] boolValue];
-            }
-            else if([type isEqualToString:GESTURE])
-            {
-                return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-                         objectForKey:GESTURE] boolValue];
-            }
-             else if([type isEqualToString:GESTURE])
-             {
-             return [[((NodDevice*)[self.connectedPeripherals objectForKey:p.name]).subscribedTo
-             objectForKey:GESTURE] boolValue];
-             }
-        }
-    }*/
-    return TRUE;
-}
-
 /*
  * Subscribes to rotation events for the given device
  */
--(void)subscribeToPose6DEvents:(NSString *)peripheralName
-{
+-(void)subscribeToPose6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pose6DCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:POSE6D];
     }
 }
--(void)unsubscribeFromPose6DEvents:(NSString *)peripheralName
-{
+-(void)unsubscribeFromPose6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pose6DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:POSE6D];
     }
@@ -321,20 +248,16 @@ service error:(NSError *)error
 /*
  * Subscribes to gesture events for the given device
  */
--(void)subscribeToGestureEvents:(NSString *)peripheralName
-{
+-(void)subscribeToGestureEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.gestureCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:GESTURE];
     }
 }
--(void)unsubscribeFromGestureEvents:(NSString *)peripheralName
-{
+-(void)unsubscribeFromGestureEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.gestureCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:GESTURE];
     }
@@ -343,20 +266,16 @@ service error:(NSError *)error
 /*
  * Subscribes to button events for the given device
  */
--(void)subscribeToButtonEvents:(NSString *)peripheralName
-{
+-(void)subscribeToButtonEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.buttonCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:BUTTON];
     }
 }
--(void)unsubscribeFromButtonEvents:(NSString *)peripheralName
-{
+-(void)unsubscribeFromButtonEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.buttonCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:BUTTON];
     }
@@ -365,20 +284,16 @@ service error:(NSError *)error
 /*
  * Subscribes to pointer events for the given device
  */
--(void)subscribeToPointerEvents:(NSString *)peripheralName
-{
+-(void)subscribeToPointerEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pointerCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:POINTER];
     }
 }
--(void)unsubscribeFromPointerEvents:(NSString *)peripheralName
-{
+-(void)unsubscribeFromPointerEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pointerCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:POINTER];
     }
@@ -387,20 +302,16 @@ service error:(NSError *)error
 /*
  * Subscribes to motion6D events for the given device
  */
--(void)subscribeToMotion6DEvents:(NSString *)peripheralName
-{
+-(void)subscribeToMotion6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.motion6DCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:MOTION6D];
     }
 }
--(void)unsubscribeFromMotion6DEvents:(NSString *)peripheralName
-{
+-(void)unsubscribeFromMotion6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    if(dev)
-    {
+    if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.motion6DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:MOTION6D];
     }
@@ -419,7 +330,6 @@ service error:(NSError *)error
         [dev.BTPeripheral readValueForCharacteristic:dev.batteryCharacteristic];
     }
 }
-
 -(void)unsubscribeFromBatteryLevel:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
@@ -430,16 +340,13 @@ service error:(NSError *)error
 
 /*
  *  Disconnection Handler (if forceOff is true, it will disconnect from Nod, otherwise
-    it will try to reconnect)
+ *  it will try to reconnect)
  */
-- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral
-                 error:(NSError *)error
-{
+- (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     NSLog(@"Disconnected: %@", error);
     if(forceOff){
         forceOff = false;
-        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)])
-        {
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
             [self.connectedPeripherals removeObjectForKey:peripheral.name];
             [self.delegate didDisconnectFromNod:peripheral.name];
         }
@@ -449,7 +356,6 @@ service error:(NSError *)error
         reconnect = true;
     }
 }
-
 
 /*******************************************************************************************
  *                                                                                         *
@@ -467,36 +373,31 @@ service error:(NSError *)error
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:
                      (CBCharacteristic *)characteristic error:(NSError *)error
 {
-    // Checks if the characteristic is the open spatial 2d characteristic
+    // Checks if the characteristic is the Open Spatial 2D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
     {
         [self pos2DFunction:characteristic peripheral:peripheral];
     }
-    
-    // Checks if the characteristic is the quaternion characteristic
+    // Checks if the characteristic is the pose6D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
     {
         [self pose6DFunction:characteristic peripheral:peripheral];
     }
-    
     // Checks if the characteristic is the gesture characteristic
     if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
     {
         [self gestureFunction:characteristic peripheral:peripheral];
     }
-
     // Checks if the characteristic is the button characteristic
     if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
     {
         [self buttonFunction:characteristic peripheral:peripheral];
     }
-    
-    // Checks if the characteristic is the motion 6d characteristic
+    // Checks if the characteristic is the motion6D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
     {
         [self motion6DFunction:characteristic peripheral:peripheral];
     }
-    
     // Checks if the characteristic is the battery status characteristic
     if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID])
     {
@@ -510,35 +411,31 @@ service error:(NSError *)error
 -(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral
 {
     NSArray* array;
-    // Checks if the characteristic is the open spatial 2d characteristic
+    // Checks if the characteristic is the Open Spatial 2D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
     {
         NSLog(@"Pos2D");
         array = [self pos2DFunction:characteristic peripheral:peripheral];
     }
-
-    // Checks if the characteristic is the quaternion characteristic
+    // Checks if the characteristic is the pose6D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
     {
         NSLog(@"Pose6D");
         array = [self pose6DFunction:characteristic peripheral:peripheral];
     }
-
     // Checks if the characteristic is the gesture characteristic
     if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
     {
         NSLog(@"Gesture");
         array = [self gestureFunction:characteristic peripheral:peripheral];
     }
-
     // Checks if the characteristic is the button characteristic
     if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
     {
         NSLog(@"Button");
         array = [self buttonFunction:characteristic peripheral:peripheral];
     }
-    
-    // Checks if the characteristic is the button characteristic
+    // Checks if the characteristic is the motion6D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
     {
         NSLog(@"Motion6D");
@@ -550,8 +447,7 @@ service error:(NSError *)error
 /*
  * Method that handles the Open Spatial 2D events
  */
--(NSArray *)pos2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
-{
+-(NSArray *)pos2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePos2DPointer:bytePtr];
     
@@ -565,50 +461,38 @@ service error:(NSError *)error
     pEvent.peripheral = peripheral;
     [openSpatial2DEvents addObject:pEvent];
 
-    if([self isSubscribedToEvent:POINTER forPeripheral:[peripheral name]])
-    {
-        if([self.delegate respondsToSelector:@selector(pointerEventFired:)])
-        {
-            [self.delegate pointerEventFired:pEvent];
-        }
+    if([self.delegate respondsToSelector:@selector(pointerEventFired:)]) {
+        [self.delegate pointerEventFired:pEvent];
     }
     
-    // For testing purposes
+    // For testing purposes only
     return openSpatial2DEvents;
 }
 
--(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
-{
+-(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePose6DPointer:bytePtr];
     NSMutableArray *pose6DEvent = [[NSMutableArray alloc] init];
     
     Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
-    
     p6DEvent.x = [[OSData objectForKey:X] floatValue];
     p6DEvent.y = [[OSData objectForKey:Y] floatValue];
     p6DEvent.z = [[OSData objectForKey:Z] floatValue];
     p6DEvent.roll = [[OSData objectForKey:ROLL] floatValue];
     p6DEvent.pitch = [[OSData objectForKey:PITCH] floatValue];
     p6DEvent.yaw = [[OSData objectForKey:YAW] floatValue];
-
     p6DEvent.peripheral = peripheral;
     [pose6DEvent addObject:p6DEvent];
 
-    if([self isSubscribedToEvent:POSE6D forPeripheral:[peripheral name]])
-    {
-        if([self.delegate respondsToSelector:@selector(pose6DEventFired:)])
-        {
-            [self.delegate pose6DEventFired:p6DEvent];
-        }
+    if([self.delegate respondsToSelector:@selector(pose6DEventFired:)]) {
+        [self.delegate pose6DEventFired:p6DEvent];
     }
     
-    // For testing purposes
+    // For testing purposes only
     return pose6DEvent;
 }
 
--(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
-{
+-(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeButtonPointer:bytePtr];
     short touch0 = [[OSData objectForKey:TOUCH_0] shortValue];
@@ -618,96 +502,79 @@ service error:(NSError *)error
     short tact1 = [[OSData objectForKey:TACTILE_1] shortValue];
     NSMutableArray* buttonEvents = [[NSMutableArray alloc] init];
 
-    if(touch0 == BUTTON_UP)
-    {
+    if(touch0 == BUTTON_UP) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH0_UP];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-    else if(touch0 == BUTTON_DOWN)
-    {
+    else if(touch0 == BUTTON_DOWN) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH0_DOWN];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-
-    if(touch1 == BUTTON_UP)
-    {   ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+    if(touch1 == BUTTON_UP) {
+        ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH1_UP];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-    else if(touch1 == BUTTON_DOWN)
-    {
+    else if(touch1 == BUTTON_DOWN) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH1_DOWN];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-
-    if(touch2 == BUTTON_UP)
-    {
+    if(touch2 == BUTTON_UP) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH2_UP];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-    else if(touch2 == BUTTON_DOWN)
-    {
+    else if(touch2 == BUTTON_DOWN) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TOUCH2_DOWN];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-
-    if(tact0 == BUTTON_UP)
-    {
+    if(tact0 == BUTTON_UP) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TACTILE0_UP];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-    else if(tact0 == BUTTON_DOWN)
-    {
+    else if(tact0 == BUTTON_DOWN) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TACTILE0_DOWN];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
 
-    if(tact1 == BUTTON_UP)
-    {
+    if(tact1 == BUTTON_UP) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TACTILE1_UP];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-    else if(tact1 == BUTTON_DOWN)
-    {
+    else if(tact1 == BUTTON_DOWN) {
         ButtonEvent* bEvent = [[ButtonEvent alloc] init];
         [bEvent setButtonEventType:TACTILE1_DOWN];
         bEvent.peripheral = peripheral;
         [buttonEvents addObject:bEvent];
     }
-
-    if([self isSubscribedToEvent:BUTTON forPeripheral:[peripheral name]])
-    {
-        for(ButtonEvent* bEvent in buttonEvents)
-        {
-            if([self.delegate respondsToSelector:@selector(buttonEventFired:)])
-            {
-                [self.delegate buttonEventFired:bEvent];
-            }
+    
+    for(ButtonEvent* bEvent in buttonEvents) {
+        if([self.delegate respondsToSelector:@selector(buttonEventFired:)]) {
+            [self.delegate buttonEventFired:bEvent];
         }
     }
 
+    // For testing purposes only
     return buttonEvents;
 }
 
--(NSArray *)gestureFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral
-{
+-(NSArray *)gestureFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeGestPointer:bytePtr];
     short gestureC = [[OSData objectForKey:GEST_OPCODE] shortValue];
@@ -715,65 +582,53 @@ service error:(NSError *)error
     NSMutableArray *gestureEvent = [[NSMutableArray alloc] init];
     GestureEvent *gEvent = [[GestureEvent alloc] init];
 
-    if(gestureC == G_OP_DIRECTION)
-    {
-        if(gesture == GUP)
-        {
+    if(gestureC == G_OP_DIRECTION) {
+        if(gesture == GUP) {
             [gEvent setGestureEventType:SWIPE_UP];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if (gesture == GDOWN)
-        {
+        else if (gesture == GDOWN) {
             [gEvent setGestureEventType:SWIPE_DOWN];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if(gesture == GLEFT)
-        {
+        else if(gesture == GLEFT) {
             [gEvent setGestureEventType:SWIPE_LEFT];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if(gesture == GRIGHT)
-        {
+        else if(gesture == GRIGHT) {
             [gEvent setGestureEventType:SWIPE_RIGHT];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if(gesture == GCW)
-        {
+        else if(gesture == GCW) {
             [gEvent setGestureEventType:CW];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if(gesture == GCCW)
-        {
+        else if(gesture == GCCW) {
             [gEvent setGestureEventType:CCW];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else
-        {
+        else {
             NSLog(@"No match found for gesture event.");
         }
     }
-    else if(gestureC == G_OP_SCROLL)
-    {
-        if(gesture == SLIDE_LEFT)
-        {
+    else if(gestureC == G_OP_SCROLL) {
+        if(gesture == SLIDE_LEFT) {
             [gEvent setGestureEventType:SLIDER_LEFT];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else if(gesture == SLIDE_RIGHT)
-        {
+        else if(gesture == SLIDE_RIGHT) {
             [gEvent setGestureEventType:SLIDER_RIGHT];
             gEvent.peripheral = peripheral;
             [gestureEvent addObject:gEvent];
         }
-        else
-        {
+        else {
             NSLog(@"No match found for gesture event.");
         }
     }
@@ -782,19 +637,15 @@ service error:(NSError *)error
         NSLog(@"No match found for gesture event.");
     }
 
-    if([self isSubscribedToEvent:GESTURE forPeripheral:[peripheral name]])
-    {
-        if([self.delegate respondsToSelector:@selector(gestureEventFired:)])
-        {
-            [self.delegate gestureEventFired:gEvent];
-        }
+    if([self.delegate respondsToSelector:@selector(gestureEventFired:)]) {
+        [self.delegate gestureEventFired:gEvent];
     }
-    // FOR TESTING PURPOSES ONLY
+
+    // For testing purposes only
     return gestureEvent;
 }
 
--(NSArray *) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
-{
+-(NSArray *) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeMot6DPointer:bytePtr];
     NSMutableArray *motion6DEvent = [[NSMutableArray alloc] init];
@@ -806,23 +657,17 @@ service error:(NSError *)error
     mEvent.yGyro = [[OSData objectForKey:YG] floatValue];
     mEvent.zGyro = [[OSData objectForKey:ZG] floatValue];
     mEvent.peripheral = peripheral;
-    
     [motion6DEvent addObject:mEvent];
     
-    if([self isSubscribedToEvent:MOTION6D forPeripheral:peripheral.name])
-    {
-        if([self.delegate respondsToSelector:@selector(motion6DEventFired:)])
-        {
-            [self.delegate motion6DEventFired:mEvent];
-        }
+    if([self.delegate respondsToSelector:@selector(motion6DEventFired:)]) {
+        [self.delegate motion6DEventFired:mEvent];
     }
     
-    // FOR TESTING PURPOSES ONLY
+    // For testing purposes only
     return motion6DEvent;
 }
 
--(void) batteryFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral
-{
+-(void) batteryFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
     char* val2 = (char*)characteristic.value.bytes;
     int val = (int) val2[0];
     [self.delegate didReadBatteryLevel:val forRingNamed:peripheral.name];
@@ -832,5 +677,4 @@ service error:(NSError *)error
     [((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).BTPeripheral
      readValueForCharacteristic:((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).batteryCharacteristic];
 }
-
 @end

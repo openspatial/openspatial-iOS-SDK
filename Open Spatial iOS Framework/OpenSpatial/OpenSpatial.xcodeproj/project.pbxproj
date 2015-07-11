@@ -105,12 +105,12 @@
 				1859A3761B44BA3F003A8D71 /* GestureEvent.m */,
 				1859A3771B44BA3F003A8D71 /* Motion6DEvent.h */,
 				1859A3781B44BA3F003A8D71 /* Motion6DEvent.m */,
+				1859A37D1B44BA3F003A8D71 /* PointerEvent.h */,
+				1859A37E1B44BA3F003A8D71 /* PointerEvent.m */,
 				1859A3791B44BA3F003A8D71 /* OpenSpatialBluetooth.h */,
 				1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */,
 				1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */,
 				1859A37C1B44BA3F003A8D71 /* OpenSpatialDecoder.m */,
-				1859A37D1B44BA3F003A8D71 /* PointerEvent.h */,
-				1859A37E1B44BA3F003A8D71 /* PointerEvent.m */,
 				1859A35A1B44B9FA003A8D71 /* Supporting Files */,
 			);
 			path = OpenSpatial;

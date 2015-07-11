@@ -1,6 +1,6 @@
 //
 //  OpenSpatialDecoder.m
-//  enimai-ios
+//  NodLabs
 //
 //  Copyright (c) 2014 Nod Inc. All rights reserved.
 //
@@ -9,8 +9,7 @@
 
 @implementation OpenSpatialDecoder
 
-+(NSDictionary*) decodePos2DPointer: (const uint8_t*) opSpcPtr
-{
++(NSDictionary*) decodePos2DPointer: (const uint8_t*) opSpcPtr {
     short int x = (opSpcPtr[1] << 8) | opSpcPtr[0];
     short int y = (opSpcPtr[3] << 8) | opSpcPtr[2];
 
@@ -20,8 +19,7 @@
     return retDic;
 }
 
-+(void*) createPos2DPointer:(NSDictionary *)OSData
-{
++(void*) createPos2DPointer:(NSDictionary *)OSData {
     NSMutableData* data = [[NSMutableData alloc] init];
     short int x = [[OSData objectForKey:X] shortValue];
     short int y = [[OSData objectForKey:Y] shortValue];
@@ -32,9 +30,7 @@
     return (char*)ret;
 }
 
-
-+(NSDictionary*) decodePose6DPointer: (const uint8_t*) opSpcPtr
-{
++(NSDictionary*) decodePose6DPointer: (const uint8_t*) opSpcPtr {
     short int x = opSpcPtr[0] | (opSpcPtr[1] << 8);
     short int y = opSpcPtr[2] | (opSpcPtr[3] << 8);
     short int z = opSpcPtr[4] | (opSpcPtr[5] << 8);
@@ -60,8 +56,7 @@
     return retDic;
 }
 
-+(void*) createPose6DPointer: (NSDictionary*) OSData
-{
++(void*) createPose6DPointer: (NSDictionary*) OSData {
     float x = [[OSData objectForKey:X] floatValue];
     float y = [[OSData objectForKey:Y] floatValue];
     float z = [[OSData objectForKey:Z] floatValue];
@@ -84,13 +79,10 @@
     [data appendBytes:&pitcht length:sizeof(pitcht)];
     [data appendBytes:&yawt length:sizeof(yawt)];
 
-
     return (char*)[data bytes];
 }
 
-
-+(NSDictionary*) decodeButtonPointer:(const uint8_t *)opSpcPtr
-{
++(NSDictionary*) decodeButtonPointer:(const uint8_t *)opSpcPtr {
     short button = opSpcPtr[0] | (opSpcPtr[1] << 8);
     short touch0 = (button & 0x3);
     short touch1 = (button >> 2) & 0x3;
@@ -107,8 +99,7 @@
     return retDic;
 }
 
-+(void*) createButtonPointer:(NSDictionary *)OSData
-{
++(void*) createButtonPointer:(NSDictionary *)OSData {
     short touch0 = [[OSData objectForKey:TOUCH_0] shortValue];
     short touch1 = [[OSData objectForKey:TOUCH_1] shortValue];
     short touch2 = [[OSData objectForKey:TOUCH_2] shortValue];
@@ -120,8 +111,7 @@
     return (char*)[data bytes];
 }
 
-+(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr
-{
++(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr {
     short opCode = opSpcPtr[0] | opSpcPtr[1] << 8;
     char data = opSpcPtr[2];
 
@@ -131,8 +121,7 @@
     return retDic;
 }
 
-+(void*) createGestPointer: (NSDictionary*) OSData
-{
++(void*) createGestPointer: (NSDictionary*) OSData {
     NSMutableData* data = [[NSMutableData alloc] init];
     short opCode = [[OSData objectForKey:GEST_OPCODE] shortValue];
     char dataV = [[OSData objectForKey:GEST_DATA] charValue];
@@ -141,8 +130,7 @@
     return (char*)[data bytes];
 }
 
-+(NSDictionary*) decodeMot6DPointer:(const uint8_t *)opSpcPtr
-{
++(NSDictionary*) decodeMot6DPointer:(const uint8_t *)opSpcPtr {
     short int x = opSpcPtr[0] | (opSpcPtr[1] << 8);
     float xf = ((float) x) / 8192;
     short int y = opSpcPtr[2] | (opSpcPtr[3] << 8);
@@ -165,8 +153,6 @@
                               ZG : @(z2f),
                               };
     return retDic;
-
 }
-
 
 @end

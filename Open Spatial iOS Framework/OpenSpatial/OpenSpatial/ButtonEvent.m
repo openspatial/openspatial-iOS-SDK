@@ -10,13 +10,11 @@
 
 @implementation ButtonEvent
 
--(void)setButtonEventType:(ButtonEventType)buttonEType
-{
+-(void)setButtonEventType:(ButtonEventType)buttonEType {
     self.eventNum = buttonEType;
 }
 
--(ButtonEventType)getButtonEventType
-{
+-(ButtonEventType)getButtonEventType {
     return self.eventNum;
 }
 

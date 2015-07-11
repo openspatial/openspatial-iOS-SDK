@@ -1,6 +1,6 @@
 //
 //  OpenSpatialDecoder.h
-//  enimai-ios
+//  Nod Labs
 //
 //  Copyright (c) 2014 Nod Inc. All rights reserved.
 //

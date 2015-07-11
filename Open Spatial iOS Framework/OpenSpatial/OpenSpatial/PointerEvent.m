@@ -11,19 +11,16 @@
 
 @implementation PointerEvent
 
--(void)setPointerEventCoordinates:(short int)tempX andY:(short int)tempY
-{
+-(void)setPointerEventCoordinates:(short int)tempX andY:(short int)tempY {
     self.xVal = tempX;
     self.yVal = tempY;
 }
 
--(short int)getXValue
-{
+-(short int)getXValue {
     return self.xVal;
 }
 
--(short int)getYValue
-{
+-(short int)getYValue {
     return self.yVal;
 }
 

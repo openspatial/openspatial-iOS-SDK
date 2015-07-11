@@ -10,5 +10,4 @@
 
 @implementation Pose6DEvent
 
-
 @end

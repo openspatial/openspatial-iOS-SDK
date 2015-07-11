@@ -10,13 +10,11 @@
 
 @implementation GestureEvent
 
--(void)setGestureEventType:(GestureEventType)gestureEType
-{
+-(void)setGestureEventType:(GestureEventType)gestureEType {
     self.eventNum = gestureEType;
 }
 
--(GestureEventType)getGestureEventType
-{
+-(GestureEventType)getGestureEventType {
     return self.eventNum;
 }
 
