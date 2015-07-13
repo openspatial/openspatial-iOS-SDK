@@ -9,13 +9,11 @@
 #import "MainViewController.h"
 
 @interface MainViewController ()
-
 @end
 
 @implementation MainViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
@@ -23,15 +21,13 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     self.HIDServ = [OpenSpatialBluetooth sharedBluetoothServ];
     self.HIDServ.delegate = self;
     [super viewDidLoad];
 }
 
--(void)buttonEventFired: (ButtonEvent *) buttonEvent
-{
+-(void)buttonEventFired: (ButtonEvent *) buttonEvent {
     NSLog(@"This is the value of button event type from %@", [buttonEvent.peripheral name]);
     switch([buttonEvent getButtonEventType])
     {
@@ -68,22 +64,14 @@
     }
 }
 
--(void)pointerEventFired: (PointerEvent *) pointerEvent
-{
-    
-    NSLog(@"This is the x value of the pointer event from %@", [pointerEvent.peripheral name]);
-    NSLog(@"%hd", [pointerEvent getXValue]);
-    
-    
-    NSLog(@"This is the y value of the pointer event from %@", [pointerEvent.peripheral name]);
-    NSLog(@"%hd", [pointerEvent getYValue]);
+-(void)pointerEventFired: (PointerEvent *) pointerEvent {
+    NSLog(@"x value of the pointer event from %@: %hd", pointerEvent.peripheral.name, pointerEvent.xVal);
+    NSLog(@"y value of the pointer event from %@: %hd", pointerEvent.peripheral.name, pointerEvent.yVal);
 }
 
--(void) gestureEventFired: (GestureEvent *) gestureEvent
-{
+-(void) gestureEventFired: (GestureEvent *) gestureEvent {
     NSLog(@"This is the value of gesture event type from %@", [gestureEvent.peripheral name]);
-    switch([gestureEvent getGestureEventType])
-    {
+    switch([gestureEvent getGestureEventType]) {
         case SWIPE_UP:
             NSLog(@"Gesture Up");
             break;
@@ -111,41 +99,27 @@
     }
 }
 
--(void) pose6DEventFired:(Pose6DEvent *)pose6DEvent
-{
-    NSLog(@"This is the x value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.x);
-    
-    NSLog(@"This is the y value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.y);
-
-    NSLog(@"This is the z value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.z);
-
-    NSLog(@"This is the roll value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.roll);
-
-    NSLog(@"This is the pitch value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.pitch);
-
-    NSLog(@"This is the yaw value of the quaternion from %@", [pose6DEvent.peripheral name]);
-    NSLog(@"%f", pose6DEvent.yaw);
+-(void) pose6DEventFired:(Pose6DEvent *)pose6DEvent {
+    NSLog(@"Pose 6D Event Fired from %@: xQuaternionVal:%f, yQuaternionVal:%f, zQuaternionVal:%f, rollQuaternionVal: %f, pitchQuaternionVal:%f, yawQuaternionVal:%f",
+          pose6DEvent.peripheral.name, pose6DEvent.x, pose6DEvent.y, pose6DEvent.z,
+          pose6DEvent.roll, pose6DEvent.pitch, pose6DEvent.yaw);
 }
 
-- (void) didConnectToNod: (CBPeripheral*) peripheral
-{
-    NSLog(@"connected %@",peripheral);
+-(void) motion6DEventFired:(Motion6DEvent *)motion6DEvent {
+    NSLog(@"Motion 6D Event Fired:: xAccel:%f, yAccel:%f, zAccel:%f, xGyro: %f, yGyro:%f, zGyro:%f",
+          motion6DEvent.xAccel, motion6DEvent.yAccel, motion6DEvent.zAccel,
+          motion6DEvent.xGyro, motion6DEvent.yGyro, motion6DEvent.zGyro);
+}
 
+- (void) didConnectToNod: (CBPeripheral*) peripheral {
+    NSLog(@"connected %@",peripheral);
 }
 
 /*
- *  FUNCTIONS TO SUBSCRIBE TO EVENTS... COMMENT OUT UNWANTED EVENTS
+ *  FUNCTION TO SUBSCRIBE TO EVENTS... COMMENT OUT UNWANTED EVENTS
  */
-
-- (IBAction)subscribeEvents:(UIButton *)sender
-{
-    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys])
-    {
+- (IBAction)subscribeEvents:(UIButton *)sender {
+    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
         [self.HIDServ subscribeToPointerEvents:name];
         [self.HIDServ subscribeToButtonEvents:name];
         [self.HIDServ subscribeToGestureEvents:name];
@@ -153,24 +127,14 @@
         [self.HIDServ subscribeToMotion6DEvents:name];
     }
 }
-- (IBAction)unsubscribe:(id)sender
-{
-    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys])
-    {
+- (IBAction)unsubscribe:(id)sender {
+    for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
         [self.HIDServ unsubscribeFromPointerEvents:name];
         [self.HIDServ unsubscribeFromButtonEvents:name];
         [self.HIDServ unsubscribeFromGestureEvents:name];
         [self.HIDServ unsubscribeFromPose6DEvents:name];
         [self.HIDServ unsubscribeFromMotion6DEvents:name];
     }
-
-}
-
--(void) motion6DEventFired:(Motion6DEvent *)motion6DEvent
-{
-    NSLog(@"Motion 6D Event Fired:: xAccel:%f, yAccel:%f, zAccel:%f, xGyro: %f, yGyro:%f, zGyro:%f",
-          motion6DEvent.xAccel, motion6DEvent.yAccel, motion6DEvent.zAccel,
-          motion6DEvent.xGyro, motion6DEvent.yGyro, motion6DEvent.zGyro);
 }
 
 @end
