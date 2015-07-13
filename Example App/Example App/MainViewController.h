@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "OpenSpatialBluetooth.h"
+#import <OpenSpatial/OpenSpatialBluetooth.h>
 
 @interface MainViewController : UIViewController <OpenSpatialBluetoothDelegate>
 
