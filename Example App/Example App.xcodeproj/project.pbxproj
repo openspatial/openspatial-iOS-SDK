@@ -409,18 +409,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
+					"../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial/_Archive/Release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
@@ -440,18 +429,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
-					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
-					Spatial,
-					iOS,
-					Framework/OpenSpatial/_Archive/Release,
+					"../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial/_Archive/Release",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
