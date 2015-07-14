@@ -64,9 +64,9 @@
     }
 }
 
--(void)pointerEventFired: (PointerEvent *) pointerEvent {
-    NSLog(@"x value of the pointer event from %@: %hd", pointerEvent.peripheral.name, pointerEvent.xVal);
-    NSLog(@"y value of the pointer event from %@: %hd", pointerEvent.peripheral.name, pointerEvent.yVal);
+-(void)position2DEventFired:(Position2DEvent *)position2DEvent {
+    NSLog(@"x value of the pointer event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.xVal);
+    NSLog(@"y value of the pointer event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.yVal);
 }
 
 -(void) gestureEventFired: (GestureEvent *) gestureEvent {
@@ -120,7 +120,7 @@
  */
 - (IBAction)subscribeEvents:(UIButton *)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-        [self.HIDServ subscribeToPointerEvents:name];
+        [self.HIDServ subscribeToPosition2DEvents:name];
         [self.HIDServ subscribeToButtonEvents:name];
         [self.HIDServ subscribeToGestureEvents:name];
         [self.HIDServ subscribeToPose6DEvents:name];
@@ -129,7 +129,7 @@
 }
 - (IBAction)unsubscribe:(id)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-        [self.HIDServ unsubscribeFromPointerEvents:name];
+        [self.HIDServ unsubscribeFromPosition2DEvents:name];
         [self.HIDServ unsubscribeFromButtonEvents:name];
         [self.HIDServ unsubscribeFromGestureEvents:name];
         [self.HIDServ unsubscribeFromPose6DEvents:name];

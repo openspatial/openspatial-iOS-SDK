@@ -10,17 +10,19 @@
 #import "OpenSpatialDecoder.h"
 
 #import "ButtonEvent.h"
-#import "PointerEvent.h"
+#import "Position2DEvent.h"
 #import "Pose6DEvent.h"
 #import "GestureEvent.h"
 #import "Motion6DEvent.h"
+#import "AnalogEvent.h"
 
 #define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
-#define POS2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
+#define POSITION2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
 #define POSE6D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
 #define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
 #define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
 #define MOTION6D_UUID @"00000209-0000-1000-8000-A0E5E9000000"
+#define ANALOG_UUID @"0000020C-0000-1000-8000-A0E5E9000000"
 
 #define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
 #define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
@@ -29,21 +31,23 @@
 #define BATTERY_STATUS_CHAR_UUID @"2A19"
 
 #define BUTTON @"button"
-#define POINTER @"pointer"
+#define POSITION2D @"position2D"
 #define GESTURE @"gesture"
 #define POSE6D @"pose6D"
 #define MOTION6D @"motion6D"
 #define BATTERY @"battery"
+#define ANALOG @"analog"
 
 @interface NodDevice : NSObject
 
 @property CBPeripheral* BTPeripheral;
 @property CBCharacteristic* gestureCharacteristic;
 @property CBCharacteristic* pose6DCharacteristic;
-@property CBCharacteristic* pointerCharacteristic;
+@property CBCharacteristic* position2DCharacteristic;
 @property CBCharacteristic* buttonCharacteristic;
 @property CBCharacteristic* motion6DCharacteristic;
 @property CBCharacteristic* batteryCharacteristic;
+@property CBCharacteristic* analogCharacteristic;
 @property NSMutableDictionary* subscribedTo;
 
 @end
@@ -58,9 +62,9 @@
  */
 -(void)buttonEventFired: (ButtonEvent *) buttonEvent;
 /*!
- called when a pointer event is fired from Nod
+ called when a position2D event is fired from Nod
  */
--(void)pointerEventFired: (PointerEvent *) pointerEvent;
+-(void)position2DEventFired: (Position2DEvent *) position2DEvent;
 /*!
  called when a pose6D event is fired from Nod
  */
@@ -73,6 +77,10 @@
  called when a motion6D event is fired from Nod
  */
 -(void)motion6DEventFired: (Motion6DEvent *) motion6DEvent;
+/*!
+ called when a analog event is fired from Nod
+ */
+-(void)analogEventFired: (AnalogEvent *) analogEvent;
 
 /*!
  called when a Nod is connected to from connectToPeripheral
@@ -178,8 +186,8 @@
  *
  * @param peripheralName - the name of the peripheral that will connect to pointer events
  */
--(void)subscribeToPointerEvents:(NSString *)peripheralName;
--(void)unsubscribeFromPointerEvents: (NSString *)peripheralName;
+-(void)subscribeToPosition2DEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromPosition2DEvents: (NSString *)peripheralName;
 
 /*!
  * Subscribes the specified peripheral device to motion6D events
@@ -196,6 +204,14 @@
  */
 - (void)subscribeToBatteryLevel:(NSString *)peripheralName;
 -(void)unsubscribeFromBatteryLevel:(NSString *)peripheralName;
+
+/*!
+ * Subscribes the specified peripheral device to analog events
+ *
+ * @param peripheralName - the name of the peripheral that will connect to analog events
+ */
+-(void)subscribeToAnalogEvents:(NSString *)peripheralName;
+-(void)unsubscribeFromAnalogEvents: (NSString *)peripheralName;
 
 /*
  * Read battery level function

@@ -1,5 +1,5 @@
 //
-//  PointerEvent.h
+//  Position2Devent.h
 //  Open Spatial iOS SDK
 //
 //  Copyright (c) 2014 Nod Labs. All rights reserved.
@@ -8,18 +8,18 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
-@interface PointerEvent : NSObject 
+@interface Position2DEvent : NSObject
 
 @property (nonatomic, assign) short int xVal;
 @property (nonatomic, assign) short int yVal;
 @property (nonatomic, assign) CBPeripheral* peripheral;
 
 /*!
- * Sets the coordinates of the pointer event
- * @param tempX - the x value that will be set for the pointer event
- * @param tempY - the y value that will be set for the pointer event
+ * Sets the coordinates of the position2D event
+ * @param tempX - the x value that will be set for the position2D event
+ * @param tempY - the y value that will be set for the position2D event
  */
--(void)setPointerEventCoordinates:(short int)tempX andY:(short int)tempY;
+-(void)setPosition2DEventCoordinates:(short int)tempX andY:(short int)tempY;
 
 /*!
  * Returns the x value for the pointer event

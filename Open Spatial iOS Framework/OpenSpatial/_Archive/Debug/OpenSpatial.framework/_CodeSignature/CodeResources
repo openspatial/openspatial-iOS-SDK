@@ -4,6 +4,10 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>Headers/AnalogEvent.h</key>
+		<data>
+		/xjRxzsYy/Nt4r1BTWOnubBJcJY=
+		</data>
 		<key>Headers/ButtonEvent.h</key>
 		<data>
 		bZVjp/Kfe+9ljCn98Aoao6jZrjY=
@@ -18,19 +22,19 @@
 		</data>
 		<key>Headers/OpenSpatialBluetooth.h</key>
 		<data>
-		W+W9oFaMXsgwjsXTHcBeAm5WhQI=
+		9BJ4Lb6xVMbRdtRX3KsYcpCQEto=
 		</data>
 		<key>Headers/OpenSpatialDecoder.h</key>
 		<data>
-		PDAcgtpv0T8ZS4BgoHmMUg+EkpQ=
-		</data>
-		<key>Headers/PointerEvent.h</key>
-		<data>
-		8SAWejNukWwYFSZn0UWhX/a+6cE=
+		jOOmsetfMvjggDhkVxhUiUa51u8=
 		</data>
 		<key>Headers/Pose6DEvent.h</key>
 		<data>
 		zmYtJbEEX+TDNYQzJQllkF2zF0Y=
+		</data>
+		<key>Headers/Position2DEvent.h</key>
+		<data>
+		k2kQhtsJ5H3FCYzyKJqtIQoyYww=
 		</data>
 		<key>Info.plist</key>
 		<data>
@@ -39,6 +43,10 @@
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>Headers/AnalogEvent.h</key>
+		<data>
+		/xjRxzsYy/Nt4r1BTWOnubBJcJY=
+		</data>
 		<key>Headers/ButtonEvent.h</key>
 		<data>
 		bZVjp/Kfe+9ljCn98Aoao6jZrjY=
@@ -53,19 +61,19 @@
 		</data>
 		<key>Headers/OpenSpatialBluetooth.h</key>
 		<data>
-		W+W9oFaMXsgwjsXTHcBeAm5WhQI=
+		9BJ4Lb6xVMbRdtRX3KsYcpCQEto=
 		</data>
 		<key>Headers/OpenSpatialDecoder.h</key>
 		<data>
-		PDAcgtpv0T8ZS4BgoHmMUg+EkpQ=
-		</data>
-		<key>Headers/PointerEvent.h</key>
-		<data>
-		8SAWejNukWwYFSZn0UWhX/a+6cE=
+		jOOmsetfMvjggDhkVxhUiUa51u8=
 		</data>
 		<key>Headers/Pose6DEvent.h</key>
 		<data>
 		zmYtJbEEX+TDNYQzJQllkF2zF0Y=
+		</data>
+		<key>Headers/Position2DEvent.h</key>
+		<data>
+		k2kQhtsJ5H3FCYzyKJqtIQoyYww=
 		</data>
 	</dict>
 	<key>rules</key>

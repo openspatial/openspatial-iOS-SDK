@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		182F3FFE1B543FAE00AC27DC /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 182F3FFD1B543FAE00AC27DC /* OpenSpatial.framework */; };
-		182F3FFF1B543FAE00AC27DC /* OpenSpatial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 182F3FFD1B543FAE00AC27DC /* OpenSpatial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		18292FA41B55B26600E5DD8F /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18292FA31B55B26600E5DD8F /* OpenSpatial.framework */; };
+		18292FA51B55B26600E5DD8F /* OpenSpatial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 18292FA31B55B26600E5DD8F /* OpenSpatial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		183CB677194655D80079076A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB676194655D80079076A /* Foundation.framework */; };
 		183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB678194655D80079076A /* CoreGraphics.framework */; };
 		183CB67B194655D80079076A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB67A194655D80079076A /* UIKit.framework */; };
@@ -37,13 +37,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		182F40001B543FAF00AC27DC /* Embed Frameworks */ = {
+		18292FA61B55B26600E5DD8F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				182F3FFF1B543FAE00AC27DC /* OpenSpatial.framework in Embed Frameworks */,
+				18292FA51B55B26600E5DD8F /* OpenSpatial.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -51,6 +51,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18292FA31B55B26600E5DD8F /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = "../Open Spatial iOS Framework/OpenSpatial/_Archive/Release/OpenSpatial.framework"; sourceTree = "<group>"; };
+		182CBB241B54A1800098564F /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = "../Open Spatial iOS Framework/OpenSpatial/_Archive/Release/OpenSpatial.framework"; sourceTree = "<group>"; };
 		182F3FFD1B543FAE00AC27DC /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = "../Open Spatial iOS Framework/OpenSpatial/_Archive/Release/OpenSpatial.framework"; sourceTree = "<group>"; };
 		183CB673194655D80079076A /* Example App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		183CB676194655D80079076A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -81,7 +83,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */,
-				182F3FFE1B543FAE00AC27DC /* OpenSpatial.framework in Frameworks */,
+				18292FA41B55B26600E5DD8F /* OpenSpatial.framework in Frameworks */,
 				183CB67B194655D80079076A /* UIKit.framework in Frameworks */,
 				183CB677194655D80079076A /* Foundation.framework in Frameworks */,
 			);
@@ -103,6 +105,8 @@
 		183CB66A194655D80079076A = {
 			isa = PBXGroup;
 			children = (
+				18292FA31B55B26600E5DD8F /* OpenSpatial.framework */,
+				182CBB241B54A1800098564F /* OpenSpatial.framework */,
 				183CB67C194655D80079076A /* Example App */,
 				183CB69B194655D80079076A /* Example AppTests */,
 				183CB675194655D80079076A /* Frameworks */,
@@ -186,7 +190,7 @@
 				183CB66F194655D80079076A /* Sources */,
 				183CB670194655D80079076A /* Frameworks */,
 				183CB671194655D80079076A /* Resources */,
-				182F40001B543FAF00AC27DC /* Embed Frameworks */,
+				18292FA61B55B26600E5DD8F /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -409,11 +413,19 @@
 					Spatial,
 					iOS,
 					Framework/OpenSpatial/_Archive/Release,
+					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
+					Spatial,
+					iOS,
+					Framework/OpenSpatial/_Archive/Release,
+					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
+					Spatial,
+					iOS,
+					Framework/OpenSpatial/_Archive/Release,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -432,11 +444,19 @@
 					Spatial,
 					iOS,
 					Framework/OpenSpatial/_Archive/Release,
+					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
+					Spatial,
+					iOS,
+					Framework/OpenSpatial/_Archive/Release,
+					"/Users/neel/Source/openspatial/internal/ios-sdk/Open",
+					Spatial,
+					iOS,
+					Framework/OpenSpatial/_Archive/Release,
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
