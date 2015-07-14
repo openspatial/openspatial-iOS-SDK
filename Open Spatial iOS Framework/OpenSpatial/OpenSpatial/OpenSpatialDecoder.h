@@ -48,6 +48,7 @@
 #define X @"x"
 #define Y @"y"
 #define Z @"z"
+#define TRIGGER @"trigger"
 #define ROLL @"roll"
 #define PITCH @"pitch"
 #define YAW @"yaw"
@@ -116,7 +117,8 @@
  Decode Motion6D Data from Nod
  */
 +(NSDictionary*) decodeMot6DPointer: (const uint8_t*) opSpcPtr;
-
-
-
+/*!
+ Decode Analog Data from Nod
+ */
++(NSDictionary*) decodeAnalogPointer:(const uint8_t *)opSpcPtr;
 @end

@@ -155,4 +155,16 @@
     return retDic;
 }
 
++(NSDictionary*) decodeAnalogPointer:(const uint8_t *)opSpcPtr {
+    short int x = (opSpcPtr[1] << 8) | opSpcPtr[0];
+    short int y = (opSpcPtr[3] << 8) | opSpcPtr[2];
+    short int trigger = (opSpcPtr[5] << 8) | opSpcPtr[4];
+    
+    NSDictionary* retDic = @{ X : @(x),
+                              Y : @(y),
+                              TRIGGER : @(trigger),
+                              };
+    return retDic;
+}
+
 @end

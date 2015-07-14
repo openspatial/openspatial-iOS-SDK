@@ -118,7 +118,7 @@
  * When device is connected set connected bool to true
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSDictionary* temp = @{BUTTON: @FALSE, POINTER: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, BATTERY: @FALSE};
+    NSDictionary* temp = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
     dev.BTPeripheral = peripheral;
@@ -184,9 +184,9 @@
     for (CBCharacteristic *characteristic in service.characteristics) {
         NSLog(@"%@",characteristic.UUID.UUIDString);
         if([service.UUID.UUIDString isEqualToString:OS_UUID]) {
-            if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID]) {
+            if([characteristic.UUID.UUIDString isEqualToString:POSITION2D_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).pointerCharacteristic = characteristic;
+                              peripheral.name]).position2DCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID]) {
@@ -207,6 +207,11 @@
             if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID]) {
                 ((NodDevice*)[self.connectedPeripherals objectForKey:
                               peripheral.name]).motion6DCharacteristic = characteristic;
+                countChars++;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:ANALOG_UUID]) {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).analogCharacteristic = characteristic;
                 countChars++;
             }
         }
@@ -284,18 +289,18 @@
 /*
  * Subscribes to pointer events for the given device
  */
--(void)subscribeToPointerEvents:(NSString *)peripheralName {
+-(void)subscribeToPosition2DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pointerCharacteristic];
-        [dev.subscribedTo setValue:@TRUE forKey:POINTER];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.position2DCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:POSITION2D];
     }
 }
--(void)unsubscribeFromPointerEvents:(NSString *)peripheralName {
+-(void)unsubscribeFromPosition2DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pointerCharacteristic];
-        [dev.subscribedTo setValue:@NO forKey:POINTER];
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.position2DCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:POSITION2D];
     }
 }
 
@@ -314,6 +319,24 @@
     if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.motion6DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:MOTION6D];
+    }
+}
+
+/*
+ * Subscribes to analog events for the given device
+ */
+-(void)subscribeToAnalogEvents:(NSString *)peripheralName {
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.analogCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:ANALOG];
+    }
+}
+-(void)unsubscribeFromAnalogEvents:(NSString *)peripheralName {
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.analogCharacteristic];
+        [dev.subscribedTo setValue:@NO forKey:ANALOG];
     }
 }
 
@@ -370,37 +393,33 @@
  * If ring is clicked send a click pressed message, when click is released set a click release message
  * Include state machine for all cases,
  */
-- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:
-                     (CBCharacteristic *)characteristic error:(NSError *)error
-{
-    // Checks if the characteristic is the Open Spatial 2D characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
-    {
-        [self pos2DFunction:characteristic peripheral:peripheral];
+- (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
+    // Checks if the characteristic is the position2D characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:POSITION2D_UUID]) {
+        [self position2DFunction:characteristic peripheral:peripheral];
     }
     // Checks if the characteristic is the pose6D characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
-    {
+    if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID]) {
         [self pose6DFunction:characteristic peripheral:peripheral];
     }
     // Checks if the characteristic is the gesture characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID])
-    {
+    if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID]) {
         [self gestureFunction:characteristic peripheral:peripheral];
     }
     // Checks if the characteristic is the button characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID])
-    {
+    if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID]) {
         [self buttonFunction:characteristic peripheral:peripheral];
     }
     // Checks if the characteristic is the motion6D characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID])
-    {
+    if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID]) {
         [self motion6DFunction:characteristic peripheral:peripheral];
     }
+    // Checks if the characteristic is the motion 6d characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:ANALOG_UUID]) {
+        [self analogFunction:characteristic peripheral:peripheral];
+    }
     // Checks if the characteristic is the battery status characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID])
-    {
+    if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID]) {
         [self batteryFunction:characteristic peripheral:peripheral];
     }
 }
@@ -411,11 +430,11 @@
 -(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral
 {
     NSArray* array;
-    // Checks if the characteristic is the Open Spatial 2D characteristic
-    if([characteristic.UUID.UUIDString isEqualToString:POS2D_UUID])
+    // Checks if the characteristic is the position2D characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:POSITION2D_UUID])
     {
-        NSLog(@"Pos2D");
-        array = [self pos2DFunction:characteristic peripheral:peripheral];
+        NSLog(@"Position2D");
+        array = [self position2DFunction:characteristic peripheral:peripheral];
     }
     // Checks if the characteristic is the pose6D characteristic
     if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID])
@@ -447,26 +466,26 @@
 /*
  * Method that handles the Open Spatial 2D events
  */
--(NSArray *)pos2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
+-(NSArray *)position2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePos2DPointer:bytePtr];
     
     short int x = [[OSData objectForKey:X] shortValue];
     short int y = [[OSData objectForKey:Y] shortValue];
     
-    NSMutableArray *openSpatial2DEvents = [[NSMutableArray alloc] init];
+    NSMutableArray *position2DEvents = [[NSMutableArray alloc] init];
 
-    PointerEvent *pEvent = [[PointerEvent alloc] init];
-    [pEvent setPointerEventCoordinates:x andY:y];
+    Position2DEvent *pEvent = [[Position2DEvent alloc] init];
+    [pEvent setPosition2DEventCoordinates:x andY:y];
     pEvent.peripheral = peripheral;
-    [openSpatial2DEvents addObject:pEvent];
+    [position2DEvents addObject:pEvent];
 
-    if([self.delegate respondsToSelector:@selector(pointerEventFired:)]) {
-        [self.delegate pointerEventFired:pEvent];
+    if([self.delegate respondsToSelector:@selector(position2DEventFired:)]) {
+        [self.delegate position2DEventFired:pEvent];
     }
     
     // For testing purposes only
-    return openSpatial2DEvents;
+    return position2DEvents;
 }
 
 -(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
@@ -665,6 +684,28 @@
     
     // For testing purposes only
     return motion6DEvent;
+}
+
+-(NSArray *) analogFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
+    const uint8_t* bytePtr = [characteristic.value bytes];
+    NSDictionary* OSData = [OpenSpatialDecoder decodeAnalogPointer:bytePtr];
+    short int y = [[OSData objectForKey:X] shortValue];
+    short int x = [[OSData objectForKey:Y] shortValue];
+    short int trigger = [[OSData objectForKey:TRIGGER] shortValue];
+    
+    NSMutableArray *analogEvents = [[NSMutableArray alloc] init];
+    
+    AnalogEvent *aEvent = [[AnalogEvent alloc] init];
+    [aEvent setAnalogEventCoordinatesAndData:x andY:y andTrigger:trigger];
+    aEvent.peripheral = peripheral;
+    [analogEvents addObject:aEvent];
+    
+    if([self.delegate respondsToSelector:@selector(analogEventFired:)]) {
+        [self.delegate analogEventFired:aEvent];
+    }
+    
+    // For testing purposes only
+    return analogEvents;
 }
 
 -(void) batteryFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {

@@ -1,5 +1,5 @@
 //
-//  PointerEvent.m
+//  Position2DEvent.m
 //  Open Spatial iOS SDK
 //
 //  Created by Neel Bhoopalam on 6/9/14.
@@ -7,11 +7,11 @@
 //
 
 
-#import "PointerEvent.h"
+#import "Position2DEvent.h"
 
-@implementation PointerEvent
+@implementation Position2DEvent
 
--(void)setPointerEventCoordinates:(short int)tempX andY:(short int)tempY {
+-(void)setPosition2DEventCoordinates:(short int)tempX andY:(short int)tempY {
     self.xVal = tempX;
     self.yVal = tempY;
 }
