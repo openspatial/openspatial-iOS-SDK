@@ -167,4 +167,48 @@
     return retDic;
 }
 
++(NSArray*) decodeODataPointer:(const uint8_t *)opSpcPtr length:(int)length
+{
+    int processed = 0;
+    NSMutableArray* array = [[NSMutableArray alloc] init];
+    while(processed < length)
+    {
+        uint8_t tag = opSpcPtr[processed];
+        processed++;
+        if(tag == OS_EULER_ANGLES_TAG)
+        {
+            int roll = opSpcPtr[processed] | (opSpcPtr[processed + 1] << 8);
+            int pitch = opSpcPtr[processed + 2] | (opSpcPtr[processed + 3] << 8);
+            int yaw = opSpcPtr[processed + 4] | (opSpcPtr[processed + 5] << 8);
+            float rollf = (roll << 16);
+            float pitchf = (pitch << 16);
+            float yawf = (yaw << 16);
+            rollf = rollf / (1 << 29);
+            pitchf = pitchf / (1 << 29);
+            yawf = yawf / (1 << 29);
+            NSDictionary* dic = @{ @"type" : @"euler",
+                                          ROLL : @(rollf),
+                                          PITCH : @(pitchf),
+                                          YAW : @(yawf)
+                                          };
+            [array addObject:dic];
+            processed += 6;
+        }
+        if(tag == OS_ANALOG_DATA_TAG)
+        {
+            int x = opSpcPtr[processed] | (opSpcPtr[processed + 1] << 8);
+            int y = opSpcPtr[processed + 2] | (opSpcPtr[processed + 3] << 8);
+            int trigger = opSpcPtr[processed + 4] | (opSpcPtr[processed + 5] << 8);
+            NSDictionary* dic = @{ @"type" : @"analog",
+                                   X : @(x),
+                                   Y : @(y),
+                                   TRIGGER : @(trigger)};
+            [array addObject:dic];
+            processed+=6;
+        }
+        
+    }
+    return array;
+}
+
 @end

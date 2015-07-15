@@ -79,6 +79,22 @@
 #define YG @"gyroscope y"
 #define ZG @"gyroscope y"
 
+enum {
+    OS_RAW_ACCELEROMETER_TAG = 0x20, /* 3x int16: x y z */
+    OS_RAW_GYRO_TAG          = 0x21, /* 3x int16: x y z */
+    OS_RAW_COMPASS_TAG       = 0x22, /* 3x int16: x y z */
+    OS_EULER_ANGLES_TAG      = 0x23, /* 3x int16: roll pitch yaw */
+    OS_TRANSLATIONS_TAG      = 0x24, /* 3x int16: x y z */
+    OS_ANALOG_DATA_TAG       = 0x25, /* 3X int16: x y z */
+    OS_RELATIVE_XY_TAG       = 0x10, /* 2x int16: deltax deltay */
+    OS_DIRECTION_GESTURE_TAG = 0xa0, /* 1x uint8: enumeration */
+    OS_SLIDER_GESTURE_TAG    = 0xa1, /* 1x uint8: enumeration */
+    OS_BUTTON_EVENT_TAG      = 0xa2, /* 1x uint8: button_number */
+    OS_BOUNDARY_TAG          = 0x9d, /* No data; end of related data group */
+    OS_HEARTBEAT_TAG         = 0x9e, /* No data; "I am alive" */
+    OS_NULL_TAG              = 0x9f, /* No data; filler */
+};
+
 @interface OpenSpatialDecoder : NSObject
 
 /*!
@@ -121,4 +137,10 @@
  Decode Analog Data from Nod
  */
 +(NSDictionary*) decodeAnalogPointer:(const uint8_t *)opSpcPtr;
+/*!
+ Decode oData returns an array of dictionaries, which will contain
+ each event packed into oData, each dictionary will have a "type" key
+ to determine the type;
+ */
++(NSArray*) decodeODataPointer:(const uint8_t *)opSpcPtr length:(int) length;
 @end
