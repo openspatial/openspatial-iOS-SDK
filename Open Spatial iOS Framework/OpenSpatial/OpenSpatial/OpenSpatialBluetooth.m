@@ -118,7 +118,7 @@
  * When device is connected set connected bool to true
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSDictionary* temp = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE};
+    NSDictionary* temp = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE, ODATA: @FALSE, OCONTROL: @FALSE};
     peripheral.delegate = self;
     NodDevice* dev = [[NodDevice alloc] init];
     dev.BTPeripheral = peripheral;
@@ -214,6 +214,14 @@
                               peripheral.name]).analogCharacteristic = characteristic;
                 countChars++;
             }
+            if([characteristic.UUID.UUIDString isEqualToString:ODATA_UUID]) {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).oDataCharacteristic = characteristic;
+            }
+            if([characteristic.UUID.UUIDString isEqualToString:OCONTROL_UUID]) {
+                ((NodDevice*)[self.connectedPeripherals objectForKey:
+                              peripheral.name]).oControlCharacteristic = characteristic;
+            }
         }
         else if([service.UUID.UUIDString isEqualToString:BATTERY_SERVICE_UUID]) {
             
@@ -224,11 +232,45 @@
             }
         }
     }
-    if(countChars == 6) {
+    NSLog(@"Count Chars: %d", countChars);
+    if(countChars >= 4) {
         if([self.delegate respondsToSelector:@selector(didConnectToNod:)]) {
             [self.delegate didConnectToNod:peripheral];
+            NSLog(@"Connected");
         }
         countChars = 0;
+    }
+}
+
+-(void)toggleOData:(BOOL)value withName:(NSString*)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
+    uint8_t enableDisable = (value) ? OCONTROL_ENABLE_DATA : OCONTROL_DISABLE_DATA;
+    for(int i=0; i < eventTypesToToggle.count; i++) {
+        NSMutableData* data = [[NSMutableData alloc] init];
+        [data appendBytes:&enableDisable length:sizeof(enableDisable)];
+        int eventType = [[eventTypesToToggle objectAtIndex:i] intValue];
+        [data appendBytes:&eventType length:sizeof(eventType)];
+        [((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).BTPeripheral writeValue:data forCharacteristic:((NodDevice*)[self.connectedPeripherals objectForKey:peripheralName]).oControlCharacteristic type:CBCharacteristicWriteWithResponse];
+    }
+}
+
+-(void)subscribeToODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
+    [self unsubscribeFromODataEvents:peripheralName];
+    [self toggleOData:TRUE withName:peripheralName forEventTypes:eventTypesToToggle];
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [dev.subscribedTo setValue:@TRUE forKey:ODATA];
+    }
+}
+
+-(void)unsubscribeFromODataEvents: (NSString *)peripheralName; {
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    NSMutableArray* eventTypes = [[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), @(OS_RAW_GYRO_TAG), @(OS_RAW_COMPASS_TAG), @(OS_EULER_ANGLES_TAG), @(OS_TRANSLATIONS_TAG), @(OS_ANALOG_DATA_TAG), @(OS_RELATIVE_XY_TAG), @(OS_DIRECTION_GESTURE_TAG), @(OS_SLIDER_GESTURE_TAG), @(OS_BUTTON_EVENT_TAG), nil];
+    [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypes];
+    
+    if(dev) {
+        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.oDataCharacteristic];
+        [dev.subscribedTo setValue:@FALSE forKey:ODATA];
     }
 }
 
@@ -422,6 +464,10 @@
     if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID]) {
         [self batteryFunction:characteristic peripheral:peripheral];
     }
+    // Checks if the characteristic is the oData characteristic
+    if([characteristic.UUID.UUIDString isEqualToString:ODATA_UUID]) {
+        [self oDataFunction:characteristic peripheral:peripheral];
+    }
 }
 
 /*
@@ -469,14 +515,11 @@
 -(NSArray *)position2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePos2DPointer:bytePtr];
-    
-    short int x = [[OSData objectForKey:X] shortValue];
-    short int y = [[OSData objectForKey:Y] shortValue];
-    
     NSMutableArray *position2DEvents = [[NSMutableArray alloc] init];
 
     Position2DEvent *pEvent = [[Position2DEvent alloc] init];
-    [pEvent setPosition2DEventCoordinates:x andY:y];
+    pEvent.xVal = [[OSData objectForKey:X] shortValue];
+    pEvent.yVal = [[OSData objectForKey:Y] shortValue];
     pEvent.peripheral = peripheral;
     [position2DEvents addObject:pEvent];
 
@@ -651,8 +694,7 @@
             NSLog(@"No match found for gesture event.");
         }
     }
-    else
-    {
+    else {
         NSLog(@"No match found for gesture event.");
     }
 
@@ -689,14 +731,12 @@
 -(NSArray *) analogFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeAnalogPointer:bytePtr];
-    short int y = [[OSData objectForKey:X] shortValue];
-    short int x = [[OSData objectForKey:Y] shortValue];
-    short int trigger = [[OSData objectForKey:TRIGGER] shortValue];
-    
     NSMutableArray *analogEvents = [[NSMutableArray alloc] init];
     
     AnalogEvent *aEvent = [[AnalogEvent alloc] init];
-    [aEvent setAnalogEventCoordinatesAndData:x andY:y andTrigger:trigger];
+    aEvent.xVal = [[OSData objectForKey:Y] shortValue];
+    aEvent.yVal = [[OSData objectForKey:X] shortValue];
+    aEvent.triggerVal = [[OSData objectForKey:TRIGGER] shortValue];
     aEvent.peripheral = peripheral;
     [analogEvents addObject:aEvent];
     
@@ -712,6 +752,149 @@
     char* val2 = (char*)characteristic.value.bytes;
     int val = (int) val2[0];
     [self.delegate didReadBatteryLevel:val forRingNamed:peripheral.name];
+}
+
+-(void) oDataFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
+    const uint8_t* bytePtr = [characteristic.value bytes];
+    NSArray* OSArrayofDicts = [OpenSpatialDecoder decodeODataPointer:bytePtr length:sizeof(bytePtr)];
+    
+    for(int i=0; i < OSArrayofDicts.count; i++) {
+        NSDictionary* eventDict = [OSArrayofDicts objectAtIndex:i];
+        NSString* caseType = [eventDict objectForKey:@"type"];
+        
+        if([caseType isEqualToString:@"accelerometer"]) {
+            Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
+            mEvent.xAccel = [[eventDict objectForKey:XA] floatValue];
+            mEvent.yAccel = [[eventDict objectForKey:YA] floatValue];
+            mEvent.zAccel = [[eventDict objectForKey:ZA] floatValue];
+            mEvent.xGyro = 0;
+            mEvent.yGyro = 0;
+            mEvent.zGyro = 0;
+            mEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(motion6DEventFired:)]) {
+                [self.delegate motion6DEventFired:mEvent];
+            }
+        } else if([caseType isEqualToString:@"gyro"]) {
+            Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
+            mEvent.xAccel = 0;
+            mEvent.yAccel = 0;
+            mEvent.zAccel = 0;
+            mEvent.xGyro = [[eventDict objectForKey:XG] floatValue];
+            mEvent.yGyro = [[eventDict objectForKey:YG] floatValue];
+            mEvent.zGyro = [[eventDict objectForKey:ZG] floatValue];
+            mEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(motion6DEventFired:)]) {
+                [self.delegate motion6DEventFired:mEvent];
+            }
+        } else if([caseType isEqualToString:@"euler"]) {
+            Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
+            p6DEvent.x = 0;
+            p6DEvent.y = 0;
+            p6DEvent.z = 0;
+            p6DEvent.roll = [[eventDict objectForKey:ROLL] floatValue];
+            p6DEvent.pitch = [[eventDict objectForKey:PITCH] floatValue];
+            p6DEvent.yaw = [[eventDict objectForKey:YAW] floatValue];
+            p6DEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(pose6DEventFired:)]) {
+                [self.delegate pose6DEventFired:p6DEvent];
+            }
+        } else if([caseType isEqualToString:@"translations"]) {
+            Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
+            p6DEvent.x = [[eventDict objectForKey:X] floatValue];
+            p6DEvent.y = [[eventDict objectForKey:Y] floatValue];
+            p6DEvent.z = [[eventDict objectForKey:Z] floatValue];
+            p6DEvent.roll = 0;
+            p6DEvent.pitch = 0;
+            p6DEvent.yaw = 0;
+            p6DEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(pose6DEventFired:)]) {
+                [self.delegate pose6DEventFired:p6DEvent];
+            }
+        } else if([caseType isEqualToString:@"analog"]) {
+            AnalogEvent *aEvent = [[AnalogEvent alloc] init];
+            aEvent.xVal = [[eventDict objectForKey:Y] shortValue];
+            aEvent.yVal = [[eventDict objectForKey:X] shortValue];
+            aEvent.triggerVal = [[eventDict objectForKey:TRIGGER] shortValue];
+            aEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(analogEventFired:)]) {
+                [self.delegate analogEventFired:aEvent];
+            }
+        } else if([caseType isEqualToString:@"button"]) {
+            short buttonVal = [[eventDict objectForKey:@"buttonType"] shortValue];
+            ButtonEvent* bEvent = [[ButtonEvent alloc] init];
+            bEvent.eventNum = buttonVal;
+            bEvent.peripheral = peripheral;
+            
+            if([self.delegate respondsToSelector:@selector(buttonEventFired:)]) {
+                [self.delegate buttonEventFired:bEvent];
+            }
+        } else if([caseType isEqualToString:@"relativexy"]) {
+            Position2DEvent *pEvent = [[Position2DEvent alloc] init];
+            pEvent.xVal = [[eventDict objectForKey:X] shortValue];
+            pEvent.yVal = [[eventDict objectForKey:Y] shortValue];
+            pEvent.peripheral = peripheral;
+            if([self.delegate respondsToSelector:@selector(position2DEventFired:)]) {
+                [self.delegate position2DEventFired:pEvent];
+            }
+        } else if ([caseType isEqualToString:@"directionGesture"]) {
+            GestureEvent *gEvent = [[GestureEvent alloc] init];
+            uint8_t gesture = [[eventDict objectForKey:GEST_DATA] charValue];
+            if(gesture == GUP) {
+                [gEvent setGestureEventType:SWIPE_UP];
+                gEvent.peripheral = peripheral;
+            }
+            else if (gesture == GDOWN) {
+                [gEvent setGestureEventType:SWIPE_DOWN];
+                gEvent.peripheral = peripheral;
+            }
+            else if(gesture == GLEFT) {
+                [gEvent setGestureEventType:SWIPE_LEFT];
+                gEvent.peripheral = peripheral;
+            }
+            else if(gesture == GRIGHT) {
+                [gEvent setGestureEventType:SWIPE_RIGHT];
+                gEvent.peripheral = peripheral;
+            }
+            else if(gesture == GCW) {
+                [gEvent setGestureEventType:CW];
+                gEvent.peripheral = peripheral;
+            }
+            else if(gesture == GCCW) {
+                [gEvent setGestureEventType:CCW];
+                gEvent.peripheral = peripheral;
+            }
+            else {
+                NSLog(@"No match found for gesture event.");
+            }
+            
+            if([self.delegate respondsToSelector:@selector(gestureEventFired:)]) {
+                [self.delegate gestureEventFired:gEvent];
+            }
+        } else if ([caseType isEqualToString:@"sliderGesture"]) {
+            GestureEvent *gEvent = [[GestureEvent alloc] init];
+            uint8_t gesture = [[eventDict objectForKey:GEST_DATA] charValue];
+            if(gesture == SLIDE_LEFT) {
+                [gEvent setGestureEventType:SLIDER_LEFT];
+                gEvent.peripheral = peripheral;
+            }
+            else if(gesture == SLIDE_RIGHT) {
+                [gEvent setGestureEventType:SLIDER_RIGHT];
+                gEvent.peripheral = peripheral;
+            }
+            else {
+                NSLog(@"No match found for gesture event.");
+            }
+            
+            if([self.delegate respondsToSelector:@selector(gestureEventFired:)]) {
+                [self.delegate gestureEventFired:gEvent];
+            }
+        }
+    }
 }
 
 -(void)readBatteryLevel: (NSString *)peripheralName {

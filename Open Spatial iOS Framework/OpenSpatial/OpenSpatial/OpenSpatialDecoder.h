@@ -44,6 +44,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "ButtonEvent.h"
 
 #define X @"x"
 #define Y @"y"
@@ -79,7 +80,7 @@
 #define YG @"gyroscope y"
 #define ZG @"gyroscope y"
 
-enum {
+typedef enum ODataTag {
     OS_RAW_ACCELEROMETER_TAG = 0x20, /* 3x int16: x y z */
     OS_RAW_GYRO_TAG          = 0x21, /* 3x int16: x y z */
     OS_RAW_COMPASS_TAG       = 0x22, /* 3x int16: x y z */
@@ -93,7 +94,17 @@ enum {
     OS_BOUNDARY_TAG          = 0x9d, /* No data; end of related data group */
     OS_HEARTBEAT_TAG         = 0x9e, /* No data; "I am alive" */
     OS_NULL_TAG              = 0x9f, /* No data; filler */
-};
+} ODataTag;
+
+typedef enum OControlAction{
+    OCONTROL_GET_PARAMETER = 0,
+    OCONTROL_SET_PARAMETER = 1,
+    OCONTROL_GET_ID = 2,
+    OCONTROL_GET_PARAMETER_RANGE = 3,
+    OCONTROL_ENABLE_DATA = 4,
+    OCONTROL_DISABLE_DATA = 5,
+} OControlAction;
+
 
 @interface OpenSpatialDecoder : NSObject
 

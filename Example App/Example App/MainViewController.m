@@ -29,8 +29,7 @@
 
 -(void)buttonEventFired: (ButtonEvent *) buttonEvent {
     NSLog(@"This is the value of button event type from %@", [buttonEvent.peripheral name]);
-    switch([buttonEvent getButtonEventType])
-    {
+    switch([buttonEvent getButtonEventType]) {
         case TOUCH0_DOWN:
             NSLog(@"Touch 0 Down");
             break;
@@ -65,8 +64,8 @@
 }
 
 -(void)position2DEventFired:(Position2DEvent *)position2DEvent {
-    NSLog(@"x value of the pointer event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.xVal);
-    NSLog(@"y value of the pointer event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.yVal);
+    NSLog(@"x value of the Position 2D event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.xVal);
+    NSLog(@"y value of the Position 2D event from %@: %hd", position2DEvent.peripheral.name, position2DEvent.yVal);
 }
 
 -(void) gestureEventFired: (GestureEvent *) gestureEvent {
@@ -107,7 +106,8 @@
 
 -(void) motion6DEventFired:(Motion6DEvent *)motion6DEvent {
     NSLog(@"Motion 6D Event Fired:: xAccel:%f, yAccel:%f, zAccel:%f, xGyro: %f, yGyro:%f, zGyro:%f",
-          motion6DEvent.xAccel, motion6DEvent.yAccel, motion6DEvent.zAccel,
+          motion6DEvent.xAccel, motion6DEvent.yAccel,
+          motion6DEvent.zAccel,
           motion6DEvent.xGyro, motion6DEvent.yGyro, motion6DEvent.zGyro);
 }
 

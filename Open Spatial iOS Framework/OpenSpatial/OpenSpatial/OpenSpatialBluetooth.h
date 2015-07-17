@@ -24,6 +24,9 @@
 #define MOTION6D_UUID @"00000209-0000-1000-8000-A0E5E9000000"
 #define ANALOG_UUID @"0000020C-0000-1000-8000-A0E5E9000000"
 
+#define ODATA_UUID @"0000020B-0000-1000-8000-A0E5E9000000"
+#define OCONTROL_UUID @"0000020A-0000-1000-8000-A0E5E9000000"
+
 #define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
 #define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
 
@@ -38,6 +41,9 @@
 #define BATTERY @"battery"
 #define ANALOG @"analog"
 
+#define ODATA @"odata"
+#define OCONTROL @"ocontrol"
+
 @interface NodDevice : NSObject
 
 @property CBPeripheral* BTPeripheral;
@@ -48,8 +54,9 @@
 @property CBCharacteristic* motion6DCharacteristic;
 @property CBCharacteristic* batteryCharacteristic;
 @property CBCharacteristic* analogCharacteristic;
+@property CBCharacteristic* oControlCharacteristic;
+@property CBCharacteristic* oDataCharacteristic;
 @property NSMutableDictionary* subscribedTo;
-
 @end
 /*!
  Delegate for the OpenSpatialBluetooth object implementing classes will
@@ -212,6 +219,22 @@
  */
 -(void)subscribeToAnalogEvents:(NSString *)peripheralName;
 -(void)unsubscribeFromAnalogEvents: (NSString *)peripheralName;
+
+/*!
+ * Subscribes the specified peripheral device to oData events
+ *
+ * @param peripheralName - the name of the peripheral that will connect to oData events
+ */
+-(void)subscribeToODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle;
+-(void)unsubscribeFromODataEvents: (NSString *)peripheralName;
+
+/*!
+ * Toggles the oData stream for the specified types of data
+ *
+ * @param peripheralName - the name of the peripheral that will have the oData stream toggled for specified events
+ * @param eventTypesToToggle - an array with the event types to toggle
+ */
+-(void)toggleOData:(BOOL)value withName:(NSString*)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle;
 
 /*
  * Read battery level function
