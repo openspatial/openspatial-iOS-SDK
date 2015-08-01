@@ -120,20 +120,20 @@
  */
 - (IBAction)subscribeEvents:(UIButton *)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-        [self.HIDServ subscribeToPosition2DEvents:name];
+//        [self.HIDServ subscribeToPosition2DEvents:name];
         [self.HIDServ subscribeToButtonEvents:name];
-        [self.HIDServ subscribeToGestureEvents:name];
+//        [self.HIDServ subscribeToGestureEvents:name];
         [self.HIDServ subscribeToPose6DEvents:name];
-        [self.HIDServ subscribeToMotion6DEvents:name];
+//        [self.HIDServ subscribeToMotion6DEvents:name];
     }
 }
 - (IBAction)unsubscribe:(id)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-        [self.HIDServ unsubscribeFromPosition2DEvents:name];
+//        [self.HIDServ unsubscribeFromPosition2DEvents:name];
         [self.HIDServ unsubscribeFromButtonEvents:name];
-        [self.HIDServ unsubscribeFromGestureEvents:name];
+//        [self.HIDServ unsubscribeFromGestureEvents:name];
         [self.HIDServ unsubscribeFromPose6DEvents:name];
-        [self.HIDServ unsubscribeFromMotion6DEvents:name];
+//        [self.HIDServ unsubscribeFromMotion6DEvents:name];
     }
 }
 
