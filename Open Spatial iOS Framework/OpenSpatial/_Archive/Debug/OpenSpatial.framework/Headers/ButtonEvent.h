@@ -23,6 +23,10 @@ typedef enum ButtonEventType {
     TACTILE1_UP,
     TACTILE0_DOWN,
     TACTILE0_UP,
+    TACTILE2_DOWN,
+    TACTILE2_UP,
+    TACTILE3_DOWN,
+    TACTILE3_UP,
 } ButtonEventType;
 
 @interface ButtonEvent : NSObject

@@ -118,14 +118,19 @@
  * When device is connected set connected bool to true
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSDictionary* temp = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE, ODATA: @FALSE, OCONTROL: @FALSE};
-    peripheral.delegate = self;
-    NodDevice* dev = [[NodDevice alloc] init];
-    dev.BTPeripheral = peripheral;
-    dev.subscribedTo = [NSMutableDictionary dictionaryWithDictionary:temp];
-    [self.connectedPeripherals setObject:dev forKey:peripheral.name];
-    NSLog(@"Connected to %@", peripheral.name);
+    if([self.connectedPeripherals objectForKey:peripheral.name]) {
+    } else {
+        NodDevice* dev = [[NodDevice alloc] init];
+        NSDictionary* eventDictionary = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE};
+        peripheral.delegate = self;
+        dev.BTPeripheral = peripheral;
+        dev.subscribedTo = [NSMutableDictionary dictionaryWithDictionary:eventDictionary];
+        [self.connectedPeripherals setObject:dev forKey:peripheral.name];
+        NSLog(@"Connect for 1st Time");
+    }
     [self getServicesForConnectedDevice: peripheral];
+    
+    NSLog(@"Connected to %@", peripheral.name);
 }
 
 /*
@@ -134,6 +139,7 @@
 -(void)disconnectFromPeripheral: (CBPeripheral *)peripheral {
     forceOff = true;
     [self.centralManager cancelPeripheralConnection:peripheral];
+    [self unsubscribeFromODataEvents:peripheral.name];
 }
 
 /*
@@ -163,6 +169,7 @@
  * Delegate Method for discovering services prints service to log
  */
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverServices:(NSError *)error {
+    ((NodDevice*)[self.connectedPeripherals objectForKey:peripheral.name]).servicesCount = 0;
     for (CBService *service in peripheral.services) {
         NSLog(@"Discovered Service %@", service);
         [self getCharacteristics:service peripheral:peripheral];
@@ -181,65 +188,108 @@
  */
 - (void)peripheral:(CBPeripheral *)peripheral didDiscoverCharacteristicsForService:(CBService *) service error:(NSError *)error {
     int countChars = 0;
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheral.name];
+    dev.servicesCount++;
     for (CBCharacteristic *characteristic in service.characteristics) {
         NSLog(@"%@",characteristic.UUID.UUIDString);
         if([service.UUID.UUIDString isEqualToString:OS_UUID]) {
             if([characteristic.UUID.UUIDString isEqualToString:POSITION2D_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).position2DCharacteristic = characteristic;
+                dev.position2DCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:POSE6D_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).pose6DCharacteristic = characteristic;
+                dev.pose6DCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:GEST_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).gestureCharacteristic = characteristic;
+                dev.gestureCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:BUTTON_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).buttonCharacteristic = characteristic;
+                dev.buttonCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:MOTION6D_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).motion6DCharacteristic = characteristic;
+                dev.motion6DCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:ANALOG_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).analogCharacteristic = characteristic;
+                dev.analogCharacteristic = characteristic;
                 countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:ODATA_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).oDataCharacteristic = characteristic;
+                dev.oDataCharacteristic = characteristic;
+                countChars++;
             }
             if([characteristic.UUID.UUIDString isEqualToString:OCONTROL_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).oControlCharacteristic = characteristic;
+                dev.oControlCharacteristic = characteristic;
+                countChars++;
+            }
+            NSLog(@"Count Chars: %d", countChars);
+            if(service.characteristics.count == countChars) {
+                if([self.delegate respondsToSelector:@selector(didConnectToNod:)]) {
+                    [self.delegate didConnectToNod:peripheral];
+                    NSLog(@"Connected - Delegate Method Fired");
+                }
             }
         }
         else if([service.UUID.UUIDString isEqualToString:BATTERY_SERVICE_UUID]) {
-            
             if([characteristic.UUID.UUIDString isEqualToString:BATTERY_STATUS_CHAR_UUID]) {
-                ((NodDevice*)[self.connectedPeripherals objectForKey:
-                              peripheral.name]).batteryCharacteristic = characteristic;
-                countChars++;
+                dev.batteryCharacteristic = characteristic;
             }
         }
     }
-    NSLog(@"Count Chars: %d", countChars);
-    if(countChars >= 4) {
-        if([self.delegate respondsToSelector:@selector(didConnectToNod:)]) {
-            [self.delegate didConnectToNod:peripheral];
-            NSLog(@"Connected");
-        }
-        countChars = 0;
+    
+    if(peripheral.services.count == dev.servicesCount) {
+        [self performSelector:@selector(updateOData:) withObject:peripheral afterDelay:2.0];
     }
+}
+
+-(void)updateOData:(CBPeripheral*)peripheral {
+    [self unsubscribeFromODataEvents:peripheral.name];
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheral.name];
+    [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+    NSMutableArray* objectsToTurnOff = [[NSMutableArray alloc] init];
+    if([[dev.subscribedTo valueForKey:BUTTON] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_BUTTON_EVENT_TAG)];
+    }
+    if([[dev.subscribedTo valueForKey:POSITION2D] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_RELATIVE_XY_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:POSE6D] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_TRANSLATIONS_TAG), @(OS_EULER_ANGLES_TAG), nil]];
+    } else {
+        [objectsToTurnOff
+         addObjectsFromArray:[[NSArray alloc] initWithObjects:@(OS_TRANSLATIONS_TAG), @(OS_EULER_ANGLES_TAG), nil]];
+    }
+    if([[dev.subscribedTo objectForKey:GESTURE] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_SLIDER_GESTURE_TAG), @(OS_DIRECTION_GESTURE_TAG), nil]];
+    } else {
+        [objectsToTurnOff
+         addObjectsFromArray:[[NSArray alloc] initWithObjects:@(OS_DIRECTION_GESTURE_TAG), @(OS_SLIDER_GESTURE_TAG), nil]];
+    }
+    if([[dev.subscribedTo objectForKey:MOTION6D] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), @(OS_RAW_GYRO_TAG), nil]];
+    } else {
+        [objectsToTurnOff
+         addObjectsFromArray:[[NSArray alloc] initWithObjects:@(OS_RAW_GYRO_TAG), @(OS_RAW_ACCELEROMETER_TAG), nil]];
+    }
+    if([[dev.subscribedTo objectForKey:ANALOG] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_ANALOG_DATA_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_ANALOG_DATA_TAG)];
+    }
+    //            [self toggleOData:FALSE withName:peripheral.name forEventTypes:objectsToTurnOff];
 }
 
 -(void)toggleOData:(BOOL)value withName:(NSString*)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
@@ -259,18 +309,15 @@
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
-        [dev.subscribedTo setValue:@TRUE forKey:ODATA];
     }
 }
 
--(void)unsubscribeFromODataEvents: (NSString *)peripheralName; {
+-(void)unsubscribeFromODataEvents: (NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     NSMutableArray* eventTypes = [[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), @(OS_RAW_GYRO_TAG), @(OS_RAW_COMPASS_TAG), @(OS_EULER_ANGLES_TAG), @(OS_TRANSLATIONS_TAG), @(OS_ANALOG_DATA_TAG), @(OS_RELATIVE_XY_TAG), @(OS_DIRECTION_GESTURE_TAG), @(OS_SLIDER_GESTURE_TAG), @(OS_BUTTON_EVENT_TAG), nil];
     [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypes];
-    
     if(dev) {
         [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.oDataCharacteristic];
-        [dev.subscribedTo setValue:@FALSE forKey:ODATA];
     }
 }
 
@@ -280,15 +327,17 @@
 -(void)subscribeToPose6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.pose6DCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:POSE6D];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_TRANSLATIONS_TAG),@(OS_EULER_ANGLES_TAG), nil]];
     }
 }
+
 -(void)unsubscribeFromPose6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.pose6DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:POSE6D];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_TRANSLATIONS_TAG),@(OS_EULER_ANGLES_TAG), nil]];
     }
 }
 
@@ -298,15 +347,16 @@
 -(void)subscribeToGestureEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.gestureCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:GESTURE];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_DIRECTION_GESTURE_TAG),@(OS_SLIDER_GESTURE_TAG), nil]];
     }
 }
 -(void)unsubscribeFromGestureEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.gestureCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:GESTURE];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_DIRECTION_GESTURE_TAG),@(OS_SLIDER_GESTURE_TAG), nil]];
     }
 }
 
@@ -316,15 +366,16 @@
 -(void)subscribeToButtonEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.buttonCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:BUTTON];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), nil]];
     }
 }
 -(void)unsubscribeFromButtonEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.buttonCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:BUTTON];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), nil]];
     }
 }
 
@@ -334,15 +385,16 @@
 -(void)subscribeToPosition2DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.position2DCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:POSITION2D];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
     }
 }
 -(void)unsubscribeFromPosition2DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.position2DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:POSITION2D];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
     }
 }
 
@@ -352,15 +404,16 @@
 -(void)subscribeToMotion6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.motion6DCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:MOTION6D];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG),@(OS_RAW_GYRO_TAG), nil]];
     }
 }
 -(void)unsubscribeFromMotion6DEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.motion6DCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:MOTION6D];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG),@(OS_RAW_GYRO_TAG), nil]];
     }
 }
 
@@ -370,15 +423,16 @@
 -(void)subscribeToAnalogEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.analogCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:ANALOG];
+        [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        [self toggleOData:TRUE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_ANALOG_DATA_TAG), nil]];
     }
 }
 -(void)unsubscribeFromAnalogEvents:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
-        [dev.BTPeripheral setNotifyValue:NO forCharacteristic:dev.analogCharacteristic];
         [dev.subscribedTo setValue:@NO forKey:ANALOG];
+        [self toggleOData:FALSE withName:peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_ANALOG_DATA_TAG), nil]];
     }
 }
 
@@ -388,6 +442,7 @@
 - (void)subscribeToBatteryLevel:(NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
+        
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.batteryCharacteristic];
         [dev.subscribedTo setValue:@TRUE forKey:BATTERY];
         
@@ -417,8 +472,11 @@
         }
     }
     else {
+        if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
+        [self.delegate didDisconnectFromNod:peripheral.name];
         [self connectToPeripheral:peripheral];
         reconnect = true;
+        }
     }
 }
 

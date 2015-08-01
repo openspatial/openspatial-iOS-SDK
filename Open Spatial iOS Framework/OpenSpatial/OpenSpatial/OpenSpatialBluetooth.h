@@ -57,6 +57,7 @@
 @property CBCharacteristic* oControlCharacteristic;
 @property CBCharacteristic* oDataCharacteristic;
 @property NSMutableDictionary* subscribedTo;
+@property int servicesCount;
 @end
 /*!
  Delegate for the OpenSpatialBluetooth object implementing classes will

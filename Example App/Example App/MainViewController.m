@@ -116,7 +116,8 @@
 }
 
 /*
- *  FUNCTION TO SUBSCRIBE TO EVENTS... COMMENT OUT UNWANTED EVENTS
+ *  FUNCTION TO SUBSCRIBE TO EVENTS... COMMENT 
+ OUT UNWANTED EVENTS
  */
 - (IBAction)subscribeEvents:(UIButton *)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {

@@ -173,6 +173,8 @@ uint8_t touches[] = {
     TOUCH2_DOWN,
     TACTILE0_DOWN,
     TACTILE1_DOWN,
+    TACTILE2_DOWN,
+    TACTILE3_DOWN,
 };
 
 uint8_t releases[] = {
@@ -181,6 +183,8 @@ uint8_t releases[] = {
     TOUCH2_UP,
     TACTILE0_UP,
     TACTILE1_UP,
+    TACTILE2_UP,
+    TACTILE3_UP,
 };
 
 +(NSArray*) decodeODataPointer:(const uint8_t *)opSpcPtr length:(int)length {
