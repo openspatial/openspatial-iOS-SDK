@@ -139,7 +139,7 @@
 -(void)disconnectFromPeripheral: (CBPeripheral *)peripheral {
     forceOff = true;
     [self.centralManager cancelPeripheralConnection:peripheral];
-    [self unsubscribeFromODataEvents:peripheral.name];
+    [self unsubscribeFromAllODataEvents:peripheral.name];
 }
 
 /*
@@ -246,7 +246,7 @@
 }
 
 -(void)updateOData:(CBPeripheral*)peripheral {
-    [self unsubscribeFromODataEvents:peripheral.name];
+    [self unsubscribeFromAllODataEvents:peripheral.name];
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheral.name];
     [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
     NSMutableArray* objectsToTurnOff = [[NSMutableArray alloc] init];
@@ -292,6 +292,12 @@
     //            [self toggleOData:FALSE withName:peripheral.name forEventTypes:objectsToTurnOff];
 }
 
+/*!
+ * Toggles the oData stream for the specified types of data
+ *
+ * @param peripheralName - the name of the peripheral that will have the oData stream toggled for specified events
+ * @param eventTypesToToggle - an array with the event types to toggle
+ */
 -(void)toggleOData:(BOOL)value withName:(NSString*)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
     uint8_t enableDisable = (value) ? OCONTROL_ENABLE_DATA : OCONTROL_DISABLE_DATA;
     for(int i=0; i < eventTypesToToggle.count; i++) {
@@ -304,7 +310,6 @@
 }
 
 -(void)subscribeToODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
-    [self unsubscribeFromODataEvents:peripheralName];
     [self toggleOData:TRUE withName:peripheralName forEventTypes:eventTypesToToggle];
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
@@ -312,7 +317,11 @@
     }
 }
 
--(void)unsubscribeFromODataEvents: (NSString *)peripheralName {
+-(void)unsubscribeFromODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
+    [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypesToToggle];
+}
+
+-(void)unsubscribeFromAllODataEvents: (NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     NSMutableArray* eventTypes = [[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), @(OS_RAW_GYRO_TAG), @(OS_RAW_COMPASS_TAG), @(OS_EULER_ANGLES_TAG), @(OS_TRANSLATIONS_TAG), @(OS_ANALOG_DATA_TAG), @(OS_RELATIVE_XY_TAG), @(OS_DIRECTION_GESTURE_TAG), @(OS_SLIDER_GESTURE_TAG), @(OS_BUTTON_EVENT_TAG), nil];
     [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypes];
@@ -570,7 +579,7 @@
 /*
  * Method that handles the Open Spatial 2D events
  */
--(NSArray *)position2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
+-(NSArray *)position2DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral DEPRECATED_ATTRIBUTE{
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePos2DPointer:bytePtr];
     NSMutableArray *position2DEvents = [[NSMutableArray alloc] init];
@@ -589,7 +598,7 @@
     return position2DEvents;
 }
 
--(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
+-(NSArray *)pose6DFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral DEPRECATED_ATTRIBUTE {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodePose6DPointer:bytePtr];
     NSMutableArray *pose6DEvent = [[NSMutableArray alloc] init];
@@ -612,7 +621,7 @@
     return pose6DEvent;
 }
 
--(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
+-(NSArray *)buttonFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral DEPRECATED_ATTRIBUTE {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeButtonPointer:bytePtr];
     short touch0 = [[OSData objectForKey:TOUCH_0] shortValue];
@@ -694,7 +703,7 @@
     return buttonEvents;
 }
 
--(NSArray *)gestureFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral {
+-(NSArray *)gestureFunction:(CBCharacteristic *)characteristic peripheral:(CBPeripheral *)peripheral DEPRECATED_ATTRIBUTE {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeGestPointer:bytePtr];
     short gestureC = [[OSData objectForKey:GEST_OPCODE] shortValue];
@@ -764,7 +773,7 @@
     return gestureEvent;
 }
 
--(NSArray *) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
+-(NSArray *) motion6DFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral DEPRECATED_ATTRIBUTE {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeMot6DPointer:bytePtr];
     NSMutableArray *motion6DEvent = [[NSMutableArray alloc] init];
@@ -786,7 +795,7 @@
     return motion6DEvent;
 }
 
--(NSArray *) analogFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral {
+-(NSArray *) analogFunction: (CBCharacteristic*) characteristic peripheral:(CBPeripheral*) peripheral DEPRECATED_ATTRIBUTE {
     const uint8_t* bytePtr = [characteristic.value bytes];
     NSDictionary* OSData = [OpenSpatialDecoder decodeAnalogPointer:bytePtr];
     NSMutableArray *analogEvents = [[NSMutableArray alloc] init];
@@ -821,135 +830,49 @@
         NSString* caseType = [eventDict objectForKey:@"type"];
         
         if([caseType isEqualToString:@"accelerometer"]) {
-            Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
-            mEvent.xAccel = [[eventDict objectForKey:XA] floatValue];
-            mEvent.yAccel = [[eventDict objectForKey:YA] floatValue];
-            mEvent.zAccel = [[eventDict objectForKey:ZA] floatValue];
-            mEvent.xGyro = 0;
-            mEvent.yGyro = 0;
-            mEvent.zGyro = 0;
-            mEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(motion6DEventFired:)]) {
-                [self.delegate motion6DEventFired:mEvent];
+            AccelerometerData* accelData = [[AccelerometerData alloc] initForPeripheral:peripheral x:[[eventDict objectForKey:XA] floatValue] y:[[eventDict objectForKey:YA] floatValue] z:[[eventDict objectForKey:ZA] floatValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:accelData];
             }
         } else if([caseType isEqualToString:@"gyro"]) {
-            Motion6DEvent* mEvent = [[Motion6DEvent alloc] init];
-            mEvent.xAccel = 0;
-            mEvent.yAccel = 0;
-            mEvent.zAccel = 0;
-            mEvent.xGyro = [[eventDict objectForKey:XG] floatValue];
-            mEvent.yGyro = [[eventDict objectForKey:YG] floatValue];
-            mEvent.zGyro = [[eventDict objectForKey:ZG] floatValue];
-            mEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(motion6DEventFired:)]) {
-                [self.delegate motion6DEventFired:mEvent];
+            GyroscopeData* gyroData = [[GyroscopeData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:XG] floatValue] withY:[[eventDict objectForKey:YG] floatValue] withZ:[[eventDict objectForKey:ZG] floatValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:gyroData];
             }
         } else if([caseType isEqualToString:@"euler"]) {
-            Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
-            p6DEvent.x = 0;
-            p6DEvent.y = 0;
-            p6DEvent.z = 0;
-            p6DEvent.roll = [[eventDict objectForKey:ROLL] floatValue];
-            p6DEvent.pitch = [[eventDict objectForKey:PITCH] floatValue];
-            p6DEvent.yaw = [[eventDict objectForKey:YAW] floatValue];
-            p6DEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(pose6DEventFired:)]) {
-                [self.delegate pose6DEventFired:p6DEvent];
+            EulerData* eulerData = [[EulerData alloc] initForPeripheral:peripheral withRoll:[[eventDict objectForKey:ROLL] floatValue] withPitch:[[eventDict objectForKey:PITCH] floatValue] withYaw:[[eventDict objectForKey:YAW] floatValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:eulerData];
             }
         } else if([caseType isEqualToString:@"translations"]) {
-            Pose6DEvent *p6DEvent = [[Pose6DEvent alloc] init];
-            p6DEvent.x = [[eventDict objectForKey:X] floatValue];
-            p6DEvent.y = [[eventDict objectForKey:Y] floatValue];
-            p6DEvent.z = [[eventDict objectForKey:Z] floatValue];
-            p6DEvent.roll = 0;
-            p6DEvent.pitch = 0;
-            p6DEvent.yaw = 0;
-            p6DEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(pose6DEventFired:)]) {
-                [self.delegate pose6DEventFired:p6DEvent];
+            TranslationData* translationData = [[TranslationData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:X] floatValue] withY:[[eventDict objectForKey:Y] floatValue] withZ:[[eventDict objectForKey:Z] floatValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:translationData];
             }
         } else if([caseType isEqualToString:@"analog"]) {
-            AnalogEvent *aEvent = [[AnalogEvent alloc] init];
-            aEvent.xVal = [[eventDict objectForKey:Y] shortValue];
-            aEvent.yVal = [[eventDict objectForKey:X] shortValue];
-            aEvent.triggerVal = [[eventDict objectForKey:TRIGGER] shortValue];
-            aEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(analogEventFired:)]) {
-                [self.delegate analogEventFired:aEvent];
+            AnalogData* analogData = [[AnalogData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:Y] shortValue] withY:[[eventDict objectForKey:X] shortValue] withTrigger:[[eventDict objectForKey:TRIGGER] shortValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:analogData];
             }
         } else if([caseType isEqualToString:@"button"]) {
-            short buttonVal = [[eventDict objectForKey:@"buttonType"] shortValue];
-            ButtonEvent* bEvent = [[ButtonEvent alloc] init];
-            bEvent.eventNum = buttonVal;
-            bEvent.peripheral = peripheral;
-            
-            if([self.delegate respondsToSelector:@selector(buttonEventFired:)]) {
-                [self.delegate buttonEventFired:bEvent];
+            ButtonData* buttonData = [[ButtonData alloc] initForPeripheral:peripheral withButtonID:[[eventDict objectForKey:@"buttonID"] intValue] withButtonState:[[eventDict objectForKey:@"buttonState"] charValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:buttonData];
             }
         } else if([caseType isEqualToString:@"relativexy"]) {
-            Position2DEvent *pEvent = [[Position2DEvent alloc] init];
-            pEvent.xVal = [[eventDict objectForKey:X] shortValue];
-            pEvent.yVal = [[eventDict objectForKey:Y] shortValue];
-            pEvent.peripheral = peripheral;
-            if([self.delegate respondsToSelector:@selector(position2DEventFired:)]) {
-                [self.delegate position2DEventFired:pEvent];
+            RelativeXYData* relativeXYData = [[RelativeXYData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:X] shortValue] withY:[[eventDict objectForKey:Y] shortValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:relativeXYData];
             }
         } else if ([caseType isEqualToString:@"directionGesture"]) {
-            GestureEvent *gEvent = [[GestureEvent alloc] init];
-            uint8_t gesture = [[eventDict objectForKey:GEST_DATA] charValue];
-            if(gesture == GUP) {
-                [gEvent setGestureEventType:SWIPE_UP];
-                gEvent.peripheral = peripheral;
-            }
-            else if (gesture == GDOWN) {
-                [gEvent setGestureEventType:SWIPE_DOWN];
-                gEvent.peripheral = peripheral;
-            }
-            else if(gesture == GLEFT) {
-                [gEvent setGestureEventType:SWIPE_LEFT];
-                gEvent.peripheral = peripheral;
-            }
-            else if(gesture == GRIGHT) {
-                [gEvent setGestureEventType:SWIPE_RIGHT];
-                gEvent.peripheral = peripheral;
-            }
-            else if(gesture == GCW) {
-                [gEvent setGestureEventType:CW];
-                gEvent.peripheral = peripheral;
-            }
-            else if(gesture == GCCW) {
-                [gEvent setGestureEventType:CCW];
-                gEvent.peripheral = peripheral;
-            }
-            else {
-                NSLog(@"No match found for gesture event.");
-            }
-            
-            if([self.delegate respondsToSelector:@selector(gestureEventFired:)]) {
-                [self.delegate gestureEventFired:gEvent];
+            GestureData* gestureData = [[GestureData alloc] initForPeripheral:peripheral withGestureType:[[eventDict objectForKey:GEST_DATA] charValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:gestureData];
             }
         } else if ([caseType isEqualToString:@"sliderGesture"]) {
-            GestureEvent *gEvent = [[GestureEvent alloc] init];
-            uint8_t gesture = [[eventDict objectForKey:GEST_DATA] charValue];
-            if(gesture == SLIDE_LEFT) {
-                [gEvent setGestureEventType:SLIDER_LEFT];
-                gEvent.peripheral = peripheral;
-            }
-            else if(gesture == SLIDE_RIGHT) {
-                [gEvent setGestureEventType:SLIDER_RIGHT];
-                gEvent.peripheral = peripheral;
-            }
-            else {
-                NSLog(@"No match found for gesture event.");
-            }
-            
-            if([self.delegate respondsToSelector:@selector(gestureEventFired:)]) {
-                [self.delegate gestureEventFired:gEvent];
+            SliderData* sliderData = [[SliderData alloc] initForPeripheral:peripheral withSliderType:[[eventDict objectForKey:GEST_DATA] charValue]];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:sliderData];
             }
         }
     }

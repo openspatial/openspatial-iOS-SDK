@@ -115,6 +115,20 @@
     NSLog(@"connected %@",peripheral);
 }
 
+-(void)openSpatialDataFired:(OpenSpatialData *)openSpatialData {
+    switch (openSpatialData.id) {
+        case OS_BUTTON_EVENT_TAG: {
+            ButtonData* buttonData = (ButtonData *) openSpatialData;
+            if(buttonData.buttonState == UP) {
+                NSLog(@"Button Up");
+            }
+            if(buttonData.buttonState == DOWN) {
+                NSLog(@"Button Down");
+            }
+        }
+    }
+}
+
 /*
  *  FUNCTION TO SUBSCRIBE TO EVENTS... COMMENT 
  OUT UNWANTED EVENTS
@@ -124,7 +138,7 @@
 //        [self.HIDServ subscribeToPosition2DEvents:name];
         [self.HIDServ subscribeToButtonEvents:name];
 //        [self.HIDServ subscribeToGestureEvents:name];
-        [self.HIDServ subscribeToPose6DEvents:name];
+//        [self.HIDServ subscribeToPose6DEvents:name];
 //        [self.HIDServ subscribeToMotion6DEvents:name];
     }
 }

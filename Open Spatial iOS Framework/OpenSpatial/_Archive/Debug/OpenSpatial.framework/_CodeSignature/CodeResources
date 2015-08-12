@@ -22,11 +22,19 @@
 		</data>
 		<key>Headers/OpenSpatialBluetooth.h</key>
 		<data>
-		HC3XyLQzgE3QuWvNL3IvPK0UrEk=
+		7wjFUCu2lCxxm3+GyWM3oZUh5pg=
+		</data>
+		<key>Headers/OpenSpatialConstants.h</key>
+		<data>
+		Zk5WVKG4chpq88TGGDibKt+jQ6s=
+		</data>
+		<key>Headers/OpenSpatialData.h</key>
+		<data>
+		3VrdE102zepoCCfHOBqLIA7TfIw=
 		</data>
 		<key>Headers/OpenSpatialDecoder.h</key>
 		<data>
-		9LR5zbFx5YTy6J0/dAXf8UyXJu4=
+		irJSq+Xn7UsTNU+B3znFsgThNtU=
 		</data>
 		<key>Headers/Pose6DEvent.h</key>
 		<data>
@@ -61,11 +69,19 @@
 		</data>
 		<key>Headers/OpenSpatialBluetooth.h</key>
 		<data>
-		HC3XyLQzgE3QuWvNL3IvPK0UrEk=
+		7wjFUCu2lCxxm3+GyWM3oZUh5pg=
+		</data>
+		<key>Headers/OpenSpatialConstants.h</key>
+		<data>
+		Zk5WVKG4chpq88TGGDibKt+jQ6s=
+		</data>
+		<key>Headers/OpenSpatialData.h</key>
+		<data>
+		3VrdE102zepoCCfHOBqLIA7TfIw=
 		</data>
 		<key>Headers/OpenSpatialDecoder.h</key>
 		<data>
-		9LR5zbFx5YTy6J0/dAXf8UyXJu4=
+		irJSq+Xn7UsTNU+B3znFsgThNtU=
 		</data>
 		<key>Headers/Pose6DEvent.h</key>
 		<data>

@@ -25,6 +25,9 @@
 		1859A3881B44BA3F003A8D71 /* OpenSpatialBluetooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */; };
 		1859A3891B44BA3F003A8D71 /* OpenSpatialDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1859A38A1B44BA3F003A8D71 /* OpenSpatialDecoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A37C1B44BA3F003A8D71 /* OpenSpatialDecoder.m */; };
+		18BF228D1B7A9D5A00192DAA /* OpenSpatialData.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BF228B1B7A9D5A00192DAA /* OpenSpatialData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		18BF228E1B7A9D5A00192DAA /* OpenSpatialData.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF228C1B7A9D5A00192DAA /* OpenSpatialData.m */; };
+		18BF22951B7ADABF00192DAA /* OpenSpatialConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 18BF22931B7ADABF00192DAA /* OpenSpatialConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +62,9 @@
 		1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialBluetooth.m; sourceTree = "<group>"; };
 		1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialDecoder.h; sourceTree = "<group>"; };
 		1859A37C1B44BA3F003A8D71 /* OpenSpatialDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialDecoder.m; sourceTree = "<group>"; };
+		18BF228B1B7A9D5A00192DAA /* OpenSpatialData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialData.h; sourceTree = "<group>"; };
+		18BF228C1B7A9D5A00192DAA /* OpenSpatialData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialData.m; sourceTree = "<group>"; };
+		18BF22931B7ADABF00192DAA /* OpenSpatialConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialConstants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +123,9 @@
 				1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */,
 				1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */,
 				1859A37C1B44BA3F003A8D71 /* OpenSpatialDecoder.m */,
+				18BF22931B7ADABF00192DAA /* OpenSpatialConstants.h */,
+				18BF228B1B7A9D5A00192DAA /* OpenSpatialData.h */,
+				18BF228C1B7A9D5A00192DAA /* OpenSpatialData.m */,
 				1859A35A1B44B9FA003A8D71 /* Supporting Files */,
 			);
 			path = OpenSpatial;
@@ -161,6 +170,8 @@
 				1859A3851B44BA3F003A8D71 /* Motion6DEvent.h in Headers */,
 				18292FA11B55ACAE00E5DD8F /* Position2DEvent.h in Headers */,
 				18292F9E1B55A9AF00E5DD8F /* AnalogEvent.h in Headers */,
+				18BF228D1B7A9D5A00192DAA /* OpenSpatialData.h in Headers */,
+				18BF22951B7ADABF00192DAA /* OpenSpatialConstants.h in Headers */,
 				182F3FF71B4E08CB00AC27DC /* Pose6DEvent.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,6 +277,7 @@
 				1859A3841B44BA3F003A8D71 /* GestureEvent.m in Sources */,
 				1859A3821B44BA3F003A8D71 /* ButtonEvent.m in Sources */,
 				18292F9D1B55A9AF00E5DD8F /* AnalogEvent.m in Sources */,
+				18BF228E1B7A9D5A00192DAA /* OpenSpatialData.m in Sources */,
 				1859A3861B44BA3F003A8D71 /* Motion6DEvent.m in Sources */,
 				1859A38A1B44BA3F003A8D71 /* OpenSpatialDecoder.m in Sources */,
 				1859A3881B44BA3F003A8D71 /* OpenSpatialBluetooth.m in Sources */,

@@ -297,13 +297,14 @@ uint8_t releases[] = {
             processed+=2;
         }
         if (tag == OS_BUTTON_EVENT_TAG) {
+            uint8_t UP_DOWN_MASK = (uint8_t)(1 << 7);
             char buttonCode = opSpcPtr[processed] | (opSpcPtr[processed + 1] << 8);
-            int index = buttonCode & 0x7f;
-            int released = (buttonCode & 0x80) != 0;
-            uint8_t touchVal = (released) ? releases[index] : touches[index];
+            ButtonState state = (buttonCode & UP_DOWN_MASK) != 0 ? UP : DOWN;
+            uint8_t buttonID = (buttonCode & ~UP_DOWN_MASK);
             
-            NSDictionary* retDic = @{       @"type" : @"button",
-                                      @"buttonType" : @(touchVal),
+            NSDictionary* retDic = @{        @"type" : @"button",
+                                      @"buttonState" : @(state),
+                                      @"buttonID"    : @(buttonID),
                                       };
             [eventDataArray addObject:retDic];
             processed+=2;
