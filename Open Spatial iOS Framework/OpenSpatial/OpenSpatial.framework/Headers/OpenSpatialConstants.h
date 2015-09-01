@@ -70,6 +70,45 @@ typedef enum OControlAction{
 #define YG @"gyroscope y"
 #define ZG @"gyroscope y"
 
+#define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
+#define POSITION2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"
+#define POSE6D_UUID @"00000205-0000-1000-8000-A0E5E9000000"
+#define GEST_UUID @"00000208-0000-1000-8000-A0E5E9000000"
+#define BUTTON_UUID @"00000207-0000-1000-8000-A0E5E9000000"
+#define MOTION6D_UUID @"00000209-0000-1000-8000-A0E5E9000000"
+#define ANALOG_UUID @"0000020C-0000-1000-8000-A0E5E9000000"
+
+#define ODATA_UUID @"0000020B-0000-1000-8000-A0E5E9000000"
+#define OCONTROL_UUID @"0000020A-0000-1000-8000-A0E5E9000000"
+
+#define NCONTROL_UUID @"00000004-0000-1000-8000-A0E5E9000000"
+#define MODE_SWITCH_CHAR @"00000400-0000-1000-8000-A0E5E9000000"
+
+#define BATTERY_SERVICE_UUID @"180F"
+#define BATTERY_STATUS_CHAR_UUID @"2A19"
+
+#define BUTTON @"button"
+#define POSITION2D @"position2D"
+#define GESTURE @"gesture"
+#define POSE6D @"pose6D"
+#define MOTION6D @"motion6D"
+#define BATTERY @"battery"
+#define ANALOG @"analog"
+
+#define ODACCELEROMETER @"odaccelerometer"
+#define ODANALOG @"odanalog"
+#define ODBUTTON @"odbutton"
+#define ODCOMPASS @"odcompass"
+#define ODEULER @"odeuler"
+#define ODGESTURE @"odgesture"
+#define ODGYRO @"odgyro"
+#define ODRELATIVEXY @"odrelativexy"
+#define ODSLIDER @"odslider"
+#define ODTRANSLATION @"odtranslation"
+
+#define ODATA @"odata"
+#define OCONTROL @"ocontrol"
+
 @interface OpenSpatialConstants : NSObject
 
 @end

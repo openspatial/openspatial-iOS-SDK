@@ -24,6 +24,7 @@
 - (void)viewDidLoad {
     self.HIDServ = [OpenSpatialBluetooth sharedBluetoothServ];
     self.HIDServ.delegate = self;
+    self.subscribeToEvents.enabled = NO;
     [super viewDidLoad];
 }
 
@@ -113,10 +114,15 @@
 
 - (void) didConnectToNod: (CBPeripheral*) peripheral {
     NSLog(@"connected %@",peripheral);
+    self.subscribeToEvents.enabled = YES;
+}
+
+-(void)didDisconnectFromNod:(NSString *)peripheral {
+    self.subscribeToEvents.enabled = NO;
 }
 
 -(void)openSpatialDataFired:(OpenSpatialData *)openSpatialData {
-    switch (openSpatialData.id) {
+    switch (openSpatialData.dataType) {
         case OS_BUTTON_EVENT_TAG: {
             ButtonData* buttonData = (ButtonData *) openSpatialData;
             if(buttonData.buttonState == UP) {
@@ -125,30 +131,33 @@
             if(buttonData.buttonState == DOWN) {
                 NSLog(@"Button Down");
             }
+            break;
+        }
+        case OS_RELATIVE_XY_TAG: {
+            RelativeXYData* relativeXYData = (RelativeXYData *) openSpatialData;
+//            NSLog(@"X:%d   Y:%d", relativeXYData.x, relativeXYData.y);
+            break;
+        }
+            
+        case OS_EULER_ANGLES_TAG: {
+            EulerData* eulerData = (EulerData *) openSpatialData;
+//            NSLog(@"Roll: %f", eulerData.roll);
+            break;
         }
     }
 }
 
-/*
- *  FUNCTION TO SUBSCRIBE TO EVENTS... COMMENT 
- OUT UNWANTED EVENTS
- */
+
 - (IBAction)subscribeEvents:(UIButton *)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-//        [self.HIDServ subscribeToPosition2DEvents:name];
-        [self.HIDServ subscribeToButtonEvents:name];
-//        [self.HIDServ subscribeToGestureEvents:name];
-//        [self.HIDServ subscribeToPose6DEvents:name];
-//        [self.HIDServ subscribeToMotion6DEvents:name];
+        NSMutableArray* events = [[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG), nil];
+        [self.HIDServ subscribeToEvents:name forEventTypes:events];
     }
 }
 - (IBAction)unsubscribe:(id)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-//        [self.HIDServ unsubscribeFromPosition2DEvents:name];
-        [self.HIDServ unsubscribeFromButtonEvents:name];
-//        [self.HIDServ unsubscribeFromGestureEvents:name];
-        [self.HIDServ unsubscribeFromPose6DEvents:name];
-//        [self.HIDServ unsubscribeFromMotion6DEvents:name];
+//        [self.HIDServ unsubscribeFromEvents:name forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG), nil]];
+        [self.HIDServ unsubscribeFromAllEvents:name];
     }
 }
 

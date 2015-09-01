@@ -22,6 +22,8 @@
 
 @interface OpenSpatialBluetooth()  <CBCentralManagerDelegate, CBPeripheralDelegate>
 
+-(void)updateOData:(CBPeripheral*)peripheral;
+-(void)toggleOData:(BOOL)value withName:(NSString*)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle;
 @end
 
 @implementation OpenSpatialBluetooth
@@ -94,7 +96,6 @@
     }
 }
 
-
 -(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
     if(![self.foundPeripherals containsObject:peripheral]) {
         [self.foundPeripherals addObject:peripheral];
@@ -121,7 +122,7 @@
     if([self.connectedPeripherals objectForKey:peripheral.name]) {
     } else {
         NodDevice* dev = [[NodDevice alloc] init];
-        NSDictionary* eventDictionary = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE};
+        NSDictionary* eventDictionary = @{BUTTON: @FALSE, POSITION2D: @FALSE, POSE6D: @FALSE, GESTURE: @FALSE, MOTION6D: @FALSE, ANALOG: @FALSE, BATTERY: @FALSE, ODACCELEROMETER: @FALSE, ODANALOG: @FALSE, ODBUTTON: @FALSE, ODCOMPASS: @FALSE, ODEULER: @FALSE, ODGESTURE: @FALSE, ODGYRO: @FALSE, ODRELATIVEXY: @FALSE, ODSLIDER: @FALSE, ODTRANSLATION: @FALSE};
         peripheral.delegate = self;
         dev.BTPeripheral = peripheral;
         dev.subscribedTo = [NSMutableDictionary dictionaryWithDictionary:eventDictionary];
@@ -139,7 +140,7 @@
 -(void)disconnectFromPeripheral: (CBPeripheral *)peripheral {
     forceOff = true;
     [self.centralManager cancelPeripheralConnection:peripheral];
-    [self unsubscribeFromAllODataEvents:peripheral.name];
+    [self unsubscribeFromAllEvents:peripheral.name];
 }
 
 /*
@@ -246,10 +247,13 @@
 }
 
 -(void)updateOData:(CBPeripheral*)peripheral {
-    [self unsubscribeFromAllODataEvents:peripheral.name];
+    [self unsubscribeFromAllEvents:peripheral.name];
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheral.name];
     [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
     NSMutableArray* objectsToTurnOff = [[NSMutableArray alloc] init];
+    
+    // Old OpenSpatial Specifications
+    
     if([[dev.subscribedTo valueForKey:BUTTON] boolValue]) {
         [self toggleOData:TRUE withName:peripheral.name
             forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), nil]];
@@ -289,6 +293,70 @@
     } else {
         [objectsToTurnOff addObject:@(OS_ANALOG_DATA_TAG)];
     }
+    
+    // New Open Spatial Specifications
+    
+    if([[dev.subscribedTo objectForKey:ODACCELEROMETER] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_RAW_ACCELEROMETER_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODANALOG] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_ANALOG_DATA_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_ANALOG_DATA_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODBUTTON] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_BUTTON_EVENT_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODCOMPASS] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_COMPASS_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_RAW_COMPASS_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODEULER] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_EULER_ANGLES_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_EULER_ANGLES_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODGESTURE] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_DIRECTION_GESTURE_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_DIRECTION_GESTURE_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODGYRO] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RAW_GYRO_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_RAW_GYRO_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODRELATIVEXY] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_RELATIVE_XY_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODSLIDER] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_SLIDER_GESTURE_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_SLIDER_GESTURE_TAG)];
+    }
+    if([[dev.subscribedTo objectForKey:ODTRANSLATION] boolValue]) {
+        [self toggleOData:TRUE withName:peripheral.name
+            forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_TRANSLATIONS_TAG), nil]];
+    } else {
+        [objectsToTurnOff addObject:@(OS_TRANSLATIONS_TAG)];
+    }
+    
     //            [self toggleOData:FALSE withName:peripheral.name forEventTypes:objectsToTurnOff];
 }
 
@@ -309,19 +377,88 @@
     }
 }
 
--(void)subscribeToODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
+-(void)subscribeToEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
     [self toggleOData:TRUE withName:peripheralName forEventTypes:eventTypesToToggle];
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
+        for (int i=0; i < eventTypesToToggle.count; i++) {
+            switch ((ODataTag)[eventTypesToToggle objectAtIndex:i]) {
+                case OS_RAW_ACCELEROMETER_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODACCELEROMETER];
+                }
+                case OS_ANALOG_DATA_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODANALOG];
+                }
+                case OS_BUTTON_EVENT_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODBUTTON];
+                }
+                case OS_RAW_COMPASS_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODCOMPASS];
+                }
+                case OS_EULER_ANGLES_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODEULER];
+                }
+                case OS_DIRECTION_GESTURE_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODGESTURE];
+                }
+                case OS_RAW_GYRO_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODGYRO];
+                }
+                case OS_RELATIVE_XY_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODRELATIVEXY];
+                }
+                case OS_SLIDER_GESTURE_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODSLIDER];
+                }
+                case OS_TRANSLATIONS_TAG: {
+                    [dev.subscribedTo setValue:@TRUE forKey:ODTRANSLATION];
+                }
+            }
+        }
     }
 }
 
--(void)unsubscribeFromODataEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
+-(void)unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle {
     [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypesToToggle];
+    NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
+    for (int i=0; i < eventTypesToToggle.count; i++) {
+        switch ((ODataTag)[eventTypesToToggle objectAtIndex:i]) {
+            case OS_RAW_ACCELEROMETER_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODACCELEROMETER];
+            }
+            case OS_ANALOG_DATA_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODANALOG];
+            }
+            case OS_BUTTON_EVENT_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODBUTTON];
+            }
+            case OS_RAW_COMPASS_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODCOMPASS];
+            }
+            case OS_EULER_ANGLES_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODEULER];
+            }
+            case OS_DIRECTION_GESTURE_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODGESTURE];
+            }
+            case OS_RAW_GYRO_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODGYRO];
+            }
+            case OS_RELATIVE_XY_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODRELATIVEXY];
+            }
+            case OS_SLIDER_GESTURE_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODSLIDER];
+            }
+            case OS_TRANSLATIONS_TAG: {
+                [dev.subscribedTo setValue:@FALSE forKey:ODTRANSLATION];
+            }
+        }
+    }
 }
 
--(void)unsubscribeFromAllODataEvents: (NSString *)peripheralName {
+-(void)unsubscribeFromAllEvents: (NSString *)peripheralName {
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
     NSMutableArray* eventTypes = [[NSMutableArray alloc] initWithObjects:@(OS_RAW_ACCELEROMETER_TAG), @(OS_RAW_GYRO_TAG), @(OS_RAW_COMPASS_TAG), @(OS_EULER_ANGLES_TAG), @(OS_TRANSLATIONS_TAG), @(OS_ANALOG_DATA_TAG), @(OS_RELATIVE_XY_TAG), @(OS_DIRECTION_GESTURE_TAG), @(OS_SLIDER_GESTURE_TAG), @(OS_BUTTON_EVENT_TAG), nil];
     [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypes];

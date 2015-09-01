@@ -15,5 +15,6 @@
 @property CBPeripheral *lastNodPeripheral;
 
 -(void) startLoop;
+@property (weak, nonatomic) IBOutlet UIButton *subscribeToEvents;
 
 @end
