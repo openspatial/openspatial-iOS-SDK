@@ -137,14 +137,6 @@
 -(void) getServicesForConnectedDevice:(CBPeripheral *)peripheral;
 
 /*!
- * Method used in unit tests to ensure that characteristic and data being sent by a peripheral device is being captured
- *
- * @param characteristic - the characteristic that is passed through the function to determine which events to execute upon
- * @param peripheral - the peripheral that is passed through the function so that user can know which peripheral device executed which events
- */
--(NSArray *)testBluetoothCharacteristic:(CBCharacteristic *)characteristic andPeripheral:(CBPeripheral *)peripheral;
-
-/*!
  * Subscribes the specified peripheral device to the pose6D events
  *
  * @param peripheralName - the name of the peripheral that will connect to pose6D events
@@ -206,7 +198,7 @@
  * @param peripheralName - the name of the peripheral
  * @param eventTypesToToggle - an array of the event types that will be subscribed to
  */
--(void)subscribeToEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle;
+-(void)subscribeToEvents:(NSString *)peripheralName forEventTypes:(NSArray*)eventTypesToToggle;
 
 /*!
  * Unsubscribes the specified peripheral device to events
@@ -214,7 +206,7 @@
  * @param peripheralName - the name of the peripheral
  * @param eventTypesToToggle - an array of the event types that the device will unsubscribe from
  */
--(void)unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:(NSMutableArray*)eventTypesToToggle;
+-(void)unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:(NSArray*)eventTypesToToggle;
 
 /*!
  * Unsubscribes the specified peripheral device from all oData events

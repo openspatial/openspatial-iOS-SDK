@@ -129,7 +129,7 @@
                 NSLog(@"Button Up");
             }
             if(buttonData.buttonState == DOWN) {
-                NSLog(@"Button Down");
+                NSLog(@"%d", buttonData.buttonID);
             }
             break;
         }
@@ -147,16 +147,15 @@
     }
 }
 
-
 - (IBAction)subscribeEvents:(UIButton *)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-        NSMutableArray* events = [[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG), nil];
-        [self.HIDServ subscribeToEvents:name forEventTypes:events];
+        [self.HIDServ subscribeToEvents:name forEventTypes:@[@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG)]];
     }
 }
+
 - (IBAction)unsubscribe:(id)sender {
     for(NSString* name in [self.HIDServ.connectedPeripherals allKeys]) {
-//        [self.HIDServ unsubscribeFromEvents:name forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG), nil]];
+//        [self.HIDServ unsubscribeFromEvents:name forEventTypes:@[@(OS_BUTTON_EVENT_TAG), @(OS_EULER_ANGLES_TAG)]];
         [self.HIDServ unsubscribeFromAllEvents:name];
     }
 }
