@@ -7,20 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		18292F9D1B55A9AF00E5DD8F /* AnalogEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 18292F9B1B55A9AF00E5DD8F /* AnalogEvent.m */; };
-		18292F9E1B55A9AF00E5DD8F /* AnalogEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 18292F9C1B55A9AF00E5DD8F /* AnalogEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		18292FA11B55ACAE00E5DD8F /* Position2DEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 18292F9F1B55ACAE00E5DD8F /* Position2DEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		18292FA21B55ACAE00E5DD8F /* Position2DEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 18292FA01B55ACAE00E5DD8F /* Position2DEvent.m */; };
-		182F3FF71B4E08CB00AC27DC /* Pose6DEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 182F3FF51B4E08CB00AC27DC /* Pose6DEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		182F3FF81B4E08CB00AC27DC /* Pose6DEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 182F3FF61B4E08CB00AC27DC /* Pose6DEvent.m */; };
 		1859A3631B44B9FA003A8D71 /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1859A3571B44B9FA003A8D71 /* OpenSpatial.framework */; };
 		1859A36A1B44B9FA003A8D71 /* OpenSpatialTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A3691B44B9FA003A8D71 /* OpenSpatialTests.m */; };
-		1859A3811B44BA3F003A8D71 /* ButtonEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A3731B44BA3F003A8D71 /* ButtonEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1859A3821B44BA3F003A8D71 /* ButtonEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A3741B44BA3F003A8D71 /* ButtonEvent.m */; };
-		1859A3831B44BA3F003A8D71 /* GestureEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A3751B44BA3F003A8D71 /* GestureEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1859A3841B44BA3F003A8D71 /* GestureEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A3761B44BA3F003A8D71 /* GestureEvent.m */; };
-		1859A3851B44BA3F003A8D71 /* Motion6DEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A3771B44BA3F003A8D71 /* Motion6DEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		1859A3861B44BA3F003A8D71 /* Motion6DEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A3781B44BA3F003A8D71 /* Motion6DEvent.m */; };
 		1859A3871B44BA3F003A8D71 /* OpenSpatialBluetooth.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A3791B44BA3F003A8D71 /* OpenSpatialBluetooth.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1859A3881B44BA3F003A8D71 /* OpenSpatialBluetooth.m in Sources */ = {isa = PBXBuildFile; fileRef = 1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */; };
 		1859A3891B44BA3F003A8D71 /* OpenSpatialDecoder.h in Headers */ = {isa = PBXBuildFile; fileRef = 1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -41,23 +29,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		18292F9B1B55A9AF00E5DD8F /* AnalogEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnalogEvent.m; sourceTree = "<group>"; };
-		18292F9C1B55A9AF00E5DD8F /* AnalogEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnalogEvent.h; sourceTree = "<group>"; };
-		18292F9F1B55ACAE00E5DD8F /* Position2DEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Position2DEvent.h; sourceTree = "<group>"; };
-		18292FA01B55ACAE00E5DD8F /* Position2DEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Position2DEvent.m; sourceTree = "<group>"; };
-		182F3FF51B4E08CB00AC27DC /* Pose6DEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Pose6DEvent.h; sourceTree = "<group>"; };
-		182F3FF61B4E08CB00AC27DC /* Pose6DEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Pose6DEvent.m; sourceTree = "<group>"; };
 		1859A3571B44B9FA003A8D71 /* OpenSpatial.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OpenSpatial.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1859A35B1B44B9FA003A8D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1859A3621B44B9FA003A8D71 /* OpenSpatialTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenSpatialTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1859A3681B44B9FA003A8D71 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1859A3691B44B9FA003A8D71 /* OpenSpatialTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialTests.m; sourceTree = "<group>"; };
-		1859A3731B44BA3F003A8D71 /* ButtonEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonEvent.h; sourceTree = "<group>"; };
-		1859A3741B44BA3F003A8D71 /* ButtonEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonEvent.m; sourceTree = "<group>"; };
-		1859A3751B44BA3F003A8D71 /* GestureEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GestureEvent.h; sourceTree = "<group>"; };
-		1859A3761B44BA3F003A8D71 /* GestureEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GestureEvent.m; sourceTree = "<group>"; };
-		1859A3771B44BA3F003A8D71 /* Motion6DEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Motion6DEvent.h; sourceTree = "<group>"; };
-		1859A3781B44BA3F003A8D71 /* Motion6DEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Motion6DEvent.m; sourceTree = "<group>"; };
 		1859A3791B44BA3F003A8D71 /* OpenSpatialBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialBluetooth.h; sourceTree = "<group>"; };
 		1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenSpatialBluetooth.m; sourceTree = "<group>"; };
 		1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenSpatialDecoder.h; sourceTree = "<group>"; };
@@ -107,18 +83,6 @@
 		1859A3591B44B9FA003A8D71 /* OpenSpatial */ = {
 			isa = PBXGroup;
 			children = (
-				18292F9F1B55ACAE00E5DD8F /* Position2DEvent.h */,
-				18292FA01B55ACAE00E5DD8F /* Position2DEvent.m */,
-				18292F9B1B55A9AF00E5DD8F /* AnalogEvent.m */,
-				18292F9C1B55A9AF00E5DD8F /* AnalogEvent.h */,
-				182F3FF51B4E08CB00AC27DC /* Pose6DEvent.h */,
-				182F3FF61B4E08CB00AC27DC /* Pose6DEvent.m */,
-				1859A3731B44BA3F003A8D71 /* ButtonEvent.h */,
-				1859A3741B44BA3F003A8D71 /* ButtonEvent.m */,
-				1859A3751B44BA3F003A8D71 /* GestureEvent.h */,
-				1859A3761B44BA3F003A8D71 /* GestureEvent.m */,
-				1859A3771B44BA3F003A8D71 /* Motion6DEvent.h */,
-				1859A3781B44BA3F003A8D71 /* Motion6DEvent.m */,
 				1859A3791B44BA3F003A8D71 /* OpenSpatialBluetooth.h */,
 				1859A37A1B44BA3F003A8D71 /* OpenSpatialBluetooth.m */,
 				1859A37B1B44BA3F003A8D71 /* OpenSpatialDecoder.h */,
@@ -165,14 +129,8 @@
 			files = (
 				1859A3871B44BA3F003A8D71 /* OpenSpatialBluetooth.h in Headers */,
 				1859A3891B44BA3F003A8D71 /* OpenSpatialDecoder.h in Headers */,
-				1859A3831B44BA3F003A8D71 /* GestureEvent.h in Headers */,
-				1859A3811B44BA3F003A8D71 /* ButtonEvent.h in Headers */,
-				1859A3851B44BA3F003A8D71 /* Motion6DEvent.h in Headers */,
-				18292FA11B55ACAE00E5DD8F /* Position2DEvent.h in Headers */,
-				18292F9E1B55A9AF00E5DD8F /* AnalogEvent.h in Headers */,
 				18BF228D1B7A9D5A00192DAA /* OpenSpatialData.h in Headers */,
 				18BF22951B7ADABF00192DAA /* OpenSpatialConstants.h in Headers */,
-				182F3FF71B4E08CB00AC27DC /* Pose6DEvent.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,13 +248,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				182F3FF81B4E08CB00AC27DC /* Pose6DEvent.m in Sources */,
-				18292FA21B55ACAE00E5DD8F /* Position2DEvent.m in Sources */,
-				1859A3841B44BA3F003A8D71 /* GestureEvent.m in Sources */,
-				1859A3821B44BA3F003A8D71 /* ButtonEvent.m in Sources */,
-				18292F9D1B55A9AF00E5DD8F /* AnalogEvent.m in Sources */,
 				18BF228E1B7A9D5A00192DAA /* OpenSpatialData.m in Sources */,
-				1859A3861B44BA3F003A8D71 /* Motion6DEvent.m in Sources */,
 				1859A38A1B44BA3F003A8D71 /* OpenSpatialDecoder.m in Sources */,
 				1859A3881B44BA3F003A8D71 /* OpenSpatialBluetooth.m in Sources */,
 			);

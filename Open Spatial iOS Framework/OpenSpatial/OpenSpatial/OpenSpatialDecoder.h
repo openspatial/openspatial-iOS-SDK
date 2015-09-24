@@ -44,52 +44,11 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "ButtonEvent.h"
 #import "OpenSpatialData.h"
 #import "OpenSpatialConstants.h"
 
 @interface OpenSpatialDecoder : NSObject
 
-/*!
- Decode 2D Data from Nod
- */
-+(NSDictionary*) decodePos2DPointer: (const uint8_t*) opSpcPtr;
-/*!
- Create a fake 2D data packet for testing
- */
-+(void*) createPos2DPointer:(NSDictionary*) OSData;
-/*!
- Decode Pose6D (3D) Data from Nod
- */
-+(NSDictionary*) decodePose6DPointer: (const uint8_t*) opSpcPtr;
-/*!
- Create a fake Pose6D (3D) data packet for testing
- */
-+(void*) createPose6DPointer: (NSDictionary*) OSData;
-/*!
- Decode Button Data from Nod
- */
-+(NSDictionary*) decodeButtonPointer: (const uint8_t*) opSpcPtr;
-/*!
- Create a fake Button data packet for testing
- */
-+(void*) createButtonPointer: (NSDictionary*) OSData;
-/*!
- Decode Gesture Data from Nod
- */
-+(NSDictionary*) decodeGestPointer: (const uint8_t*) opSpcPtr;
-/*!
- Create a fake Gesture data packet for testing
- */
-+(void*) createGestPointer: (NSDictionary*) OSData;
-/*!
- Decode Motion6D Data from Nod
- */
-+(NSDictionary*) decodeMot6DPointer: (const uint8_t*) opSpcPtr;
-/*!
- Decode Analog Data from Nod
- */
-+(NSDictionary*) decodeAnalogPointer:(const uint8_t *)opSpcPtr;
 /*!
  Decode oData returns an array of dictionaries, which will contain
  each event packed into oData, each dictionary will have a "type" key

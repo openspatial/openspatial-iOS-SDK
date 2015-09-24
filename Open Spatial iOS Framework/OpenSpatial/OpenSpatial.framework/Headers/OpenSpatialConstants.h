@@ -35,7 +35,6 @@ typedef enum OControlAction{
     OCONTROL_DISABLE_DATA = 5,
 } OControlAction;
 
-
 #define X @"x"
 #define Y @"y"
 #define Z @"z"
@@ -50,19 +49,6 @@ typedef enum OControlAction{
 #define TACTILE_1 @"tactile1"
 #define GEST_OPCODE @"gest"
 #define GEST_DATA @"data"
-#define G_OP_SCROLL 0x0001
-#define G_OP_DIRECTION 0x0002
-#define GRIGHT 0x01
-#define GLEFT 0x02
-#define GDOWN 0x03
-#define GUP 0x04
-#define GCW 0x05
-#define GCCW 0x06
-#define SLIDE_LEFT 0x01
-#define SLIDE_RIGHT 0x02
-#define BUTTON_UNUSED 0
-#define BUTTON_UP 2
-#define BUTTON_DOWN 1
 #define XA @"accelerometer x"
 #define YA @"accelerometer y"
 #define ZA @"accelerometer z"
