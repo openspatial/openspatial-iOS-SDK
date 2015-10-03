@@ -22,7 +22,6 @@
 		183CB698194655D80079076A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB67A194655D80079076A /* UIKit.framework */; };
 		183CB6A0194655D80079076A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 183CB69E194655D80079076A /* InfoPlist.strings */; };
 		183CB6A2194655D80079076A /* Example_AppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6A1194655D80079076A /* Example_AppTests.m */; };
-		183CB6AD194656890079076A /* RingScanTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AC194656890079076A /* RingScanTableViewController.m */; };
 		183CB6B0194657040079076A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 183CB6AF194657040079076A /* MainViewController.m */; };
 /* End PBXBuildFile section */
 
@@ -69,8 +68,6 @@
 		183CB69D194655D80079076A /* Example AppTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Example AppTests-Info.plist"; sourceTree = "<group>"; };
 		183CB69F194655D80079076A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		183CB6A1194655D80079076A /* Example_AppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Example_AppTests.m; sourceTree = "<group>"; };
-		183CB6AB194656890079076A /* RingScanTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingScanTableViewController.h; sourceTree = "<group>"; };
-		183CB6AC194656890079076A /* RingScanTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RingScanTableViewController.m; sourceTree = "<group>"; };
 		183CB6AE194657040079076A /* MainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		183CB6AF194657040079076A /* MainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -139,8 +136,6 @@
 				183CB688194655D80079076A /* Main.storyboard */,
 				183CB6AE194657040079076A /* MainViewController.h */,
 				183CB6AF194657040079076A /* MainViewController.m */,
-				183CB6AB194656890079076A /* RingScanTableViewController.h */,
-				183CB6AC194656890079076A /* RingScanTableViewController.m */,
 				183CB68E194655D80079076A /* Images.xcassets */,
 				183CB67D194655D80079076A /* Supporting Files */,
 			);
@@ -277,7 +272,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				183CB6AD194656890079076A /* RingScanTableViewController.m in Sources */,
 				183CB687194655D80079076A /* AppDelegate.m in Sources */,
 				183CB6B0194657040079076A /* MainViewController.m in Sources */,
 				183CB683194655D80079076A /* main.m in Sources */,

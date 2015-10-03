@@ -17,15 +17,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s60-0u-ZcW">
-                                <rect key="frame" x="81" y="73" width="159" height="30"/>
-                                <state key="normal" title="Connect to Nod Device">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="aq2-cc-lhi" kind="modal" id="EuN-zF-onb"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W1x-8e-VFD">
                                 <rect key="frame" x="91" y="299" width="138" height="30"/>
                                 <state key="normal" title="Subscribe to Events">
@@ -47,7 +38,6 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="s60-0u-ZcW" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="KgQ-l6-lNi"/>
                             <constraint firstItem="W1x-8e-VFD" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="PRr-PD-OPW"/>
                             <constraint firstItem="SPD-WU-J7R" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="YZI-dL-U8L"/>
                         </constraints>
@@ -59,62 +49,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-67" y="166"/>
-        </scene>
-        <!--Nod Rings-->
-        <scene sceneID="bdb-Sl-15y">
-            <objects>
-                <tableViewController id="Gjx-oz-MGf" customClass="RingScanTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="3xq-bs-wo9">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="DeviceCell" id="Lbq-sF-Zzr">
-                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Lbq-sF-Zzr" id="N5o-ky-gkO">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="vXZ-lx-hvc" kind="modal" id="rJg-qg-xYt"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="Gjx-oz-MGf" id="74W-lL-lOK"/>
-                            <outlet property="delegate" destination="Gjx-oz-MGf" id="Puk-lU-XDZ"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Nod Rings" id="GOT-Pp-Ulg">
-                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="ZKP-Ly-Lxi" userLabel="Cancel">
-                            <connections>
-                                <action selector="cancelSelection:" destination="Gjx-oz-MGf" id="grf-qZ-rUs"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9kL-MV-42d" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="883" y="166"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Q9H-zs-iBk">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="aq2-cc-lhi" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Dw2-Mu-Fs7">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="Gjx-oz-MGf" kind="relationship" relationship="rootViewController" id="8RF-iY-G6x"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="aiM-yo-3kv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="351" y="166"/>
         </scene>
     </scenes>
 </document>

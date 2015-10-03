@@ -48,12 +48,6 @@
 - (void) didDisconnectFromNod: (NSString *)peripheral;
 
 /*
- called when a new Nod is found from scanForPeripherals
- */
-- (void) didFindNewScannedDevice: (NSArray*) peripherals;
-- (void) didFindNewPairedDevice: (NSArray*) peripherals;
-
-/*
  called when battery level is updated on Nod
 */
 - (void) didReadBatteryLevel:(NSInteger) level forRingNamed:(NSString*) name;
@@ -77,20 +71,15 @@
 +(id) sharedBluetoothServ;
 -(id) delegate;
 /*!
- sets the delegate
+ Sets the delegate
  */
 -(void) setDelegate:(id<OpenSpatialBluetoothDelegate>)newDelegate;
 
 /*!
- * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array
+ * Scans only for peripherals with the Open Spatial UUID and automatically connects to all of
+ * them within the app
  */
--(void) scanForPeripherals;
-
-/*!
- * Connect to a peripheral device store as connected device, also stops scan
- * @param peripheral - the peripheral that the central manager will connect to
- */
--(void) connectToPeripheral: (CBPeripheral *) peripheral;
+-(void) connectToNodDevices;
 
 /*!
  * Disconnect from peripheral device

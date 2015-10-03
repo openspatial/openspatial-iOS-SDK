@@ -57,9 +57,10 @@
  *******************************************************************************************/
 
 /*
- * Scans for for only peripherals with the Open Spatial UUID adding all peripherals to the peripherals array.
+ * Scans only for peripherals with the Open Spatial UUID and automatically connects to all of
+ * them within the app
  */
-- (void) scanForPeripherals {
+- (void) connectToNodDevices {
     NSLog(@"Scanning");
     [self.foundPeripherals removeAllObjects];
     CBUUID* hidUUID = [CBUUID UUIDWithString:@"1812"];
@@ -69,9 +70,15 @@
     
     self.pairedPeripherals = [NSMutableArray arrayWithArray:
                               [self.centralManager retrieveConnectedPeripheralsWithServices:services]];
-    if([self.delegate respondsToSelector:@selector(didFindNewPairedDevice:)]) {
-        [self.delegate didFindNewPairedDevice:self.pairedPeripherals];
-    }
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        for(CBPeripheral* peripheral in self.pairedPeripherals) {
+            NSLog(@"Connecting to %@", peripheral.name);
+            if(![self.connectedPeripherals objectForKey:peripheral.name]) {
+                    [self.centralManager connectPeripheral:peripheral options:nil];
+            }
+        }
+    });
 }
 
 /*
@@ -97,41 +104,21 @@
     }
 }
 
--(void) centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary *)advertisementData RSSI:(NSNumber *)RSSI {
-    if(![self.foundPeripherals containsObject:peripheral]) {
-        [self.foundPeripherals addObject:peripheral];
-        if(self.delegate) {
-            if([self.delegate respondsToSelector:@selector(didFindNewScannedDevice:)]) {
-                [self.delegate didFindNewScannedDevice:self.foundPeripherals];
-            }
-        }
-    }
-}
-
-/*
- * Connect to a peripheral device store as connected device, also stops scan
- */
--(void) connectToPeripheral: (CBPeripheral *) peripheral {
-    [self.centralManager stopScan];
-    [self.centralManager connectPeripheral:peripheral options:nil];
-}
-
 /*
  * When device is connected set connected bool to true
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
-    if([self.connectedPeripherals objectForKey:peripheral.name]) {
-    } else {
+    if(![self.connectedPeripherals objectForKey:peripheral.name]) {
         NodDevice* dev = [[NodDevice alloc] init];
         NSDictionary* eventDictionary = @{BATTERY: @FALSE, ODACCELEROMETER: @FALSE, ODANALOG: @FALSE, ODBUTTON: @FALSE, ODCOMPASS: @FALSE, ODEULER: @FALSE, ODGESTURE: @FALSE, ODGYRO: @FALSE, ODRELATIVEXY: @FALSE, ODSLIDER: @FALSE, ODTRANSLATION: @FALSE};
         peripheral.delegate = self;
         dev.BTPeripheral = peripheral;
         dev.subscribedTo = [NSMutableDictionary dictionaryWithDictionary:eventDictionary];
         [self.connectedPeripherals setObject:dev forKey:peripheral.name];
-        NSLog(@"Connect for 1st Time");
+        NSLog(@"Connect for 1st Time to %@", peripheral.name);
     }
+
     [self getServicesForConnectedDevice: peripheral];
-    
     NSLog(@"Connected to %@", peripheral.name);
 }
 
@@ -463,7 +450,7 @@
     else {
         if([self.delegate respondsToSelector:@selector(didDisconnectFromNod:)]) {
         [self.delegate didDisconnectFromNod:peripheral.name];
-        [self connectToPeripheral:peripheral];
+            [self.centralManager connectPeripheral:peripheral options:nil];
         reconnect = true;
         }
     }

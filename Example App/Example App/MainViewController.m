@@ -24,6 +24,7 @@
 - (void)viewDidLoad {
     self.HIDServ = [OpenSpatialBluetooth sharedBluetoothServ];
     self.HIDServ.delegate = self;
+    [self.HIDServ connectToNodDevices];
     self.subscribeToEvents.enabled = NO;
     [super viewDidLoad];
 }
