@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1803A50E1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1803A50D1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework */; };
+		1803A50F1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1803A50D1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1838EBA71B96567F006B49C6 /* OpenSpatial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1838EBA61B96567F006B49C6 /* OpenSpatial.framework */; };
 		1838EBA81B96567F006B49C6 /* OpenSpatial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1838EBA61B96567F006B49C6 /* OpenSpatial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		183CB677194655D80079076A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183CB676194655D80079076A /* Foundation.framework */; };
@@ -43,6 +45,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				1838EBA81B96567F006B49C6 /* OpenSpatial.framework in Embed Frameworks */,
+				1803A50F1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -50,6 +53,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1803A50D1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CoreActionSheetPicker.framework; sourceTree = "<group>"; };
 		1838EBA61B96567F006B49C6 /* OpenSpatial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenSpatial.framework; path = "../Open Spatial iOS Framework/OpenSpatial/OpenSpatial.framework"; sourceTree = "<group>"; };
 		183CB673194655D80079076A /* Example App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		183CB676194655D80079076A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -77,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1803A50E1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework in Frameworks */,
 				183CB679194655D80079076A /* CoreGraphics.framework in Frameworks */,
 				1838EBA71B96567F006B49C6 /* OpenSpatial.framework in Frameworks */,
 				183CB67B194655D80079076A /* UIKit.framework in Frameworks */,
@@ -119,6 +124,7 @@
 		183CB675194655D80079076A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1803A50D1BD77CBE00BBB1F2 /* CoreActionSheetPicker.framework */,
 				1838EBA61B96567F006B49C6 /* OpenSpatial.framework */,
 				183CB676194655D80079076A /* Foundation.framework */,
 				183CB678194655D80079076A /* CoreGraphics.framework */,
@@ -401,11 +407,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nodlabs.exampleapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -421,11 +431,15 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"../Open\\ Spatial\\ iOS\\ Framework/OpenSpatial",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Example App/Example App-Prefix.pch";
 				INFOPLIST_FILE = "Example App/Example App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nodlabs.exampleapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";

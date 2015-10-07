@@ -1,6 +1,6 @@
 //
 //  OpenSpatialDecoder.m
-//  NodLabs
+//  OpenSpatial.framework
 //
 //  Copyright (c) 2014 Nod Inc. All rights reserved.
 //

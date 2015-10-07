@@ -1,12 +1,7 @@
 //
 //  OpenSpatialBluetooth.m
-//  Open Spatial iOS SDK
+//  OpenSpatial.framework
 //
-//  Reads HID information from the ring's open spatial service
-//  Because Apple is annoying and doesnt let you read HID directly
-//  If you aren't the system
-//
-//  Created by Neel Bhoopalam on 6/9/14.
 //  Copyright (c) 2014 Nod Labs. All rights reserved.
 //
 
@@ -329,37 +324,27 @@
     if(dev) {
         [dev.BTPeripheral setNotifyValue:YES forCharacteristic:dev.oDataCharacteristic];
         for (int i=0; i < eventTypesToToggle.count; i++) {
-            switch ((ODataTag)[eventTypesToToggle objectAtIndex:i]) {
-                case OS_RAW_ACCELEROMETER_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODACCELEROMETER];
-                }
-                case OS_ANALOG_DATA_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODANALOG];
-                }
-                case OS_BUTTON_EVENT_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODBUTTON];
-                }
-                case OS_RAW_COMPASS_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODCOMPASS];
-                }
-                case OS_EULER_ANGLES_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODEULER];
-                }
-                case OS_DIRECTION_GESTURE_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODGESTURE];
-                }
-                case OS_RAW_GYRO_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODGYRO];
-                }
-                case OS_RELATIVE_XY_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODRELATIVEXY];
-                }
-                case OS_SLIDER_GESTURE_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODSLIDER];
-                }
-                case OS_TRANSLATIONS_TAG: {
-                    [dev.subscribedTo setValue:@TRUE forKey:ODTRANSLATION];
-                }
+            NSString *dataString = [NSString stringWithFormat:@"%@", (ODataTag)[eventTypesToToggle objectAtIndex:i]];
+            if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_ACCELEROMETER_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODACCELEROMETER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_ANALOG_DATA_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODANALOG];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_BUTTON_EVENT_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODBUTTON];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_COMPASS_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODCOMPASS];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_EULER_ANGLES_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODEULER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_DIRECTION_GESTURE_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODGESTURE];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_GYRO_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODGYRO];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RELATIVE_XY_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODRELATIVEXY];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_SLIDER_GESTURE_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODSLIDER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_TRANSLATIONS_TAG)]]) {
+                [dev.subscribedTo setValue:@TRUE forKey:ODTRANSLATION];
             }
         }
     }
@@ -368,37 +353,29 @@
 -(void)unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:(NSArray*)eventTypesToToggle {
     [self toggleOData:FALSE withName:peripheralName forEventTypes:eventTypesToToggle];
     NodDevice* dev = [self.connectedPeripherals objectForKey:peripheralName];
-    for (int i=0; i < eventTypesToToggle.count; i++) {
-        switch ((ODataTag)[eventTypesToToggle objectAtIndex:i]) {
-            case OS_RAW_ACCELEROMETER_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODACCELEROMETER];
-            }
-            case OS_ANALOG_DATA_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODANALOG];
-            }
-            case OS_BUTTON_EVENT_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODBUTTON];
-            }
-            case OS_RAW_COMPASS_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODCOMPASS];
-            }
-            case OS_EULER_ANGLES_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODEULER];
-            }
-            case OS_DIRECTION_GESTURE_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODGESTURE];
-            }
-            case OS_RAW_GYRO_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODGYRO];
-            }
-            case OS_RELATIVE_XY_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODRELATIVEXY];
-            }
-            case OS_SLIDER_GESTURE_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODSLIDER];
-            }
-            case OS_TRANSLATIONS_TAG: {
-                [dev.subscribedTo setValue:@FALSE forKey:ODTRANSLATION];
+    if(dev) {
+        for (int i=0; i < eventTypesToToggle.count; i++) {
+            NSString *dataString = [NSString stringWithFormat:@"%@", (ODataTag)[eventTypesToToggle objectAtIndex:i]];
+            if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_ACCELEROMETER_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODACCELEROMETER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_ANALOG_DATA_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODANALOG];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_BUTTON_EVENT_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODBUTTON];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_COMPASS_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODCOMPASS];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_EULER_ANGLES_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODEULER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_DIRECTION_GESTURE_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODGESTURE];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RAW_GYRO_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODGYRO];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_RELATIVE_XY_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODRELATIVEXY];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_SLIDER_GESTURE_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODSLIDER];
+            } else if([dataString isEqualToString:[NSString stringWithFormat:@"%@", @(OS_TRANSLATIONS_TAG)]]) {
+                [dev.subscribedTo setValue:FALSE forKey:ODTRANSLATION];
             }
         }
     }
@@ -515,7 +492,7 @@
                 [self.delegate openSpatialDataFired:translationData];
             }
         } else if([caseType isEqualToString:@"analog"]) {
-            AnalogData* analogData = [[AnalogData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:Y] shortValue] withY:[[eventDict objectForKey:X] shortValue] withTrigger:[[eventDict objectForKey:TRIGGER] shortValue]];
+            AnalogData* analogData = [[AnalogData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:X] shortValue] withY:[[eventDict objectForKey:Y] shortValue] withTrigger:[[eventDict objectForKey:TRIGGER] shortValue]];
             if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
                 [self.delegate openSpatialDataFired:analogData];
             }

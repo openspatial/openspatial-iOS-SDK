@@ -1,6 +1,6 @@
 //
 //  OpenSpatialData.m
-//  OpenSpatial
+//  OpenSpatial.framework
 //
 //  Created by Neel on 8/11/15.
 //  Copyright (c) 2015 Nod Labs. All rights reserved.

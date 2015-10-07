@@ -1,8 +1,7 @@
 //
 //  OpenSpatialConstants.h
-//  OpenSpatial
+//  OpenSpatial.framework
 //
-//  Created by Neel on 8/11/15.
 //  Copyright (c) 2015 Nod Labs. All rights reserved.
 //
 
@@ -81,16 +80,16 @@ typedef enum OControlAction{
 #define BATTERY @"battery"
 #define ANALOG @"analog"
 
-#define ODACCELEROMETER @"odaccelerometer"
-#define ODANALOG @"odanalog"
-#define ODBUTTON @"odbutton"
-#define ODCOMPASS @"odcompass"
-#define ODEULER @"odeuler"
-#define ODGESTURE @"odgesture"
-#define ODGYRO @"odgyro"
-#define ODRELATIVEXY @"odrelativexy"
-#define ODSLIDER @"odslider"
-#define ODTRANSLATION @"odtranslation"
+#define ODACCELEROMETER @"accelerometer"
+#define ODANALOG @"analog"
+#define ODBUTTON @"button"
+#define ODCOMPASS @"compass"
+#define ODEULER @"euler"
+#define ODGESTURE @"gesture"
+#define ODGYRO @"gyro"
+#define ODRELATIVEXY @"relativexy"
+#define ODSLIDER @"slider"
+#define ODTRANSLATION @"translation"
 
 #define ODATA @"odata"
 #define OCONTROL @"ocontrol"
