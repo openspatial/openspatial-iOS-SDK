@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8191" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8154"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
     <scenes>
         <!--Main View Controller-->
@@ -16,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="Select a Nod Device" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1sd-17-6W7">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" text="Select a Nod Device" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1sd-17-6W7">
                                 <rect key="frame" x="84" y="354" width="152" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -25,7 +26,7 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="PVr-Nv-J90"/>
                                 </connections>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Select a Data Type" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w6g-ha-3JA">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Select a Data Type" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="w6g-ha-3JA">
                                 <rect key="frame" x="89" y="406" width="143" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -34,25 +35,6 @@
                                     <outlet property="delegate" destination="vXZ-lx-hvc" id="pqz-Jb-MjC"/>
                                 </connections>
                             </textField>
-                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="HDi-LI-sYP">
-                                <rect key="frame" x="136" y="463" width="49" height="31"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="sWx-yr-3kH">
-                                        <rect key="frame" x="0.0" y="0.0" width="49" height="31"/>
-                                        <subviews>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="cdz-lC-MpX">
-                                                <rect key="frame" x="0.0" y="0.0" width="51" height="31"/>
-                                            </switch>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                            </stackView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Jwb-kf-aZs">
-                                <rect key="frame" x="20" y="45" width="280" height="271"/>
-                                <color key="backgroundColor" red="0.76260411094126246" green="1" blue="0.80068189689447666" alpha="1" colorSpace="calibratedRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                             <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HeD-sj-QPl">
                                 <rect key="frame" x="123" y="316" width="73" height="30"/>
                                 <state key="normal" title="Clear Logs"/>
@@ -60,22 +42,32 @@
                                     <action selector="clearLogs:" destination="vXZ-lx-hvc" eventType="touchDown" id="Huk-Hh-3EJ"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="A3r-tr-pY5">
+                                <rect key="frame" x="135" y="444" width="51" height="31"/>
+                            </switch>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Jwb-kf-aZs">
+                                <rect key="frame" x="20" y="45" width="280" height="271"/>
+                                <color key="backgroundColor" red="0.76260411094126246" green="1" blue="0.80068189689447666" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="HDi-LI-sYP" secondAttribute="bottom" constant="8" symbolic="YES" id="1aJ-pP-bix"/>
-                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="HDi-LI-sYP" secondAttribute="bottom" constant="74" id="5je-mT-ljB"/>
                             <constraint firstItem="HeD-sj-QPl" firstAttribute="top" secondItem="Jwb-kf-aZs" secondAttribute="bottom" constant="8" symbolic="YES" id="8am-Vw-H5k"/>
-                            <constraint firstItem="HDi-LI-sYP" firstAttribute="top" secondItem="w6g-ha-3JA" secondAttribute="bottom" constant="8" symbolic="YES" id="9hR-v2-JOR"/>
                             <constraint firstItem="w6g-ha-3JA" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="Fpx-sH-qPF"/>
                             <constraint firstItem="HeD-sj-QPl" firstAttribute="centerX" secondItem="Jwb-kf-aZs" secondAttribute="centerX" id="GhN-Qc-aOL"/>
+                            <constraint firstItem="A3r-tr-pY5" firstAttribute="top" secondItem="w6g-ha-3JA" secondAttribute="bottom" constant="8" symbolic="YES" id="Mjs-Pi-TcX"/>
                             <constraint firstItem="1sd-17-6W7" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="cMz-2L-FQJ"/>
+                            <constraint firstItem="w6g-ha-3JA" firstAttribute="top" secondItem="1sd-17-6W7" secondAttribute="bottom" constant="8" symbolic="YES" id="gUF-cB-HXZ"/>
+                            <constraint firstItem="w6g-ha-3JA" firstAttribute="top" secondItem="1sd-17-6W7" secondAttribute="bottom" constant="8" symbolic="YES" id="i4I-NO-xjr"/>
+                            <constraint firstItem="A3r-tr-pY5" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="jDn-II-8dW"/>
                             <constraint firstItem="w6g-ha-3JA" firstAttribute="top" secondItem="1sd-17-6W7" secondAttribute="bottom" constant="8" symbolic="YES" id="rjn-vy-QZb"/>
                             <constraint firstItem="Jwb-kf-aZs" firstAttribute="centerX" secondItem="kh9-bI-dsS" secondAttribute="centerX" id="wGh-8t-l1h"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="dataSwitch" destination="cdz-lC-MpX" id="O6g-pP-LZk"/>
+                        <outlet property="dataSwitch" destination="A3r-tr-pY5" id="3Yn-rq-QId"/>
                         <outlet property="dataTypePicker" destination="w6g-ha-3JA" id="7qp-2T-CTo"/>
                         <outlet property="logTextView" destination="Jwb-kf-aZs" id="s7c-re-4nO"/>
                         <outlet property="nodDevicePicker" destination="1sd-17-6W7" id="btm-Pn-4AI"/>
