@@ -1,8 +1,9 @@
 //
 //  AppDelegate.h
-//  Example App
+//  OpenSpatialExample
 //
-//  Copyright (c) 2015 Nod Labs. All rights reserved.
+//  Created by Neel Bhoopalam on 10/28/15.
+//  Copyright © 2015 Nod Labs. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -11,4 +12,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+
 @end
+
