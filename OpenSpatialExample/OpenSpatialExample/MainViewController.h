@@ -9,7 +9,9 @@
 #import <OpenSpatial/OpenSpatialBluetooth.h>
 #import <CoreActionSheetPicker/CoreActionSheetPicker.h>
 
-@interface MainViewController : UIViewController <OpenSpatialBluetoothDelegate, UITextFieldDelegate>
+@interface MainViewController : UIViewController <OpenSpatialBluetoothDelegate, UITextFieldDelegate> {
+    int lineCount;
+}
 
 @property OpenSpatialBluetooth *HIDServ;
 @property CBPeripheral *lastNodPeripheral;

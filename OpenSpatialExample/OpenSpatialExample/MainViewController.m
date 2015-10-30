@@ -155,6 +155,13 @@
         NSString *passedIn = [NSString stringWithFormat:@"%@\n", input];
         NSString *newText = [self.logTextView.text stringByAppendingString:passedIn];
         self.logTextView.text = newText;
+        lineCount++;
+        if(lineCount > 75) {
+            [self.logTextView setSelectedRange:NSMakeRange(0, self.logTextView.text.length/2)];
+            [self.logTextView setText:@""];
+            lineCount = 0;
+        }
+    
         [self.logTextView scrollRangeToVisible:NSMakeRange(newText.length, 0)];
 }
 
