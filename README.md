@@ -31,15 +31,15 @@ Importing OpenSpatial into header file
 ```
 Subscribes the specified peripheral device to RelativeXY events
 ```objective-c
-[self.HIDServ subscribeToEvents:name forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
+[self.HIDServ subscribeToEvents:name forEventTypes:@[@(OS_RELATIVE_XY_TAG)]];
 ```
 Subscribes the specific peripheral device to RelativeXY and Euler Angle events
 ```objective-c
-[self.HIDServ subscribeToEvents:name forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), @(OS_EULER_ANGLES_TAG), nil]];
+[self.HIDServ subscribeToEvents:name forEventTypes:@[@(OS_RELATIVE_XY_TAG), @(OS_EULER_ANGLES_TAG)]];
 ```
 Unsubscribes the specified peripheral device to RelativeXY events
 ```objective-c
-[self.HIDServ unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:[[NSMutableArray alloc] initWithObjects:@(OS_RELATIVE_XY_TAG), nil]];
+[self.HIDServ unsubscribeFromEvents:(NSString *)peripheralName forEventTypes:@[@(OS_RELATIVE_XY_TAG)]];
 ```
 
 #### List of OpenSpatial Data Types
