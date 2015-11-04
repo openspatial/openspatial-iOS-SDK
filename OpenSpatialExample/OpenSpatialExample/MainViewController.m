@@ -129,6 +129,7 @@
                     break;
                 }
             }
+            break;
         }
         case OS_SLIDER_GESTURE_TAG: {
             SliderData* sliderData = (SliderData *) openSpatialData;
@@ -142,6 +143,7 @@
                     break;
                 }
             }
+            break;
         }
         case OS_ANALOG_DATA_TAG: {
             AnalogData* analogData = (AnalogData *) openSpatialData;
@@ -195,6 +197,9 @@
     NSArray* dataArray = [[NSArray alloc] initWithObjects:[self.tagsDict objectForKey:self.dataTypePicker.text], nil];
     if(self.dataSwitch.on) {
         [self.HIDServ subscribeToEvents:self.nodDevicePicker.text forEventTypes:dataArray];
+        for(int i=0; i < dataArray.count; i++) {
+            NSLog(@"Array: %@", dataArray[i]);
+        }
     } else {
         [self.HIDServ unsubscribeFromEvents:self.nodDevicePicker.text forEventTypes:dataArray];
     }

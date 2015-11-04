@@ -49,6 +49,17 @@
             processed +=6;
         }
         if(tag == OS_RAW_COMPASS_TAG) {
+            short int x = opSpcPtr[processed] | (opSpcPtr[processed + 1] << 8);
+            short int y = opSpcPtr[processed + 2] | (opSpcPtr[processed + 3] << 8);
+            short int z = opSpcPtr[processed + 4] | (opSpcPtr[processed + 5] << 8);
+            
+            NSDictionary* retDic = @{ @"type" : @"compass",
+                                      XC : @(x),
+                                      YC : @(y),
+                                      ZC : @(z)
+                                      };
+            [eventDataArray addObject:retDic];
+            processed +=6;
         }
         if(tag == OS_EULER_ANGLES_TAG) {
             int roll = opSpcPtr[processed] | (opSpcPtr[processed + 1] << 8);

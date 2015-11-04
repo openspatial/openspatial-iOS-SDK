@@ -54,6 +54,9 @@ typedef enum OControlAction{
 #define XG @"gyroscope x"
 #define YG @"gyroscope y"
 #define ZG @"gyroscope y"
+#define XC @"compass x"
+#define YC @"compass y"
+#define ZC @"compass z"
 
 #define OS_UUID @"00000002-0000-1000-8000-A0E5E9000000"
 #define POSITION2D_UUID @"00000206-0000-1000-8000-A0E5E9000000"

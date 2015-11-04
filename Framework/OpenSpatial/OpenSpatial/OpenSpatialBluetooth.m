@@ -496,6 +496,11 @@
             if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
                 [self.delegate openSpatialDataFired:analogData];
             }
+        } else if([caseType isEqualToString:@"compass"]) {
+            CompassData* compassData = [[CompassData alloc] initForPeripheral:peripheral withX:[[eventDict objectForKey:XC] intValue] withY:[[eventDict objectForKey:YC] intValue] withZ:[[eventDict objectForKey:ZC] intValue] ];
+            if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
+                [self.delegate openSpatialDataFired:compassData];
+            }
         } else if([caseType isEqualToString:@"button"]) {
             ButtonData* buttonData = [[ButtonData alloc] initForPeripheral:peripheral withButtonID:[[eventDict objectForKey:@"buttonID"] intValue] withButtonState:[[eventDict objectForKey:@"buttonState"] charValue]];
             if([self.delegate respondsToSelector:@selector(openSpatialDataFired:)]) {
